@@ -6,17 +6,9 @@ PRE_JS = build/pre.js
 POST_JS_SYNC = build/post-sync.js
 POST_JS_WORKER = build/post-worker.js
 
-COMMON_FILTERS = aresample scale crop overlay hstack vstack
+COMMON_FILTERS = aresample scale crop overlay fade color alpha rotate zoompan drawtext
 COMMON_DEMUXERS = matroska ogg mov mp3 wav image2 concat
 COMMON_DECODERS = vp8 h264 vorbis opus mp3 aac pcm_s16le mjpeg png
-
-WEBM_MUXERS = webm ogg null
-WEBM_ENCODERS = libvpx_vp8 libopus
-FFMPEG_WEBM_BC = build/ffmpeg-webm/ffmpeg.bc
-FFMPEG_WEBM_PC_PATH = ../opus/dist/lib/pkgconfig
-WEBM_SHARED_DEPS = \
-	build/opus/dist/lib/libopus.so \
-	build/libvpx/dist/lib/libvpx.so
 
 MP4_MUXERS = mp4 mp3 null
 MP4_ENCODERS = libx264 libmp3lame aac
@@ -181,20 +173,6 @@ FFMPEG_COMMON_ARGS = \
 	--disable-securetransport \
 	--disable-xlib \
 	--enable-zlib
-
-build/ffmpeg-webm/ffmpeg.bc: $(WEBM_SHARED_DEPS)
-	cd build/ffmpeg-webm && \
-	EM_PKG_CONFIG_PATH=$(FFMPEG_WEBM_PC_PATH) emconfigure ./configure \
-		$(FFMPEG_COMMON_ARGS) \
-		$(addprefix --enable-encoder=,$(WEBM_ENCODERS)) \
-		$(addprefix --enable-muxer=,$(WEBM_MUXERS)) \
-		--enable-libopus \
-		--enable-libvpx \
-		--extra-cflags="-s USE_ZLIB=1 -I../libvpx/dist/include" \
-		--extra-ldflags="-L../libvpx/dist/lib" \
-		&& \
-	emmake make -j && \
-	cp ffmpeg ffmpeg.bc
 
 build/ffmpeg-mp4/ffmpeg.bc: $(MP4_SHARED_DEPS)
 	cd build/ffmpeg-mp4 && \
