@@ -1,129 +1,3051 @@
 
-var Za;Za||(Za=typeof Module !== 'undefined' ? Module : {});
-function $a(J){function da(a,b,c,e){a||(a=this);this.parent=a;this.i=a.i;this.la=null;this.id=d.Zb++;this.name=b;this.mode=c;this.f={};this.g={};this.rdev=e}function N(a,b){throw b;}function va(a){Array.isArray(a)||a instanceof ArrayBuffer?a=new Uint8Array(a):a?a instanceof Uint8Array||(a=new Uint8Array(a.buffer)):a=new Uint8Array(0);return a}function I(a){var b=[];return function(c,e){if(e&&b.length)return a(T(b,0));10===c||13===c?(U&&b.push(c),a(T(b,0)),b=[]):0!==c&&b.push(c)}}function zb(a){return f.locateFile?
-f.locateFile(a,P):P+a}function ja(a,b){a||B("Assertion failed: "+b)}function T(a,b,c){var e=b+c;for(c=b;a[c]&&!(c>=e);)++c;if(16<c-b&&a.subarray&&ab)return ab.decode(a.subarray(b,c));for(e="";b<c;){var g=a[b++];if(g&128){var h=a[b++]&63;if(192==(g&224))e+=String.fromCharCode((g&31)<<6|h);else{var l=a[b++]&63;g=224==(g&240)?(g&15)<<12|h<<6|l:(g&7)<<18|h<<12|l<<6|a[b++]&63;65536>g?e+=String.fromCharCode(g):(g-=65536,e+=String.fromCharCode(55296|g>>10,56320|g&1023))}}else e+=String.fromCharCode(g)}return e}
-function ea(a,b){return a?T(X,a,b):""}function Y(a,b,c,e){if(!(0<e))return 0;var g=c;e=c+e-1;for(var h=0;h<a.length;++h){var l=a.charCodeAt(h);if(55296<=l&&57343>=l){var n=a.charCodeAt(++h);l=65536+((l&1023)<<10)|n&1023}if(127>=l){if(c>=e)break;b[c++]=l}else{if(2047>=l){if(c+1>=e)break;b[c++]=192|l>>6}else{if(65535>=l){if(c+2>=e)break;b[c++]=224|l>>12}else{if(c+3>=e)break;b[c++]=240|l>>18;b[c++]=128|l>>12&63}b[c++]=128|l>>6&63}b[c++]=128|l&63}}b[c]=0;return c-g}function ka(a){for(var b=0,c=0;c<a.length;++c){var e=
-a.charCodeAt(c);55296<=e&&57343>=e&&(e=65536+((e&1023)<<10)|a.charCodeAt(++c)&1023);127>=e?++b:b=2047>=e?b+2:65535>=e?b+3:b+4}return b}function bb(a){var b=ka(a)+1,c=wa(b);c&&Y(a,K,c,b);return c}function cb(a){var b=ka(a)+1,c=Ma(b);Y(a,K,c,b);return c}function la(a){for(;0<a.length;){var b=a.shift();if("function"==typeof b)b(f);else{var c=b.Sb;"number"===typeof c?void 0===b.Ba?f.dynCall_v(c):f.dynCall_vi(c,b.Ba):c(void 0===b.Ba?null:b.Ba)}}}function db(){Z++;f.monitorRunDependencies&&f.monitorRunDependencies(Z)}
-function Na(){Z--;f.monitorRunDependencies&&f.monitorRunDependencies(Z);if(0==Z&&(null!==Oa&&(clearInterval(Oa),Oa=null),ma)){var a=ma;ma=null;a()}}function B(a){if(f.onAbort)f.onAbort(a);fa(a);F(a);Pa=!0;throw new WebAssembly.RuntimeError("abort("+a+"). Build with -s ASSERTIONS=1 for more info.");}function Qa(a,b){return String.prototype.startsWith?a.startsWith(b):0===a.indexOf(b)}function eb(a){return Qa(a,"data:application/octet-stream;base64,")}function fb(){try{if(na)return new Uint8Array(na);
-if(xa)return xa(Q);throw"both async and sync fetching of the wasm failed";}catch(a){B(a)}}function Ab(){return na||!ya&&!S||"function"!==typeof fetch||Qa(Q,"file://")?new Promise(function(a){a(fb())}):fetch(Q,{credentials:"same-origin"}).then(function(a){if(!a.ok)throw"failed to load wasm binary file at '"+Q+"'";return a.arrayBuffer()}).catch(function(){return fb()})}function Bb(a){return a.replace(/\b_Z[\w\d_]+/g,function(b){return b===b?b:b+" ["+b+"]"})}function aa(a){return m[gb()>>2]=a}function za(){void 0===
-za.start&&(za.start=Date.now());return 1E3*(Date.now()-za.start)|0}function oa(){if(!oa.B){var a={USER:"web_user",LOGNAME:"web_user",PATH:"/",PWD:"/",HOME:"/home/web_user",LANG:("object"===typeof navigator&&navigator.languages&&navigator.languages[0]||"C").replace("-","_")+".UTF-8",_:Aa||"./this.program"},b;for(b in hb)a[b]=hb[b];var c=[];for(b in a)c.push(b+"="+a[b]);oa.B=c}return oa.B}function ib(a,b){a=new Date(1E3*m[a>>2]);m[b>>2]=a.getUTCSeconds();m[b+4>>2]=a.getUTCMinutes();m[b+8>>2]=a.getUTCHours();
-m[b+12>>2]=a.getUTCDate();m[b+16>>2]=a.getUTCMonth();m[b+20>>2]=a.getUTCFullYear()-1900;m[b+24>>2]=a.getUTCDay();m[b+36>>2]=0;m[b+32>>2]=0;m[b+28>>2]=(a.getTime()-Date.UTC(a.getUTCFullYear(),0,1,0,0,0,0))/864E5|0;m[b+40>>2]=Cb;return b}function Ba(){function a(h){return(h=h.toTimeString().match(/\(([A-Za-z ]+)\)$/))?h[1]:"GMT"}if(!Ba.B){Ba.B=!0;m[jb()>>2]=60*(new Date).getTimezoneOffset();var b=(new Date).getFullYear(),c=new Date(b,0,1);b=new Date(b,6,1);m[kb()>>2]=Number(c.getTimezoneOffset()!=b.getTimezoneOffset());
-var e=a(c),g=a(b);e=bb(e);g=bb(g);b.getTimezoneOffset()<c.getTimezoneOffset()?(m[ha()>>2]=e,m[ha()+4>>2]=g):(m[ha()>>2]=g,m[ha()+4>>2]=e)}}function lb(a,b){Ba();a=new Date(1E3*m[a>>2]);m[b>>2]=a.getSeconds();m[b+4>>2]=a.getMinutes();m[b+8>>2]=a.getHours();m[b+12>>2]=a.getDate();m[b+16>>2]=a.getMonth();m[b+20>>2]=a.getFullYear()-1900;m[b+24>>2]=a.getDay();var c=new Date(a.getFullYear(),0,1);m[b+28>>2]=(a.getTime()-c.getTime())/864E5|0;m[b+36>>2]=-(60*a.getTimezoneOffset());var e=(new Date(a.getFullYear(),
-6,1)).getTimezoneOffset();c=c.getTimezoneOffset();a=(e!=c&&a.getTimezoneOffset()==Math.min(c,e))|0;m[b+32>>2]=a;a=m[ha()+(a?4:0)>>2];m[b+40>>2]=a;return b}function Ca(a){return 0===a%4&&(0!==a%100||0===a%400)}function Ra(a,b){for(var c=0,e=0;e<=b;c+=a[e++]);return c}function Da(a,b){for(a=new Date(a.getTime());0<b;){var c=Ca(a.getFullYear()),e=a.getMonth();c=(c?Ea:Fa)[e];if(b>c-a.getDate())b-=c-a.getDate()+1,a.setDate(1),11>e?a.setMonth(e+1):(a.setMonth(0),a.setFullYear(a.getFullYear()+1));else{a.setDate(a.getDate()+
-b);break}}return a}function Ga(a,b,c){c=0<c?c:ka(a)+1;c=Array(c);a=Y(a,c,0,c.length);b&&(c.length=a);return c}function Sa(a){this.name="ExitStatus";this.message="Program terminated with exit("+a+")";this.status=a}function Ta(a){function b(){if(!Ha&&(Ha=!0,f.calledRun=!0,!Pa)){f.noFSInit||d.W.Ha||d.W();V.W();la(mb);d.nb=!1;la(Db);if(f.onRuntimeInitialized)f.onRuntimeInitialized();if(nb){var c=a,e=f._main;c=c||[];var g=c.length+1,h=Ma(4*(g+1));m[h>>2]=cb(Aa);for(var l=1;l<g;l++)m[(h>>2)+l]=cb(c[l-1]);
-m[(h>>2)+g]=0;try{var n=e(g,h);ob(n,!0)}catch(t){t instanceof Sa||("unwind"==t?Ia=!0:((c=t)&&"object"===typeof t&&t.stack&&(c=[t,t.stack]),F("exception thrown: "+c),N(1,t)))}finally{}}if(f.postRun)for("function"==typeof f.postRun&&(f.postRun=[f.postRun]);f.postRun.length;)pb.unshift(f.postRun.shift());la(pb)}}a=a||pa;if(!(0<Z)){if(f.preRun)for("function"==typeof f.preRun&&(f.preRun=[f.preRun]);f.preRun.length;)qb.unshift(f.preRun.shift());la(qb);0<Z||(f.setStatus?(f.setStatus("Running..."),setTimeout(function(){setTimeout(function(){f.setStatus("")},
-1);b()},1)):b())}}function ob(a,b){if(!b||!Ia||0!==a){if(!Ia&&(Pa=!0,la(Eb),d.quit(),f.onExit))f.onExit(a);N(a,new Sa(a))}}J=J||{};var Fb=B,rb,f={};Object.keys(J).forEach(function(a){0>["mounts","MEMFS","onExit","chdir"].indexOf(a)&&(f[a]=J[a])});B=function(a){if(arguments.length)Fb(a);else throw new Sa(0);};f.stdin=f.stdin||function(){};f.stdout=f.stdout||I(function(a){fa(a)});f.stderr=f.stderr||I(function(a){F(a)});"object"===typeof process&&(f.print=f.print||process.stdout.write.bind(process.stdout),
-f.printErr=f.printErr||process.stderr.write.bind(process.stderr));f.quit=function(a){f.stdout(0,!0);f.stderr(0,!0);if(J.onExit)J.onExit(a)};f.preRun=function(){(J.mounts||[]).forEach(function(a){var b=d.eb[a.type];if(!b)throw Error("Bad mount type");var c=a.mountpoint;if(!c.match(/^\/[^\/]+$/)||"/."===c||"/.."===c||"/tmp"===c||"/home"===c||"/dev"===c||"/work"===c)throw Error("Bad mount point");d.mkdir(c);d.i(b,a.opts,c)});d.mkdir("/work");d.chdir(J.chdir||"/work");(J.MEMFS||[]).forEach(function(a){if(a.name.match(/\//))throw Error("Bad file name");
-var b=d.open(a.name,"w+");a=va(a.data);d.write(b,a,0,a.length);d.close(b)})};f.postRun=function(){var a=Object.create(null);(J.MEMFS||[]).forEach(function(b){a[b.name]=null});rb={MEMFS:function(b){var c=d.h(b).node.c;b=Object.keys(c);c.__proto__&&"__proto__"===c.__proto__.name&&b.push("__proto__");return b.map(function(e){return c[e]})}("/work").filter(function(b){return!(b.name in a)}).map(function(b){var c=va(b.c);return{name:b.name,data:c}})}};var qa={},W;for(W in f)f.hasOwnProperty(W)&&(qa[W]=
-f[W]);var pa=[],Aa="./this.program",ya=!1,S=!1,U=!1,sb=!1;ya="object"===typeof window;S="function"===typeof importScripts;U="object"===typeof process&&"object"===typeof process.versions&&"string"===typeof process.versions.node;sb=!ya&&!U&&!S;var P="",Ja,Ua;if(U){P=S?require("path").dirname(P)+"/":__dirname+"/";var ra=function(a,b){Ja||(Ja=require("fs"));Ua||(Ua=require("path"));a=Ua.normalize(a);return Ja.readFileSync(a,b?null:"utf8")};var xa=function(a){a=ra(a,!0);a.buffer||(a=new Uint8Array(a));
-ja(a.buffer);return a};1<process.argv.length&&(Aa=process.argv[1].replace(/\\/g,"/"));pa=process.argv.slice(2);"undefined"!==typeof module&&(module.exports=f);N=function(a){process.exit(a)};f.inspect=function(){return"[Emscripten Module object]"}}else if(sb)"undefined"!=typeof read&&(ra=function(a){return read(a)}),xa=function(a){if("function"===typeof readbuffer)return new Uint8Array(readbuffer(a));a=read(a,"binary");ja("object"===typeof a);return a},"undefined"!=typeof scriptArgs?pa=scriptArgs:
-"undefined"!=typeof arguments&&(pa=arguments),"function"===typeof quit&&(N=function(a){quit(a)}),"undefined"!==typeof print&&("undefined"===typeof console&&(console={}),console.log=print,console.warn=console.error="undefined"!==typeof printErr?printErr:print);else if(ya||S)S?P=self.location.href:document.currentScript&&(P=document.currentScript.src),P=0!==P.indexOf("blob:")?P.substr(0,P.lastIndexOf("/")+1):"",ra=function(a){var b=new XMLHttpRequest;b.open("GET",a,!1);b.send(null);return b.responseText},
-S&&(xa=function(a){var b=new XMLHttpRequest;b.open("GET",a,!1);b.responseType="arraybuffer";b.send(null);return new Uint8Array(b.response)});var fa=f.print||console.log.bind(console),F=f.printErr||console.warn.bind(console);for(W in qa)qa.hasOwnProperty(W)&&(f[W]=qa[W]);qa=null;f.arguments&&(pa=f.arguments);f.thisProgram&&(Aa=f.thisProgram);f.quit&&(N=f.quit);var na;f.wasmBinary&&(na=f.wasmBinary);var Ia;f.noExitRuntime&&(Ia=f.noExitRuntime);"object"!==typeof WebAssembly&&F("no native wasm support detected");
-var sa,Gb=new WebAssembly.Table({initial:2920,maximum:2920,element:"anyfunc"}),Pa=!1,ab="undefined"!==typeof TextDecoder?new TextDecoder("utf8"):void 0;"undefined"!==typeof TextDecoder&&new TextDecoder("utf-16le");var K,X,Va,m,Wa=f.INITIAL_MEMORY||67108864;f.wasmMemory?sa=f.wasmMemory:sa=new WebAssembly.Memory({initial:Wa/65536,maximum:Wa/65536});if(sa)var Xa=sa.buffer;Wa=Xa.byteLength;(function(a){Xa=a;f.HEAP8=K=new Int8Array(a);f.HEAP16=Va=new Int16Array(a);f.HEAP32=m=new Int32Array(a);f.HEAPU8=
-X=new Uint8Array(a);f.HEAPU16=new Uint16Array(a);f.HEAPU32=new Uint32Array(a);f.HEAPF32=new Float32Array(a);f.HEAPF64=new Float64Array(a)})(Xa);m[583544]=7577216;var qb=[],mb=[],Db=[],Eb=[],pb=[],ta=Math.abs,ba=Math.ceil,ca=Math.floor,ua=Math.min,Z=0,Oa=null,ma=null;f.preloadedImages={};f.preloadedAudios={};var Q="ffmpeg-worker-mp4.wasm";eb(Q)||(Q=zb(Q));var z,L;mb.push({Sb:function(){tb()}});var w={qb:function(a){return/^(\/?|)([\s\S]*?)((?:\.{1,2}|[^\/]+?|)(\.[^.\/]*|))(?:[\/]*)$/.exec(a).slice(1)},
-Na:function(a,b){for(var c=0,e=a.length-1;0<=e;e--){var g=a[e];"."===g?a.splice(e,1):".."===g?(a.splice(e,1),c++):c&&(a.splice(e,1),c--)}if(b)for(;c;c--)a.unshift("..");return a},normalize:function(a){var b="/"===a.charAt(0),c="/"===a.substr(-1);(a=w.Na(a.split("/").filter(function(e){return!!e}),!b).join("/"))||b||(a=".");a&&c&&(a+="/");return(b?"/":"")+a},dirname:function(a){var b=w.qb(a);a=b[0];b=b[1];if(!a&&!b)return".";b&&(b=b.substr(0,b.length-1));return a+b},basename:function(a){if("/"===a)return"/";
-var b=a.lastIndexOf("/");return-1===b?a:a.substr(b+1)},extname:function(a){return w.qb(a)[3]},join:function(){var a=Array.prototype.slice.call(arguments,0);return w.normalize(a.join("/"))},v:function(a,b){return w.normalize(a+"/"+b)}},R={resolve:function(){for(var a="",b=!1,c=arguments.length-1;-1<=c&&!b;c--){b=0<=c?arguments[c]:d.cwd();if("string"!==typeof b)throw new TypeError("Arguments to path.resolve must be strings");if(!b)return"";a=b+"/"+a;b="/"===b.charAt(0)}a=w.Na(a.split("/").filter(function(e){return!!e}),
-!b).join("/");return(b?"/":"")+a||"."},relative:function(a,b){function c(l){for(var n=0;n<l.length&&""===l[n];n++);for(var t=l.length-1;0<=t&&""===l[t];t--);return n>t?[]:l.slice(n,t-n+1)}a=R.resolve(a).substr(1);b=R.resolve(b).substr(1);a=c(a.split("/"));b=c(b.split("/"));for(var e=Math.min(a.length,b.length),g=e,h=0;h<e;h++)if(a[h]!==b[h]){g=h;break}e=[];for(h=g;h<a.length;h++)e.push("..");e=e.concat(b.slice(g));return e.join("/")}},V={tb:[],W:function(){},ef:function(){},register:function(a,b){V.tb[a]=
-{input:[],output:[],ba:b};d.Sa(a,V.g)},g:{open:function(a){var b=V.tb[a.node.rdev];if(!b)throw new d.b(43);a.tty=b;a.seekable=!1},close:function(a){a.tty.ba.flush(a.tty)},flush:function(a){a.tty.ba.flush(a.tty)},read:function(a,b,c,e){if(!a.tty||!a.tty.ba.jb)throw new d.b(60);for(var g=0,h=0;h<e;h++){try{var l=a.tty.ba.jb(a.tty)}catch(n){throw new d.b(29);}if(void 0===l&&0===g)throw new d.b(6);if(null===l||void 0===l)break;g++;b[c+h]=l}g&&(a.node.timestamp=Date.now());return g},write:function(a,b,
-c,e){if(!a.tty||!a.tty.ba.Oa)throw new d.b(60);try{for(var g=0;g<e;g++)a.tty.ba.Oa(a.tty,b[c+g])}catch(h){throw new d.b(29);}e&&(a.node.timestamp=Date.now());return g}},Nb:{jb:function(a){if(!a.input.length){var b=null;if(U){var c=Buffer.B?Buffer.B(256):new Buffer(256),e=0;try{e=Ja.readSync(process.stdin.fd,c,0,256,null)}catch(g){if(-1!=g.toString().indexOf("EOF"))e=0;else throw g;}0<e?b=c.slice(0,e).toString("utf-8"):b=null}else"undefined"!=typeof window&&"function"==typeof window.prompt?(b=window.prompt("Input: "),
-null!==b&&(b+="\n")):"function"==typeof readline&&(b=readline(),null!==b&&(b+="\n"));if(!b)return null;a.input=Ga(b,!0)}return a.input.shift()},Oa:function(a,b){null===b||10===b?(fa(T(a.output,0)),a.output=[]):0!=b&&a.output.push(b)},flush:function(a){a.output&&0<a.output.length&&(fa(T(a.output,0)),a.output=[])}},Mb:{Oa:function(a,b){null===b||10===b?(F(T(a.output,0)),a.output=[]):0!=b&&a.output.push(b)},flush:function(a){a.output&&0<a.output.length&&(F(T(a.output,0)),a.output=[])}}},v={M:null,i:function(){return v.createNode(null,
-"/",16895,0)},createNode:function(a,b,c,e){if(d.Ub(c)||d.isFIFO(c))throw new d.b(63);v.M||(v.M={dir:{node:{D:v.f.D,o:v.f.o,lookup:v.f.lookup,F:v.f.F,rename:v.f.rename,unlink:v.f.unlink,rmdir:v.f.rmdir,readdir:v.f.readdir,symlink:v.f.symlink},stream:{A:v.g.A}},file:{node:{D:v.f.D,o:v.f.o},stream:{A:v.g.A,read:v.g.read,write:v.g.write,ia:v.g.ia,aa:v.g.aa,Z:v.g.Z}},link:{node:{D:v.f.D,o:v.f.o,readlink:v.f.readlink},stream:{}},Ya:{node:{D:v.f.D,o:v.f.o},stream:d.Eb}});c=d.createNode(a,b,c,e);d.m(c.mode)?
-(c.f=v.M.dir.node,c.g=v.M.dir.stream,c.c={}):d.isFile(c.mode)?(c.f=v.M.file.node,c.g=v.M.file.stream,c.j=0,c.c=null):d.R(c.mode)?(c.f=v.M.link.node,c.g=v.M.link.stream):d.ja(c.mode)&&(c.f=v.M.Ya.node,c.g=v.M.Ya.stream);c.timestamp=Date.now();a&&(a.c[b]=c);return c},Ve:function(a){if(a.c&&a.c.subarray){for(var b=[],c=0;c<a.j;++c)b.push(a.c[c]);return b}return a.c},We:function(a){return a.c?a.c.subarray?a.c.subarray(0,a.j):new Uint8Array(a.c):new Uint8Array(0)},cb:function(a,b){var c=a.c?a.c.length:
-0;c>=b||(b=Math.max(b,c*(1048576>c?2:1.125)>>>0),0!=c&&(b=Math.max(b,256)),c=a.c,a.c=new Uint8Array(b),0<a.j&&a.c.set(c.subarray(0,a.j),0))},fc:function(a,b){if(a.j!=b)if(0==b)a.c=null,a.j=0;else{if(!a.c||a.c.subarray){var c=a.c;a.c=new Uint8Array(b);c&&a.c.set(c.subarray(0,Math.min(b,a.j)))}else if(a.c||(a.c=[]),a.c.length>b)a.c.length=b;else for(;a.c.length<b;)a.c.push(0);a.j=b}},f:{D:function(a){var b={};b.dev=d.ja(a.mode)?a.id:1;b.ino=a.id;b.mode=a.mode;b.nlink=1;b.uid=0;b.gid=0;b.rdev=a.rdev;
-d.m(a.mode)?b.size=4096:d.isFile(a.mode)?b.size=a.j:d.R(a.mode)?b.size=a.link.length:b.size=0;b.atime=new Date(a.timestamp);b.mtime=new Date(a.timestamp);b.ctime=new Date(a.timestamp);b.N=4096;b.blocks=Math.ceil(b.size/b.N);return b},o:function(a,b){void 0!==b.mode&&(a.mode=b.mode);void 0!==b.timestamp&&(a.timestamp=b.timestamp);void 0!==b.size&&v.fc(a,b.size)},lookup:function(){throw d.Fa[44];},F:function(a,b,c,e){return v.createNode(a,b,c,e)},rename:function(a,b,c){if(d.m(a.mode)){try{var e=d.K(b,
-c)}catch(h){}if(e)for(var g in e.c)throw new d.b(55);}delete a.parent.c[a.name];a.name=c;b.c[c]=a;a.parent=b},unlink:function(a,b){delete a.c[b]},rmdir:function(a,b){var c=d.K(a,b),e;for(e in c.c)throw new d.b(55);delete a.c[b]},readdir:function(a){var b=[".",".."],c;for(c in a.c)a.c.hasOwnProperty(c)&&b.push(c);return b},symlink:function(a,b,c){a=v.createNode(a,b,41471,0);a.link=c;return a},readlink:function(a){if(!d.R(a.mode))throw new d.b(28);return a.link}},g:{read:function(a,b,c,e,g){var h=a.node.c;
-if(g>=a.node.j)return 0;a=Math.min(a.node.j-g,e);if(8<a&&h.subarray)b.set(h.subarray(g,g+a),c);else for(e=0;e<a;e++)b[c+e]=h[g+e];return a},write:function(a,b,c,e,g,h){if(!e)return 0;a=a.node;a.timestamp=Date.now();if(b.subarray&&(!a.c||a.c.subarray)){if(h)return a.c=b.subarray(c,c+e),a.j=e;if(0===a.j&&0===g)return a.c=b.slice(c,c+e),a.j=e;if(g+e<=a.j)return a.c.set(b.subarray(c,c+e),g),e}v.cb(a,g+e);if(a.c.subarray&&b.subarray)a.c.set(b.subarray(c,c+e),g);else for(h=0;h<e;h++)a.c[g+h]=b[c+h];a.j=
-Math.max(a.j,g+e);return e},A:function(a,b,c){1===c?b+=a.position:2===c&&d.isFile(a.node.mode)&&(b+=a.node.j);if(0>b)throw new d.b(28);return b},ia:function(a,b,c){v.cb(a.node,b+c);a.node.j=Math.max(a.node.j,b+c)},aa:function(a,b,c,e,g,h,l){if(!d.isFile(a.node.mode))throw new d.b(43);a=a.node.c;if(l&2||a.buffer!==b.buffer){if(0<g||g+e<a.length)a.subarray?a=a.subarray(g,g+e):a=Array.prototype.slice.call(a,g,g+e);g=!0;l=b.buffer==K.buffer;e=wa(e);if(!e)throw new d.b(48);(l?K:b).set(a,e)}else g=!1,e=
-a.byteOffset;return{ec:e,Bb:g}},Z:function(a,b,c,e,g){if(!d.isFile(a.node.mode))throw new d.b(43);if(g&2)return 0;v.g.write(a,b,0,e,c,!1);return 0}}},Hb={ee:63,Ed:44,re:71,Zc:27,ad:29,ae:60,nc:1,Fd:45,wc:8,Fc:12,tc:6,Be:6,Jd:48,oc:2,Sc:21,Sd:105,Dc:10,Rc:20,Ce:75,Dd:43,Ud:54,cd:31,$c:28,yd:41,qd:33,Zd:59,ye:74,Tc:22,Od:51,qe:70,ne:69,rd:34,ge:64,Oc:18,ke:68,Kd:49,Wc:24,Gc:106,ed:156,gd:107,hd:108,od:109,ze:110,Bd:111,dd:112,Lc:16,Gd:46,vc:113,zc:114,De:115,zd:104,Ac:103,Bc:102,Mc:16,Cc:101,Qd:100,
-Cd:116,ve:117,Pd:118,Ld:119,Md:120,me:121,Hd:47,rc:122,se:123,Hc:124,he:65,td:36,Pc:125,yc:9,$d:126,xc:127,le:128,jd:129,kd:130,nd:131,md:132,ld:133,Rd:52,Vd:55,ud:37,pd:32,be:138,fe:139,Kc:15,Ad:42,sc:5,je:67,Xd:57,Nd:50,oe:140,Jc:14,pc:3,Ic:13,xd:40,vd:38,we:73,Uc:142,Vc:23,Yc:26,uc:7,Nc:17,sd:35,ie:66,pe:137,qc:4,wd:39,bd:30,Td:53,xe:141,Ae:136,Qc:19,te:72,Yd:138,Id:148,Xc:25,ce:61,Ec:11,Wd:56,de:62,ue:135},u={qa:!1,Ta:function(){u.qa=!!process.platform.match(/^win/);var a=process.binding("constants");
-a.fs&&(a=a.fs);u.fb={1024:a.O_APPEND,64:a.O_CREAT,128:a.O_EXCL,0:a.O_RDONLY,2:a.O_RDWR,4096:a.O_SYNC,512:a.O_TRUNC,1:a.O_WRONLY}},Wa:function(a){return Buffer.alloc?Buffer.from(a):new Buffer(a)},u:function(a){return Hb[a.code]},i:function(a){return u.createNode(null,"/",u.T(a.da.root),0)},createNode:function(a,b,c){if(!d.m(c)&&!d.isFile(c)&&!d.R(c))throw new d.b(28);a=d.createNode(a,b,c);a.f=u.f;a.g=u.g;return a},T:function(a){try{var b=H.lstatSync(a);u.qa&&(b.mode=b.mode|(b.mode&292)>>2)}catch(c){if(!c.code)throw c;
-throw new d.b(u.u(c));}return b.mode},G:function(a){for(var b=[];a.parent!==a;)b.push(a.name),a=a.parent;b.push(a.i.da.root);b.reverse();return w.join.apply(null,b)},Rb:function(a){a&=-2656257;var b=0,c;for(c in u.fb)a&c&&(b|=u.fb[c],a^=c);if(a)throw new d.b(28);return b},f:{D:function(a){a=u.G(a);try{var b=H.lstatSync(a)}catch(c){if(!c.code)throw c;throw new d.b(u.u(c));}u.qa&&!b.N&&(b.N=4096);u.qa&&!b.blocks&&(b.blocks=(b.size+b.N-1)/b.N|0);return{dev:b.dev,ino:b.ino,mode:b.mode,nlink:b.nlink,uid:b.uid,
-gid:b.gid,rdev:b.rdev,size:b.size,atime:b.atime,mtime:b.mtime,ctime:b.ctime,N:b.N,blocks:b.blocks}},o:function(a,b){var c=u.G(a);try{void 0!==b.mode&&(H.chmodSync(c,b.mode),a.mode=b.mode),void 0!==b.size&&H.truncateSync(c,b.size)}catch(e){if(!e.code)throw e;throw new d.b(u.u(e));}},lookup:function(a,b){var c=w.v(u.G(a),b);c=u.T(c);return u.createNode(a,b,c)},F:function(a,b,c,e){a=u.createNode(a,b,c,e);b=u.G(a);try{d.m(a.mode)?H.mkdirSync(b,a.mode):H.writeFileSync(b,"",{mode:a.mode})}catch(g){if(!g.code)throw g;
-throw new d.b(u.u(g));}return a},rename:function(a,b,c){var e=u.G(a);b=w.v(u.G(b),c);try{H.renameSync(e,b)}catch(g){if(!g.code)throw g;throw new d.b(u.u(g));}a.name=c},unlink:function(a,b){a=w.v(u.G(a),b);try{H.unlinkSync(a)}catch(c){if(!c.code)throw c;throw new d.b(u.u(c));}},rmdir:function(a,b){a=w.v(u.G(a),b);try{H.rmdirSync(a)}catch(c){if(!c.code)throw c;throw new d.b(u.u(c));}},readdir:function(a){a=u.G(a);try{return H.readdirSync(a)}catch(b){if(!b.code)throw b;throw new d.b(u.u(b));}},symlink:function(a,
-b,c){a=w.v(u.G(a),b);try{H.symlinkSync(c,a)}catch(e){if(!e.code)throw e;throw new d.b(u.u(e));}},readlink:function(a){var b=u.G(a);try{return b=H.readlinkSync(b),b=ub.relative(ub.resolve(a.i.da.root),b)}catch(c){if(!c.code)throw c;throw new d.b(u.u(c));}}},g:{open:function(a){var b=u.G(a.node);try{d.isFile(a.node.mode)&&(a.na=H.openSync(b,u.Rb(a.flags)))}catch(c){if(!c.code)throw c;throw new d.b(u.u(c));}},close:function(a){try{d.isFile(a.node.mode)&&a.na&&H.closeSync(a.na)}catch(b){if(!b.code)throw b;
-throw new d.b(u.u(b));}},read:function(a,b,c,e,g){if(0===e)return 0;try{return H.readSync(a.na,u.Wa(b.buffer),c,e,g)}catch(h){throw new d.b(u.u(h));}},write:function(a,b,c,e,g){try{return H.writeSync(a.na,u.Wa(b.buffer),c,e,g)}catch(h){throw new d.b(u.u(h));}},A:function(a,b,c){if(1===c)b+=a.position;else if(2===c&&d.isFile(a.node.mode))try{b+=H.fstatSync(a.na).size}catch(e){throw new d.b(u.u(e));}if(0>b)throw new d.b(28);return b},aa:function(a,b,c,e,g){if(!d.isFile(a.node.mode))throw new d.b(43);
-var h=wa(e);ja(0===c);u.g.read(a,b,h+c,e,g);return{ec:h,Bb:!0}},Z:function(a,b,c,e,g){if(!d.isFile(a.node.mode))throw new d.b(43);if(g&2)return 0;u.g.write(a,b,0,e,c,!1);return 0}}},G={ya:16895,ha:33279,Qa:null,i:function(a){function b(h){h=h.split("/");for(var l=e,n=0;n<h.length-1;n++){var t=h.slice(0,n+1).join("/");g[t]||(g[t]=G.createNode(l,h[n],G.ya,0));l=g[t]}return l}function c(h){h=h.split("/");return h[h.length-1]}ja(S);G.Qa||(G.Qa=new FileReaderSync);var e=G.createNode(null,"/",G.ya,0),g=
-{};Array.prototype.forEach.call(a.da.files||[],function(h){G.createNode(b(h.name),c(h.name),G.ha,0,h,h.lastModifiedDate)});(a.da.blobs||[]).forEach(function(h){G.createNode(b(h.name),c(h.name),G.ha,0,h.data)});(a.da.packages||[]).forEach(function(h){h.metadata.files.forEach(function(l){var n=l.filename.substr(1);G.createNode(b(n),c(n),G.ha,0,h.blob.slice(l.start,l.end))})});return e},createNode:function(a,b,c,e,g,h){e=d.createNode(a,b,c);e.mode=c;e.f=G.f;e.g=G.g;e.timestamp=(h||new Date).getTime();
-ja(G.ha!==G.ya);c===G.ha?(e.size=g.size,e.c=g):(e.size=4096,e.c={});a&&(a.c[b]=e);return e},f:{D:function(a){return{dev:1,ino:a.id,mode:a.mode,nlink:1,uid:0,gid:0,rdev:void 0,size:a.size,atime:new Date(a.timestamp),mtime:new Date(a.timestamp),ctime:new Date(a.timestamp),N:4096,blocks:Math.ceil(a.size/4096)}},o:function(a,b){void 0!==b.mode&&(a.mode=b.mode);void 0!==b.timestamp&&(a.timestamp=b.timestamp)},lookup:function(){throw new d.b(44);},F:function(){throw new d.b(63);},rename:function(){throw new d.b(63);
-},unlink:function(){throw new d.b(63);},rmdir:function(){throw new d.b(63);},readdir:function(a){var b=[".",".."],c;for(c in a.c)a.c.hasOwnProperty(c)&&b.push(c);return b},symlink:function(){throw new d.b(63);},readlink:function(){throw new d.b(63);}},g:{read:function(a,b,c,e,g){if(g>=a.node.size)return 0;a=a.node.c.slice(g,g+e);e=G.Qa.readAsArrayBuffer(a);b.set(new Uint8Array(e),c);return a.size},write:function(){throw new d.b(29);},A:function(a,b,c){1===c?b+=a.position:2===c&&d.isFile(a.node.mode)&&
-(b+=a.node.size);if(0>b)throw new d.b(28);return b}}},d={root:null,ma:[],ab:{},streams:[],Zb:1,L:null,$a:"/",Ha:!1,nb:!0,s:{},sb:{pb:{xb:1,yb:2}},b:null,Fa:{},eb:null,ta:0,Xe:function(a){if(!(a instanceof d.b)){a:{var b=Error();if(!b.stack){try{throw Error();}catch(c){b=c}if(!b.stack){b="(no stack trace available)";break a}}b=b.stack.toString()}f.extraStackTrace&&(b+="\n"+f.extraStackTrace());b=Bb(b);throw a+" : "+b;}return aa(a.l)},h:function(a,b){a=R.resolve(d.cwd(),a);b=b||{};if(!a)return{path:"",
-node:null};var c={Ea:!0,Ra:0},e;for(e in c)void 0===b[e]&&(b[e]=c[e]);if(8<b.Ra)throw new d.b(32);a=w.Na(a.split("/").filter(function(l){return!!l}),!1);var g=d.root;c="/";for(e=0;e<a.length;e++){var h=e===a.length-1;if(h&&b.parent)break;g=d.K(g,a[e]);c=w.v(c,a[e]);d.X(g)&&(!h||h&&b.Ea)&&(g=g.la.root);if(!h||b.H)for(h=0;d.R(g.mode);)if(g=d.readlink(c),c=R.resolve(w.dirname(c),g),g=d.h(c,{Ra:b.Ra}).node,40<h++)throw new d.b(32);}return{path:c,node:g}},I:function(a){for(var b;;){if(d.pa(a))return a=
-a.i.ob,b?"/"!==a[a.length-1]?a+"/"+b:a+b:a;b=b?a.name+"/"+b:a.name;a=a.parent}},Ga:function(a,b){for(var c=0,e=0;e<b.length;e++)c=(c<<5)-c+b.charCodeAt(e)|0;return(a+c>>>0)%d.L.length},lb:function(a){var b=d.Ga(a.parent.id,a.name);a.$=d.L[b];d.L[b]=a},mb:function(a){var b=d.Ga(a.parent.id,a.name);if(d.L[b]===a)d.L[b]=a.$;else for(b=d.L[b];b;){if(b.$===a){b.$=a.$;break}b=b.$}},K:function(a,b){var c=d.Wb(a);if(c)throw new d.b(c,a);for(c=d.L[d.Ga(a.id,b)];c;c=c.$){var e=c.name;if(c.parent.id===a.id&&
-e===b)return c}return d.lookup(a,b)},createNode:function(a,b,c,e){a=new d.vb(a,b,c,e);d.lb(a);return a},Ca:function(a){d.mb(a)},pa:function(a){return a===a.parent},X:function(a){return!!a.la},isFile:function(a){return 32768===(a&61440)},m:function(a){return 16384===(a&61440)},R:function(a){return 40960===(a&61440)},ja:function(a){return 8192===(a&61440)},Ub:function(a){return 24576===(a&61440)},isFIFO:function(a){return 4096===(a&61440)},isSocket:function(a){return 49152===(a&49152)},Qb:{r:0,rs:1052672,
-"r+":2,w:577,wx:705,xw:705,"w+":578,"wx+":706,"xw+":706,a:1089,ax:1217,xa:1217,"a+":1090,"ax+":1218,"xa+":1218},Yb:function(a){var b=d.Qb[a];if("undefined"===typeof b)throw Error("Unknown file open mode: "+a);return b},gb:function(a){var b=["r","w","rw"][a&3];a&512&&(b+="w");return b},S:function(a,b){if(d.nb)return 0;if(-1===b.indexOf("r")||a.mode&292){if(-1!==b.indexOf("w")&&!(a.mode&146)||-1!==b.indexOf("x")&&!(a.mode&73))return 2}else return 2;return 0},Wb:function(a){var b=d.S(a,"x");return b?
-b:a.f.lookup?0:2},Ma:function(a,b){try{return d.K(a,b),20}catch(c){}return d.S(a,"wx")},ra:function(a,b,c){try{var e=d.K(a,b)}catch(g){return g.l}if(a=d.S(a,"wx"))return a;if(c){if(!d.m(e.mode))return 54;if(d.pa(e)||d.I(e)===d.cwd())return 10}else if(d.m(e.mode))return 31;return 0},Xb:function(a,b){return a?d.R(a.mode)?32:d.m(a.mode)&&("r"!==d.gb(b)||b&512)?31:d.S(a,d.gb(b)):44},wb:4096,$b:function(a,b){b=b||d.wb;for(a=a||0;a<=b;a++)if(!d.streams[a])return a;throw new d.b(33);},P:function(a){return d.streams[a]},
-Lb:function(a,b,c){d.za||(d.za=function(){},d.za.prototype={object:{get:function(){return this.node},set:function(h){this.node=h}}});var e=new d.za,g;for(g in a)e[g]=a[g];a=e;b=d.$b(b,c);a.fd=b;return d.streams[b]=a},Fb:function(a){d.streams[a]=null},Eb:{open:function(a){a.g=d.Tb(a.node.rdev).g;a.g.open&&a.g.open(a)},A:function(){throw new d.b(70);}},La:function(a){return a>>8},af:function(a){return a&255},Y:function(a,b){return a<<8|b},Sa:function(a,b){d.ab[a]={g:b}},Tb:function(a){return d.ab[a]},
-ib:function(a){var b=[];for(a=[a];a.length;){var c=a.pop();b.push(c);a.push.apply(a,c.ma)}return b},rb:function(a,b){function c(l){d.ta--;return b(l)}function e(l){if(l){if(!e.B)return e.B=!0,c(l)}else++h>=g.length&&c(null)}"function"===typeof a&&(b=a,a=!1);d.ta++;1<d.ta&&F("warning: "+d.ta+" FS.syncfs operations in flight at once, probably just doing extra work");var g=d.ib(d.root.i),h=0;g.forEach(function(l){if(!l.type.rb)return e(null);l.type.rb(l,a,e)})},i:function(a,b,c){var e="/"===c,g=!c;if(e&&
-d.root)throw new d.b(10);if(!e&&!g){var h=d.h(c,{Ea:!1});c=h.path;h=h.node;if(d.X(h))throw new d.b(10);if(!d.m(h.mode))throw new d.b(54);}b={type:a,da:b,ob:c,ma:[]};a=a.i(b);a.i=b;b.root=a;e?d.root=a:h&&(h.la=b,h.i&&h.i.ma.push(b));return a},hf:function(a){a=d.h(a,{Ea:!1});if(!d.X(a.node))throw new d.b(28);a=a.node;var b=a.la,c=d.ib(b);Object.keys(d.L).forEach(function(e){for(e=d.L[e];e;){var g=e.$;-1!==c.indexOf(e.i)&&d.Ca(e);e=g}});a.la=null;a.i.ma.splice(a.i.ma.indexOf(b),1)},lookup:function(a,
-b){return a.f.lookup(a,b)},F:function(a,b,c){var e=d.h(a,{parent:!0}).node;a=w.basename(a);if(!a||"."===a||".."===a)throw new d.b(28);var g=d.Ma(e,a);if(g)throw new d.b(g);if(!e.f.F)throw new d.b(63);return e.f.F(e,a,b,c)},create:function(a,b){return d.F(a,(void 0!==b?b:438)&4095|32768,0)},mkdir:function(a,b){return d.F(a,(void 0!==b?b:511)&1023|16384,0)},bf:function(a,b){a=a.split("/");for(var c="",e=0;e<a.length;++e)if(a[e]){c+="/"+a[e];try{d.mkdir(c,b)}catch(g){if(20!=g.l)throw g;}}},sa:function(a,
-b,c){"undefined"===typeof c&&(c=b,b=438);return d.F(a,b|8192,c)},symlink:function(a,b){if(!R.resolve(a))throw new d.b(44);var c=d.h(b,{parent:!0}).node;if(!c)throw new d.b(44);b=w.basename(b);var e=d.Ma(c,b);if(e)throw new d.b(e);if(!c.f.symlink)throw new d.b(63);return c.f.symlink(c,b,a)},rename:function(a,b){var c=w.dirname(a),e=w.dirname(b),g=w.basename(a),h=w.basename(b);try{var l=d.h(a,{parent:!0});var n=l.node;l=d.h(b,{parent:!0});var t=l.node}catch(q){throw new d.b(10);}if(!n||!t)throw new d.b(44);
-if(n.i!==t.i)throw new d.b(75);l=d.K(n,g);e=R.relative(a,e);if("."!==e.charAt(0))throw new d.b(28);e=R.relative(b,c);if("."!==e.charAt(0))throw new d.b(55);try{var p=d.K(t,h)}catch(q){}if(l!==p){c=d.m(l.mode);if(g=d.ra(n,g,c))throw new d.b(g);if(g=p?d.ra(t,h,c):d.Ma(t,h))throw new d.b(g);if(!n.f.rename)throw new d.b(63);if(d.X(l)||p&&d.X(p))throw new d.b(10);if(t!==n&&(g=d.S(n,"w")))throw new d.b(g);try{d.s.willMovePath&&d.s.willMovePath(a,b)}catch(q){F("FS.trackingDelegate['willMovePath']('"+a+"', '"+
-b+"') threw an exception: "+q.message)}d.mb(l);try{n.f.rename(l,t,h)}catch(q){throw q;}finally{d.lb(l)}try{if(d.s.onMovePath)d.s.onMovePath(a,b)}catch(q){F("FS.trackingDelegate['onMovePath']('"+a+"', '"+b+"') threw an exception: "+q.message)}}},rmdir:function(a){var b=d.h(a,{parent:!0}).node,c=w.basename(a),e=d.K(b,c),g=d.ra(b,c,!0);if(g)throw new d.b(g);if(!b.f.rmdir)throw new d.b(63);if(d.X(e))throw new d.b(10);try{d.s.willDeletePath&&d.s.willDeletePath(a)}catch(h){F("FS.trackingDelegate['willDeletePath']('"+
-a+"') threw an exception: "+h.message)}b.f.rmdir(b,c);d.Ca(e);try{if(d.s.onDeletePath)d.s.onDeletePath(a)}catch(h){F("FS.trackingDelegate['onDeletePath']('"+a+"') threw an exception: "+h.message)}},readdir:function(a){a=d.h(a,{H:!0}).node;if(!a.f.readdir)throw new d.b(54);return a.f.readdir(a)},unlink:function(a){var b=d.h(a,{parent:!0}).node,c=w.basename(a),e=d.K(b,c),g=d.ra(b,c,!1);if(g)throw new d.b(g);if(!b.f.unlink)throw new d.b(63);if(d.X(e))throw new d.b(10);try{d.s.willDeletePath&&d.s.willDeletePath(a)}catch(h){F("FS.trackingDelegate['willDeletePath']('"+
-a+"') threw an exception: "+h.message)}b.f.unlink(b,c);d.Ca(e);try{if(d.s.onDeletePath)d.s.onDeletePath(a)}catch(h){F("FS.trackingDelegate['onDeletePath']('"+a+"') threw an exception: "+h.message)}},readlink:function(a){a=d.h(a).node;if(!a)throw new d.b(44);if(!a.f.readlink)throw new d.b(28);return R.resolve(d.I(a.parent),a.f.readlink(a))},stat:function(a,b){a=d.h(a,{H:!b}).node;if(!a)throw new d.b(44);if(!a.f.D)throw new d.b(63);return a.f.D(a)},lstat:function(a){return d.stat(a,!0)},chmod:function(a,
-b,c){var e;"string"===typeof a?e=d.h(a,{H:!c}).node:e=a;if(!e.f.o)throw new d.b(63);e.f.o(e,{mode:b&4095|e.mode&-4096,timestamp:Date.now()})},lchmod:function(a,b){d.chmod(a,b,!0)},fchmod:function(a,b){a=d.P(a);if(!a)throw new d.b(8);d.chmod(a.node,b)},chown:function(a,b,c,e){var g;"string"===typeof a?g=d.h(a,{H:!e}).node:g=a;if(!g.f.o)throw new d.b(63);g.f.o(g,{timestamp:Date.now()})},lchown:function(a,b,c){d.chown(a,b,c,!0)},fchown:function(a,b,c){a=d.P(a);if(!a)throw new d.b(8);d.chown(a.node,b,
-c)},truncate:function(a,b){if(0>b)throw new d.b(28);var c;"string"===typeof a?c=d.h(a,{H:!0}).node:c=a;if(!c.f.o)throw new d.b(63);if(d.m(c.mode))throw new d.b(31);if(!d.isFile(c.mode))throw new d.b(28);if(a=d.S(c,"w"))throw new d.b(a);c.f.o(c,{size:b,timestamp:Date.now()})},Te:function(a,b){a=d.P(a);if(!a)throw new d.b(8);if(0===(a.flags&2097155))throw new d.b(28);d.truncate(a.node,b)},jf:function(a,b,c){a=d.h(a,{H:!0}).node;a.f.o(a,{timestamp:Math.max(b,c)})},open:function(a,b,c,e,g){if(""===a)throw new d.b(44);
-b="string"===typeof b?d.Yb(b):b;c=b&64?("undefined"===typeof c?438:c)&4095|32768:0;if("object"===typeof a)var h=a;else{a=w.normalize(a);try{h=d.h(a,{H:!(b&131072)}).node}catch(n){}}var l=!1;if(b&64)if(h){if(b&128)throw new d.b(20);}else h=d.F(a,c,0),l=!0;if(!h)throw new d.b(44);d.ja(h.mode)&&(b&=-513);if(b&65536&&!d.m(h.mode))throw new d.b(54);if(!l&&(c=d.Xb(h,b)))throw new d.b(c);b&512&&d.truncate(h,0);b&=-131713;e=d.Lb({node:h,path:d.I(h),flags:b,seekable:!0,position:0,g:h.g,mc:[],error:!1},e,g);
-e.g.open&&e.g.open(e);!f.logReadFiles||b&1||(d.Pa||(d.Pa={}),a in d.Pa||(d.Pa[a]=1,F("FS.trackingDelegate error on read file: "+a)));try{d.s.onOpenFile&&(g=0,1!==(b&2097155)&&(g|=d.sb.pb.xb),0!==(b&2097155)&&(g|=d.sb.pb.yb),d.s.onOpenFile(a,g))}catch(n){F("FS.trackingDelegate['onOpenFile']('"+a+"', flags) threw an exception: "+n.message)}return e},close:function(a){if(d.ka(a))throw new d.b(8);a.V&&(a.V=null);try{a.g.close&&a.g.close(a)}catch(b){throw b;}finally{d.Fb(a.fd)}a.fd=null},ka:function(a){return null===
-a.fd},A:function(a,b,c){if(d.ka(a))throw new d.b(8);if(!a.seekable||!a.g.A)throw new d.b(70);if(0!=c&&1!=c&&2!=c)throw new d.b(28);a.position=a.g.A(a,b,c);a.mc=[];return a.position},read:function(a,b,c,e,g){if(0>e||0>g)throw new d.b(28);if(d.ka(a))throw new d.b(8);if(1===(a.flags&2097155))throw new d.b(8);if(d.m(a.node.mode))throw new d.b(31);if(!a.g.read)throw new d.b(28);var h="undefined"!==typeof g;if(!h)g=a.position;else if(!a.seekable)throw new d.b(70);b=a.g.read(a,b,c,e,g);h||(a.position+=b);
-return b},write:function(a,b,c,e,g,h){if(0>e||0>g)throw new d.b(28);if(d.ka(a))throw new d.b(8);if(0===(a.flags&2097155))throw new d.b(8);if(d.m(a.node.mode))throw new d.b(31);if(!a.g.write)throw new d.b(28);a.seekable&&a.flags&1024&&d.A(a,0,2);var l="undefined"!==typeof g;if(!l)g=a.position;else if(!a.seekable)throw new d.b(70);b=a.g.write(a,b,c,e,g,h);l||(a.position+=b);try{if(a.path&&d.s.onWriteToFile)d.s.onWriteToFile(a.path)}catch(n){F("FS.trackingDelegate['onWriteToFile']('"+a.path+"') threw an exception: "+
-n.message)}return b},ia:function(a,b,c){if(d.ka(a))throw new d.b(8);if(0>b||0>=c)throw new d.b(28);if(0===(a.flags&2097155))throw new d.b(8);if(!d.isFile(a.node.mode)&&!d.m(a.node.mode))throw new d.b(43);if(!a.g.ia)throw new d.b(138);a.g.ia(a,b,c)},aa:function(a,b,c,e,g,h,l){if(0!==(h&2)&&0===(l&2)&&2!==(a.flags&2097155))throw new d.b(2);if(1===(a.flags&2097155))throw new d.b(2);if(!a.g.aa)throw new d.b(43);return a.g.aa(a,b,c,e,g,h,l)},Z:function(a,b,c,e,g){return a&&a.g.Z?a.g.Z(a,b,c,e,g):0},cf:function(){return 0},
-Ia:function(a,b,c){if(!a.g.Ia)throw new d.b(59);return a.g.Ia(a,b,c)},readFile:function(a,b){b=b||{};b.flags=b.flags||"r";b.encoding=b.encoding||"binary";if("utf8"!==b.encoding&&"binary"!==b.encoding)throw Error('Invalid encoding type "'+b.encoding+'"');var c,e=d.open(a,b.flags);a=d.stat(a).size;var g=new Uint8Array(a);d.read(e,g,0,a,0);"utf8"===b.encoding?c=T(g,0):"binary"===b.encoding&&(c=g);d.close(e);return c},writeFile:function(a,b,c){c=c||{};c.flags=c.flags||"w";a=d.open(a,c.flags,c.mode);if("string"===
-typeof b){var e=new Uint8Array(ka(b)+1);b=Y(b,e,0,e.length);d.write(a,e,0,b,void 0,c.Db)}else if(ArrayBuffer.isView(b))d.write(a,b,0,b.byteLength,void 0,c.Db);else throw Error("Unsupported data type");d.close(a)},cwd:function(){return d.$a},chdir:function(a){a=d.h(a,{H:!0});if(null===a.node)throw new d.b(44);if(!d.m(a.node.mode))throw new d.b(54);var b=d.S(a.node,"x");if(b)throw new d.b(b);d.$a=a.path},Hb:function(){d.mkdir("/tmp");d.mkdir("/home");d.mkdir("/home/web_user")},Gb:function(){d.mkdir("/dev");
-d.Sa(d.Y(1,3),{read:function(){return 0},write:function(e,g,h,l){return l}});d.sa("/dev/null",d.Y(1,3));V.register(d.Y(5,0),V.Nb);V.register(d.Y(6,0),V.Mb);d.sa("/dev/tty",d.Y(5,0));d.sa("/dev/tty1",d.Y(6,0));if("object"===typeof crypto&&"function"===typeof crypto.getRandomValues){var a=new Uint8Array(1);var b=function(){crypto.getRandomValues(a);return a[0]}}else if(U)try{var c=require("crypto");b=function(){return c.randomBytes(1)[0]}}catch(e){}b||(b=function(){B("random_device")});d.O("/dev","random",
-b);d.O("/dev","urandom",b);d.mkdir("/dev/shm");d.mkdir("/dev/shm/tmp")},Jb:function(){d.mkdir("/proc");d.mkdir("/proc/self");d.mkdir("/proc/self/fd");d.i({i:function(){var a=d.createNode("/proc/self","fd",16895,73);a.f={lookup:function(b,c){var e=d.P(+c);if(!e)throw new d.b(8);b={parent:null,i:{ob:"fake"},f:{readlink:function(){return e.path}}};return b.parent=b}};return a}},{},"/proc/self/fd")},Kb:function(){f.stdin?d.O("/dev","stdin",f.stdin):d.symlink("/dev/tty","/dev/stdin");f.stdout?d.O("/dev",
-"stdout",null,f.stdout):d.symlink("/dev/tty","/dev/stdout");f.stderr?d.O("/dev","stderr",null,f.stderr):d.symlink("/dev/tty1","/dev/stderr");d.open("/dev/stdin","r");d.open("/dev/stdout","w");d.open("/dev/stderr","w")},bb:function(){d.b||(d.b=function(a,b){this.node=b;this.hc=function(c){this.l=c};this.hc(a);this.message="FS error"},d.b.prototype=Error(),d.b.prototype.constructor=d.b,[44].forEach(function(a){d.Fa[a]=new d.b(a);d.Fa[a].stack="<generic error, no stack>"}))},Ta:function(){d.bb();d.L=
-Array(4096);d.i(v,{},"/");d.Hb();d.Gb();d.Jb();d.eb={MEMFS:v,NODEFS:u,WORKERFS:G}},W:function(a,b,c){d.W.Ha=!0;d.bb();f.stdin=a||f.stdin;f.stdout=b||f.stdout;f.stderr=c||f.stderr;d.Kb()},quit:function(){d.W.Ha=!1;var a=f._fflush;a&&a(0);for(a=0;a<d.streams.length;a++){var b=d.streams[a];b&&d.close(b)}},T:function(a,b){var c=0;a&&(c|=365);b&&(c|=146);return c},Ye:function(a,b){a=w.join.apply(null,a);b&&"/"==a[0]&&(a=a.substr(1));return a},Ee:function(a,b){return R.resolve(b,a)},ff:function(a){return w.normalize(a)},
-Se:function(a,b){a=d.Aa(a,b);if(a.exists)return a.object;aa(a.error);return null},Aa:function(a,b){try{var c=d.h(a,{H:!b});a=c.path}catch(g){}var e={pa:!1,exists:!1,error:0,name:null,path:null,object:null,ac:!1,cc:null,bc:null};try{c=d.h(a,{parent:!0}),e.ac=!0,e.cc=c.path,e.bc=c.node,e.name=w.basename(a),c=d.h(a,{H:!b}),e.exists=!0,e.path=c.path,e.object=c.node,e.name=c.node.name,e.pa="/"===c.path}catch(g){e.error=g.l}return e},He:function(a,b,c,e){a=w.v("string"===typeof a?a:d.I(a),b);c=d.T(c,e);
-return d.mkdir(a,c)},Ke:function(a,b){a="string"===typeof a?a:d.I(a);for(b=b.split("/").reverse();b.length;){var c=b.pop();if(c){var e=w.v(a,c);try{d.mkdir(e)}catch(g){}a=e}}return e},Ib:function(a,b,c,e,g){a=w.v("string"===typeof a?a:d.I(a),b);e=d.T(e,g);return d.create(a,e)},Za:function(a,b,c,e,g,h){a=b?w.v("string"===typeof a?a:d.I(a),b):a;e=d.T(e,g);g=d.create(a,e);if(c){if("string"===typeof c){a=Array(c.length);b=0;for(var l=c.length;b<l;++b)a[b]=c.charCodeAt(b);c=a}d.chmod(g,e|146);a=d.open(g,
-"w");d.write(a,c,0,c.length,0,h);d.close(a);d.chmod(g,e)}return g},O:function(a,b,c,e){a=w.v("string"===typeof a?a:d.I(a),b);b=d.T(!!c,!!e);d.O.La||(d.O.La=64);var g=d.Y(d.O.La++,0);d.Sa(g,{open:function(h){h.seekable=!1},close:function(){e&&e.buffer&&e.buffer.length&&e(10)},read:function(h,l,n,t){for(var p=0,q=0;q<t;q++){try{var A=c()}catch(D){throw new d.b(29);}if(void 0===A&&0===p)throw new d.b(6);if(null===A||void 0===A)break;p++;l[n+q]=A}p&&(h.node.timestamp=Date.now());return p},write:function(h,
-l,n,t){for(var p=0;p<t;p++)try{e(l[n+p])}catch(q){throw new d.b(29);}t&&(h.node.timestamp=Date.now());return p}});return d.sa(a,b,g)},Je:function(a,b,c){a=w.v("string"===typeof a?a:d.I(a),b);return d.symlink(c,a)},hb:function(a){if(a.Ja||a.Vb||a.link||a.c)return!0;var b=!0;if("undefined"!==typeof XMLHttpRequest)throw Error("Lazy loading should have been performed (contents set) in createLazyFile, but it was not. Lazy loading only works in web workers. Use --embed-file or --preload-file in emcc on the main thread.");
-if(ra)try{a.c=Ga(ra(a.url),!0),a.j=a.c.length}catch(c){b=!1}else throw Error("Cannot load without read() or XMLHttpRequest.");b||aa(29);return b},Ie:function(a,b,c,e,g){function h(){this.Ka=!1;this.B=[]}h.prototype.get=function(p){if(!(p>this.length-1||0>p)){var q=p%this.chunkSize;return this.kb(p/this.chunkSize|0)[q]}};h.prototype.Cb=function(p){this.kb=p};h.prototype.Xa=function(){var p=new XMLHttpRequest;p.open("HEAD",c,!1);p.send(null);if(!(200<=p.status&&300>p.status||304===p.status))throw Error("Couldn't load "+
-c+". Status: "+p.status);var q=Number(p.getResponseHeader("Content-length")),A,D=(A=p.getResponseHeader("Accept-Ranges"))&&"bytes"===A;p=(A=p.getResponseHeader("Content-Encoding"))&&"gzip"===A;var k=1048576;D||(k=q);var r=this;r.Cb(function(y){var E=y*k,O=(y+1)*k-1;O=Math.min(O,q-1);if("undefined"===typeof r.B[y]){var Ya=r.B;if(E>O)throw Error("invalid range ("+E+", "+O+") or no bytes requested!");if(O>q-1)throw Error("only "+q+" bytes available! programmer error!");var C=new XMLHttpRequest;C.open("GET",
-c,!1);q!==k&&C.setRequestHeader("Range","bytes="+E+"-"+O);"undefined"!=typeof Uint8Array&&(C.responseType="arraybuffer");C.overrideMimeType&&C.overrideMimeType("text/plain; charset=x-user-defined");C.send(null);if(!(200<=C.status&&300>C.status||304===C.status))throw Error("Couldn't load "+c+". Status: "+C.status);E=void 0!==C.response?new Uint8Array(C.response||[]):Ga(C.responseText||"",!0);Ya[y]=E}if("undefined"===typeof r.B[y])throw Error("doXHR failed!");return r.B[y]});if(p||!q)k=q=1,k=q=this.kb(0).length,
-fa("LazyFiles on gzip forces download of the whole file when length is accessed");this.Ab=q;this.zb=k;this.Ka=!0};if("undefined"!==typeof XMLHttpRequest){if(!S)throw"Cannot do synchronous binary XHRs outside webworkers in modern browsers. Use --embed-file or --preload-file in emcc";var l=new h;Object.defineProperties(l,{length:{get:function(){this.Ka||this.Xa();return this.Ab}},chunkSize:{get:function(){this.Ka||this.Xa();return this.zb}}});l={Ja:!1,c:l}}else l={Ja:!1,url:c};var n=d.Ib(a,b,l,e,g);
-l.c?n.c=l.c:l.url&&(n.c=null,n.url=l.url);Object.defineProperties(n,{j:{get:function(){return this.c.length}}});var t={};Object.keys(n.g).forEach(function(p){var q=n.g[p];t[p]=function(){if(!d.hb(n))throw new d.b(29);return q.apply(null,arguments)}});t.read=function(p,q,A,D,k){if(!d.hb(n))throw new d.b(29);p=p.node.c;if(k>=p.length)return 0;D=Math.min(p.length-k,D);if(p.slice)for(var r=0;r<D;r++)q[A+r]=p[k+r];else for(r=0;r<D;r++)q[A+r]=p.get(k+r);return D};n.g=t;return n},Le:function(a,b,c,e,g,h,
-l,n,t,p){function q(k){function r(E){p&&p();n||d.Za(a,b,E,e,g,t);h&&h();Na(D)}var y=!1;f.preloadPlugins.forEach(function(E){!y&&E.canHandle(A)&&(E.handle(k,A,r,function(){l&&l();Na(D)}),y=!0)});y||r(k)}vb.W();var A=b?R.resolve(w.v(a,b)):a,D="cp "+A;db(D);"string"==typeof c?vb.Fe(c,function(k){q(k)},l):q(c)},indexedDB:function(){return window.indexedDB||window.mozIndexedDB||window.webkitIndexedDB||window.msIndexedDB},Ua:function(){return"EM_FS_"+window.location.pathname},Va:20,ga:"FILE_DATA",df:function(a,
-b,c){b=b||function(){};c=c||function(){};var e=d.indexedDB();try{var g=e.open(d.Ua(),d.Va)}catch(h){return c(h)}g.onupgradeneeded=function(){fa("creating db");g.result.createObjectStore(d.ga)};g.onsuccess=function(){var h=g.result.transaction([d.ga],"readwrite"),l=h.objectStore(d.ga),n=0,t=0,p=a.length;a.forEach(function(q){q=l.put(d.Aa(q).object.c,q);q.onsuccess=function(){n++;n+t==p&&(0==t?b():c())};q.onerror=function(){t++;n+t==p&&(0==t?b():c())}});h.onerror=c};g.onerror=c},Ze:function(a,b,c){b=
-b||function(){};c=c||function(){};var e=d.indexedDB();try{var g=e.open(d.Ua(),d.Va)}catch(h){return c(h)}g.onupgradeneeded=c;g.onsuccess=function(){var h=g.result;try{var l=h.transaction([d.ga],"readonly")}catch(A){c(A);return}var n=l.objectStore(d.ga),t=0,p=0,q=a.length;a.forEach(function(A){var D=n.get(A);D.onsuccess=function(){d.Aa(A).exists&&d.unlink(A);d.Za(w.dirname(A),w.basename(A),D.result,!0,!0,!0);t++;t+p==q&&(0==p?b():c())};D.onerror=function(){p++;t+p==q&&(0==p?b():c())}});l.onerror=c};
-g.onerror=c}},x={$e:{},ub:5,umask:511,Ge:function(a,b){if("/"!==b[0]){if(-100===a)a=d.cwd();else{a=d.P(a);if(!a)throw new d.b(8);a=a.path}b=w.v(a,b)}return b},Da:function(a,b,c){try{var e=a(b)}catch(g){if(g&&g.node&&w.normalize(b)!==w.normalize(d.I(g.node)))return-54;throw g;}m[c>>2]=e.dev;m[c+4>>2]=0;m[c+8>>2]=e.ino;m[c+12>>2]=e.mode;m[c+16>>2]=e.nlink;m[c+20>>2]=e.uid;m[c+24>>2]=e.gid;m[c+28>>2]=e.rdev;m[c+32>>2]=0;L=[e.size>>>0,(z=e.size,1<=+ta(z)?0<z?(ua(+ca(z/4294967296),4294967295)|0)>>>0:~~+ba((z-
-+(~~z>>>0))/4294967296)>>>0:0)];m[c+40>>2]=L[0];m[c+44>>2]=L[1];m[c+48>>2]=4096;m[c+52>>2]=e.blocks;m[c+56>>2]=e.atime.getTime()/1E3|0;m[c+60>>2]=0;m[c+64>>2]=e.mtime.getTime()/1E3|0;m[c+68>>2]=0;m[c+72>>2]=e.ctime.getTime()/1E3|0;m[c+76>>2]=0;L=[e.ino>>>0,(z=e.ino,1<=+ta(z)?0<z?(ua(+ca(z/4294967296),4294967295)|0)>>>0:~~+ba((z-+(~~z>>>0))/4294967296)>>>0:0)];m[c+80>>2]=L[0];m[c+84>>2]=L[1];return 0},Qe:function(a,b,c,e,g){a=X.slice(a,a+c);d.Z(b,a,g,c,e)},Oe:function(a,b){a=w.normalize(a);"/"===a[a.length-
-1]&&(a=a.substr(0,a.length-1));d.mkdir(a,b,0);return 0},Pe:function(a,b,c){switch(b&61440){case 32768:case 8192:case 24576:case 4096:case 49152:break;default:return-28}d.F(a,b,c);return 0},Re:function(a,b,c){if(0>=c)return-28;a=d.readlink(a);var e=Math.min(c,ka(a)),g=K[b+e];Y(a,X,b,c+1);K[b+e]=g;return e},Me:function(a,b){if(b&-8)return-28;a=d.h(a,{H:!0}).node;if(!a)return-44;var c="";b&4&&(c+="r");b&2&&(c+="w");b&1&&(c+="x");return c&&d.S(a,c)?-2:0},Ne:function(a,b,c){var e=d.P(c);e&&d.close(e);
-return d.open(a,b,0,c,c).fd},Ob:function(a,b,c,e){for(var g=0,h=0;h<c;h++){var l=m[b+(8*h+4)>>2],n=d.read(a,K,m[b+8*h>>2],l,e);if(0>n)return-1;g+=n;if(n<l)break}return g},Pb:function(a,b,c,e){for(var g=0,h=0;h<c;h++){var l=d.write(a,K,m[b+8*h>>2],m[b+(8*h+4)>>2],e);if(0>l)return-1;g+=l}return g},fa:void 0,get:function(){x.fa+=4;return m[x.fa-4>>2]},U:function(a){return ea(a)},J:function(a){a=d.P(a);if(!a)throw new d.b(8);return a},Ue:function(a){return a}},ia;U?ia=function(){var a=process.hrtime();
-return 1E3*a[0]+a[1]/1E6}:"undefined"!==typeof dateNow?ia=dateNow:ia=function(){return performance.now()};var hb={},Cb=(Y("GMT",X,2334240,4),2334240),Ea=[31,29,31,30,31,30,31,31,30,31,30,31],Fa=[31,28,31,30,31,30,31,31,30,31,30,31];Object.defineProperties(da.prototype,{read:{get:function(){return 365===(this.mode&365)},set:function(a){a?this.mode|=365:this.mode&=-366}},write:{get:function(){return 146===(this.mode&146)},set:function(a){a?this.mode|=146:this.mode&=-147}},Vb:{get:function(){return d.m(this.mode)}},
-Ja:{get:function(){return d.ja(this.mode)}}});d.vb=da;d.Ta();var vb;if(U){var H=require("fs"),ub=require("path");u.Ta()}var wb={__assert_fail:function(a,b,c,e){B("Assertion failed: "+ea(a)+", at: "+[b?ea(b):"unknown filename",c,e?ea(e):"unknown function"])},__sys__newselect:function(a,b,c,e){for(var g=0,h=b?m[b>>2]:0,l=b?m[b+4>>2]:0,n=c?m[c>>2]:0,t=c?m[c+4>>2]:0,p=e?m[e>>2]:0,q=e?m[e+4>>2]:0,A=0,D=0,k=0,r=0,y=0,E=0,O=(b?m[b>>2]:0)|(c?m[c>>2]:0)|(e?m[e>>2]:0),Ya=(b?m[b+4>>2]:0)|(c?m[c+4>>2]:0)|(e?
-m[e+4>>2]:0),C=0;C<a;C++){var M=1<<C%32;if(32>C?O&M:Ya&M){var Ka=d.P(C);if(!Ka)throw new d.b(8);var La=x.ub;Ka.g.dc&&(La=Ka.g.dc(Ka));La&1&&(32>C?h&M:l&M)&&(32>C?A|=M:D|=M,g++);La&4&&(32>C?n&M:t&M)&&(32>C?k|=M:r|=M,g++);La&2&&(32>C?p&M:q&M)&&(32>C?y|=M:E|=M,g++)}}b&&(m[b>>2]=A,m[b+4>>2]=D);c&&(m[c>>2]=k,m[c+4>>2]=r);e&&(m[e>>2]=y,m[e+4>>2]=E);return g},__sys_fcntl64:function(a,b,c){x.fa=c;try{var e=x.J(a);switch(b){case 0:var g=x.get();return 0>g?-28:d.open(e.path,e.flags,0,g).fd;case 1:case 2:return 0;
-case 3:return e.flags;case 4:return g=x.get(),e.flags|=g,0;case 12:return g=x.get(),Va[g+0>>1]=2,0;case 13:case 14:return 0;case 16:case 8:return-28;case 9:return aa(28),-1;default:return-28}}catch(h){return"undefined"!==typeof d&&h instanceof d.b||B(h),-h.l}},__sys_fstat64:function(a,b){try{var c=x.J(a);return x.Da(d.stat,c.path,b)}catch(e){return"undefined"!==typeof d&&e instanceof d.b||B(e),-e.l}},__sys_getdents64:function(a,b,c){try{var e=x.J(a);e.V||(e.V=d.readdir(e.path));a=0;for(var g=d.A(e,
-0,1),h=Math.floor(g/280);h<e.V.length&&a+280<=c;){var l=e.V[h];if("."===l[0]){var n=1;var t=4}else{var p=d.K(e.node,l);n=p.id;t=d.ja(p.mode)?2:d.m(p.mode)?4:d.R(p.mode)?10:8}L=[n>>>0,(z=n,1<=+ta(z)?0<z?(ua(+ca(z/4294967296),4294967295)|0)>>>0:~~+ba((z-+(~~z>>>0))/4294967296)>>>0:0)];m[b+a>>2]=L[0];m[b+a+4>>2]=L[1];L=[280*(h+1)>>>0,(z=280*(h+1),1<=+ta(z)?0<z?(ua(+ca(z/4294967296),4294967295)|0)>>>0:~~+ba((z-+(~~z>>>0))/4294967296)>>>0:0)];m[b+a+8>>2]=L[0];m[b+a+12>>2]=L[1];Va[b+a+16>>1]=280;K[b+a+
-18>>0]=t;Y(l,X,b+a+19,256);a+=280;h+=1}d.A(e,280*h,0);return a}catch(q){return"undefined"!==typeof d&&q instanceof d.b||B(q),-q.l}},__sys_ioctl:function(a,b,c){x.fa=c;try{var e=x.J(a);switch(b){case 21509:case 21505:return e.tty?0:-59;case 21510:case 21511:case 21512:case 21506:case 21507:case 21508:return e.tty?0:-59;case 21519:if(!e.tty)return-59;var g=x.get();return m[g>>2]=0;case 21520:return e.tty?-28:-59;case 21531:return g=x.get(),d.Ia(e,b,g);case 21523:return e.tty?0:-59;case 21524:return e.tty?
-0:-59;default:B("bad ioctl syscall "+b)}}catch(h){return"undefined"!==typeof d&&h instanceof d.b||B(h),-h.l}},__sys_lstat64:function(a,b){try{return a=x.U(a),x.Da(d.lstat,a,b)}catch(c){return"undefined"!==typeof d&&c instanceof d.b||B(c),-c.l}},__sys_madvise1:function(){return 0},__sys_open:function(a,b,c){x.fa=c;try{var e=x.U(a),g=x.get();return d.open(e,b,g).fd}catch(h){return"undefined"!==typeof d&&h instanceof d.b||B(h),-h.l}},__sys_read:function(a,b,c){try{var e=x.J(a);return d.read(e,K,b,c)}catch(g){return"undefined"!==
-typeof d&&g instanceof d.b||B(g),-g.l}},__sys_rename:function(a,b){try{return a=x.U(a),b=x.U(b),d.rename(a,b),0}catch(c){return"undefined"!==typeof d&&c instanceof d.b||B(c),-c.l}},__sys_rmdir:function(a){try{return a=x.U(a),d.rmdir(a),0}catch(b){return"undefined"!==typeof d&&b instanceof d.b||B(b),-b.l}},__sys_stat64:function(a,b){try{return a=x.U(a),x.Da(d.stat,a,b)}catch(c){return"undefined"!==typeof d&&c instanceof d.b||B(c),-c.l}},__sys_unlink:function(a){try{return a=x.U(a),d.unlink(a),0}catch(b){return"undefined"!==
-typeof d&&b instanceof d.b||B(b),-b.l}},abort:function(){B()},clock:za,clock_gettime:function(a,b){if(0===a)a=Date.now();else if(1===a||4===a)a=ia();else return aa(28),-1;m[b>>2]=a/1E3|0;m[b+4>>2]=a%1E3*1E6|0;return 0},emscripten_get_sbrk_ptr:function(){return 2334176},emscripten_memcpy_big:function(a,b,c){X.copyWithin(a,b,b+c)},emscripten_resize_heap:function(){B("OOM")},environ_get:function(a,b){var c=0;oa().forEach(function(e,g){var h=b+c;g=m[a+4*g>>2]=h;for(h=0;h<e.length;++h)K[g++>>0]=e.charCodeAt(h);
-K[g>>0]=0;c+=e.length+1});return 0},environ_sizes_get:function(a,b){var c=oa();m[a>>2]=c.length;var e=0;c.forEach(function(g){e+=g.length+1});m[b>>2]=e;return 0},exit:function(a){ob(a)},fd_close:function(a){try{var b=x.J(a);d.close(b);return 0}catch(c){return"undefined"!==typeof d&&c instanceof d.b||B(c),c.l}},fd_fdstat_get:function(a,b){try{var c=x.J(a);K[b>>0]=c.tty?2:d.m(c.mode)?3:d.R(c.mode)?7:4;return 0}catch(e){return"undefined"!==typeof d&&e instanceof d.b||B(e),e.l}},fd_read:function(a,b,
-c,e){try{var g=x.J(a),h=x.Ob(g,b,c);m[e>>2]=h;return 0}catch(l){return"undefined"!==typeof d&&l instanceof d.b||B(l),l.l}},fd_seek:function(a,b,c,e,g){try{var h=x.J(a);a=4294967296*c+(b>>>0);if(-9007199254740992>=a||9007199254740992<=a)return-61;d.A(h,a,e);L=[h.position>>>0,(z=h.position,1<=+ta(z)?0<z?(ua(+ca(z/4294967296),4294967295)|0)>>>0:~~+ba((z-+(~~z>>>0))/4294967296)>>>0:0)];m[g>>2]=L[0];m[g+4>>2]=L[1];h.V&&0===a&&0===e&&(h.V=null);return 0}catch(l){return"undefined"!==typeof d&&l instanceof
-d.b||B(l),l.l}},fd_write:function(a,b,c,e){try{var g=x.J(a),h=x.Pb(g,b,c);m[e>>2]=h;return 0}catch(l){return"undefined"!==typeof d&&l instanceof d.b||B(l),l.l}},gmtime:function(a){return ib(a,2334192)},gmtime_r:ib,localtime:function(a){return lb(a,2334192)},localtime_r:lb,memory:sa,mktime:function(a){Ba();var b=new Date(m[a+20>>2]+1900,m[a+16>>2],m[a+12>>2],m[a+8>>2],m[a+4>>2],m[a>>2],0),c=m[a+32>>2],e=b.getTimezoneOffset(),g=new Date(b.getFullYear(),0,1),h=(new Date(b.getFullYear(),6,1)).getTimezoneOffset(),
-l=g.getTimezoneOffset(),n=Math.min(l,h);0>c?m[a+32>>2]=Number(h!=l&&n==e):0<c!=(n==e)&&(h=Math.max(l,h),b.setTime(b.getTime()+6E4*((0<c?n:h)-e)));m[a+24>>2]=b.getDay();m[a+28>>2]=(b.getTime()-g.getTime())/864E5|0;return b.getTime()/1E3|0},nanosleep:function(a,b){if(0===a)return aa(28),-1;var c=m[a>>2];a=m[a+4>>2];if(0>a||999999999<a||0>c)return aa(28),-1;0!==b&&(m[b>>2]=0,m[b+4>>2]=0);b=1E6*c+a/1E3;for(c=ia();ia()-c<b/1E3;);},round:function(a){a=+a;return 0<=a?+ca(a+.5):+ba(a-.5)},roundf:function(a){a=
-+a;return 0<=a?+ca(a+.5):+ba(a-.5)},setTempRet0:function(){},signal:function(){return 0},strftime:function(a,b,c,e){function g(k,r,y){for(k="number"===typeof k?k.toString():k||"";k.length<r;)k=y[0]+k;return k}function h(k,r){return g(k,r,"0")}function l(k,r){function y(O){return 0>O?-1:0<O?1:0}var E;0===(E=y(k.getFullYear()-r.getFullYear()))&&0===(E=y(k.getMonth()-r.getMonth()))&&(E=y(k.getDate()-r.getDate()));return E}function n(k){switch(k.getDay()){case 0:return new Date(k.getFullYear()-1,11,29);
-case 1:return k;case 2:return new Date(k.getFullYear(),0,3);case 3:return new Date(k.getFullYear(),0,2);case 4:return new Date(k.getFullYear(),0,1);case 5:return new Date(k.getFullYear()-1,11,31);case 6:return new Date(k.getFullYear()-1,11,30)}}function t(k){k=Da(new Date(k.C+1900,0,1),k.wa);var r=new Date(k.getFullYear()+1,0,4),y=n(new Date(k.getFullYear(),0,4));r=n(r);return 0>=l(y,k)?0>=l(r,k)?k.getFullYear()+1:k.getFullYear():k.getFullYear()-1}var p=m[e+40>>2];e={kc:m[e>>2],jc:m[e+4>>2],ua:m[e+
-8>>2],oa:m[e+12>>2],ea:m[e+16>>2],C:m[e+20>>2],va:m[e+24>>2],wa:m[e+28>>2],gf:m[e+32>>2],ic:m[e+36>>2],lc:p?ea(p):""};c=ea(c);p={"%c":"%a %b %d %H:%M:%S %Y","%D":"%m/%d/%y","%F":"%Y-%m-%d","%h":"%b","%r":"%I:%M:%S %p","%R":"%H:%M","%T":"%H:%M:%S","%x":"%m/%d/%y","%X":"%H:%M:%S","%Ec":"%c","%EC":"%C","%Ex":"%m/%d/%y","%EX":"%H:%M:%S","%Ey":"%y","%EY":"%Y","%Od":"%d","%Oe":"%e","%OH":"%H","%OI":"%I","%Om":"%m","%OM":"%M","%OS":"%S","%Ou":"%u","%OU":"%U","%OV":"%V","%Ow":"%w","%OW":"%W","%Oy":"%y"};
-for(var q in p)c=c.replace(new RegExp(q,"g"),p[q]);var A="Sunday Monday Tuesday Wednesday Thursday Friday Saturday".split(" "),D="January February March April May June July August September October November December".split(" ");p={"%a":function(k){return A[k.va].substring(0,3)},"%A":function(k){return A[k.va]},"%b":function(k){return D[k.ea].substring(0,3)},"%B":function(k){return D[k.ea]},"%C":function(k){return h((k.C+1900)/100|0,2)},"%d":function(k){return h(k.oa,2)},"%e":function(k){return g(k.oa,
-2," ")},"%g":function(k){return t(k).toString().substring(2)},"%G":function(k){return t(k)},"%H":function(k){return h(k.ua,2)},"%I":function(k){k=k.ua;0==k?k=12:12<k&&(k-=12);return h(k,2)},"%j":function(k){return h(k.oa+Ra(Ca(k.C+1900)?Ea:Fa,k.ea-1),3)},"%m":function(k){return h(k.ea+1,2)},"%M":function(k){return h(k.jc,2)},"%n":function(){return"\n"},"%p":function(k){return 0<=k.ua&&12>k.ua?"AM":"PM"},"%S":function(k){return h(k.kc,2)},"%t":function(){return"\t"},"%u":function(k){return k.va||7},
-"%U":function(k){var r=new Date(k.C+1900,0,1),y=0===r.getDay()?r:Da(r,7-r.getDay());k=new Date(k.C+1900,k.ea,k.oa);return 0>l(y,k)?(r=Ra(Ca(k.getFullYear())?Ea:Fa,k.getMonth()-1)-31,h(Math.ceil((31-y.getDate()+r+k.getDate())/7),2)):0===l(y,r)?"01":"00"},"%V":function(k){var r=new Date(k.C+1901,0,4),y=n(new Date(k.C+1900,0,4));r=n(r);var E=Da(new Date(k.C+1900,0,1),k.wa);return 0>l(E,y)?"53":0>=l(r,E)?"01":h(Math.ceil((y.getFullYear()<k.C+1900?k.wa+32-y.getDate():k.wa+1-y.getDate())/7),2)},"%w":function(k){return k.va},
-"%W":function(k){var r=new Date(k.C,0,1),y=1===r.getDay()?r:Da(r,0===r.getDay()?1:7-r.getDay()+1);k=new Date(k.C+1900,k.ea,k.oa);return 0>l(y,k)?(r=Ra(Ca(k.getFullYear())?Ea:Fa,k.getMonth()-1)-31,h(Math.ceil((31-y.getDate()+r+k.getDate())/7),2)):0===l(y,r)?"01":"00"},"%y":function(k){return(k.C+1900).toString().substring(2)},"%Y":function(k){return k.C+1900},"%z":function(k){k=k.ic;var r=0<=k;k=Math.abs(k)/60;return(r?"+":"-")+String("0000"+(k/60*100+k%60)).slice(-4)},"%Z":function(k){return k.lc},
-"%%":function(){return"%"}};for(q in p)0<=c.indexOf(q)&&(c=c.replace(new RegExp(q,"g"),p[q](e)));q=Ga(c,!1);if(q.length>b)return 0;K.set(q,a);return q.length-1},table:Gb,time:function(a){var b=Date.now()/1E3|0;a&&(m[a>>2]=b);return b}},xb=function(){function a(g){f.asm=g.exports;Na("wasm-instantiate")}function b(g){a(g.instance)}function c(g){return Ab().then(function(h){return WebAssembly.instantiate(h,e)}).then(g,function(h){F("failed to asynchronously prepare wasm: "+h);B(h)})}var e={env:wb,wasi_snapshot_preview1:wb};
-db("wasm-instantiate");if(f.instantiateWasm)try{return f.instantiateWasm(e,a)}catch(g){return F("Module.instantiateWasm callback failed with error: "+g),!1}(function(){if(na||"function"!==typeof WebAssembly.instantiateStreaming||eb(Q)||Qa(Q,"file://")||"function"!==typeof fetch)return c(b);fetch(Q,{credentials:"same-origin"}).then(function(g){return WebAssembly.instantiateStreaming(g,e).then(b,function(h){F("wasm streaming compile failed: "+h);F("falling back to ArrayBuffer instantiation");c(b)})})})();
-return{}}();f.asm=xb;var tb=f.___wasm_call_ctors=function(){return(tb=f.___wasm_call_ctors=f.asm.__wasm_call_ctors).apply(null,arguments)},gb=f.___errno_location=function(){return(gb=f.___errno_location=f.asm.__errno_location).apply(null,arguments)};f._fflush=function(){return(f._fflush=f.asm.fflush).apply(null,arguments)};f._main=function(){return(f._main=f.asm.main).apply(null,arguments)};f._free=function(){return(f._free=f.asm.free).apply(null,arguments)};var wa=f._malloc=function(){return(wa=
-f._malloc=f.asm.malloc).apply(null,arguments)},ha=f.__get_tzname=function(){return(ha=f.__get_tzname=f.asm._get_tzname).apply(null,arguments)},kb=f.__get_daylight=function(){return(kb=f.__get_daylight=f.asm._get_daylight).apply(null,arguments)},jb=f.__get_timezone=function(){return(jb=f.__get_timezone=f.asm._get_timezone).apply(null,arguments)};f.stackSave=function(){return(f.stackSave=f.asm.stackSave).apply(null,arguments)};var Ma=f.stackAlloc=function(){return(Ma=f.stackAlloc=f.asm.stackAlloc).apply(null,
-arguments)};f.stackRestore=function(){return(f.stackRestore=f.asm.stackRestore).apply(null,arguments)};f.__growWasmMemory=function(){return(f.__growWasmMemory=f.asm.__growWasmMemory).apply(null,arguments)};f.dynCall_iii=function(){return(f.dynCall_iii=f.asm.dynCall_iii).apply(null,arguments)};f.dynCall_viiii=function(){return(f.dynCall_viiii=f.asm.dynCall_viiii).apply(null,arguments)};f.dynCall_vi=function(){return(f.dynCall_vi=f.asm.dynCall_vi).apply(null,arguments)};f.dynCall_iiii=function(){return(f.dynCall_iiii=
-f.asm.dynCall_iiii).apply(null,arguments)};f.dynCall_ii=function(){return(f.dynCall_ii=f.asm.dynCall_ii).apply(null,arguments)};f.dynCall_iiiiii=function(){return(f.dynCall_iiiiii=f.asm.dynCall_iiiiii).apply(null,arguments)};f.dynCall_iiiii=function(){return(f.dynCall_iiiii=f.asm.dynCall_iiiii).apply(null,arguments)};f.dynCall_iiiiiiiii=function(){return(f.dynCall_iiiiiiiii=f.asm.dynCall_iiiiiiiii).apply(null,arguments)};f.dynCall_vii=function(){return(f.dynCall_vii=f.asm.dynCall_vii).apply(null,
-arguments)};f.dynCall_jiji=function(){return(f.dynCall_jiji=f.asm.dynCall_jiji).apply(null,arguments)};f.dynCall_jiiji=function(){return(f.dynCall_jiiji=f.asm.dynCall_jiiji).apply(null,arguments)};f.dynCall_viiiiiiff=function(){return(f.dynCall_viiiiiiff=f.asm.dynCall_viiiiiiff).apply(null,arguments)};f.dynCall_viii=function(){return(f.dynCall_viii=f.asm.dynCall_viii).apply(null,arguments)};f.dynCall_viiiii=function(){return(f.dynCall_viiiii=f.asm.dynCall_viiiii).apply(null,arguments)};f.dynCall_viiiiiifi=
-function(){return(f.dynCall_viiiiiifi=f.asm.dynCall_viiiiiifi).apply(null,arguments)};f.dynCall_iiiiiii=function(){return(f.dynCall_iiiiiii=f.asm.dynCall_iiiiiii).apply(null,arguments)};f.dynCall_viiiiii=function(){return(f.dynCall_viiiiii=f.asm.dynCall_viiiiii).apply(null,arguments)};f.dynCall_viiiiiiiii=function(){return(f.dynCall_viiiiiiiii=f.asm.dynCall_viiiiiiiii).apply(null,arguments)};f.dynCall_viiiiiiii=function(){return(f.dynCall_viiiiiiii=f.asm.dynCall_viiiiiiii).apply(null,arguments)};
-f.dynCall_fiiii=function(){return(f.dynCall_fiiii=f.asm.dynCall_fiiii).apply(null,arguments)};f.dynCall_iiiiiiiiiiiiiifii=function(){return(f.dynCall_iiiiiiiiiiiiiifii=f.asm.dynCall_iiiiiiiiiiiiiifii).apply(null,arguments)};f.dynCall_fiifi=function(){return(f.dynCall_fiifi=f.asm.dynCall_fiifi).apply(null,arguments)};f.dynCall_viiiiiii=function(){return(f.dynCall_viiiiiii=f.asm.dynCall_viiiiiii).apply(null,arguments)};f.dynCall_viiiifii=function(){return(f.dynCall_viiiifii=f.asm.dynCall_viiiifii).apply(null,
-arguments)};f.dynCall_fii=function(){return(f.dynCall_fii=f.asm.dynCall_fii).apply(null,arguments)};f.dynCall_viiiiiiiiii=function(){return(f.dynCall_viiiiiiiiii=f.asm.dynCall_viiiiiiiiii).apply(null,arguments)};f.dynCall_viiiiiiiiiiii=function(){return(f.dynCall_viiiiiiiiiiii=f.asm.dynCall_viiiiiiiiiiii).apply(null,arguments)};f.dynCall_iiiiiiii=function(){return(f.dynCall_iiiiiiii=f.asm.dynCall_iiiiiiii).apply(null,arguments)};f.dynCall_dd=function(){return(f.dynCall_dd=f.asm.dynCall_dd).apply(null,
-arguments)};f.dynCall_viifi=function(){return(f.dynCall_viifi=f.asm.dynCall_viifi).apply(null,arguments)};f.dynCall_fiii=function(){return(f.dynCall_fiii=f.asm.dynCall_fiii).apply(null,arguments)};f.dynCall_viidi=function(){return(f.dynCall_viidi=f.asm.dynCall_viidi).apply(null,arguments)};f.dynCall_did=function(){return(f.dynCall_did=f.asm.dynCall_did).apply(null,arguments)};f.dynCall_fiiiiiiiiffii=function(){return(f.dynCall_fiiiiiiiiffii=f.asm.dynCall_fiiiiiiiiffii).apply(null,arguments)};f.dynCall_viiif=
-function(){return(f.dynCall_viiif=f.asm.dynCall_viiif).apply(null,arguments)};f.dynCall_viiiif=function(){return(f.dynCall_viiiif=f.asm.dynCall_viiiif).apply(null,arguments)};f.dynCall_viiiiiiifi=function(){return(f.dynCall_viiiiiiifi=f.asm.dynCall_viiiiiiifi).apply(null,arguments)};f.dynCall_viiijj=function(){return(f.dynCall_viiijj=f.asm.dynCall_viiijj).apply(null,arguments)};f.dynCall_iiiiiiidiiddii=function(){return(f.dynCall_iiiiiiidiiddii=f.asm.dynCall_iiiiiiidiiddii).apply(null,arguments)};
-f.dynCall_jij=function(){return(f.dynCall_jij=f.asm.dynCall_jij).apply(null,arguments)};f.dynCall_jii=function(){return(f.dynCall_jii=f.asm.dynCall_jii).apply(null,arguments)};f.dynCall_iiijjji=function(){return(f.dynCall_iiijjji=f.asm.dynCall_iiijjji).apply(null,arguments)};f.dynCall_iiiji=function(){return(f.dynCall_iiiji=f.asm.dynCall_iiiji).apply(null,arguments)};f.dynCall_jiiij=function(){return(f.dynCall_jiiij=f.asm.dynCall_jiiij).apply(null,arguments)};f.dynCall_v=function(){return(f.dynCall_v=
-f.asm.dynCall_v).apply(null,arguments)};f.dynCall_iiifii=function(){return(f.dynCall_iiifii=f.asm.dynCall_iiifii).apply(null,arguments)};f.dynCall_iidiiii=function(){return(f.dynCall_iidiiii=f.asm.dynCall_iidiiii).apply(null,arguments)};f.dynCall_iij=function(){return(f.dynCall_iij=f.asm.dynCall_iij).apply(null,arguments)};f.dynCall_iiiiiiiiii=function(){return(f.dynCall_iiiiiiiiii=f.asm.dynCall_iiiiiiiiii).apply(null,arguments)};f.dynCall_viiiiiiiiiii=function(){return(f.dynCall_viiiiiiiiiii=f.asm.dynCall_viiiiiiiiiii).apply(null,
-arguments)};f.asm=xb;var Ha;ma=function b(){Ha||Ta();Ha||(ma=b)};f.run=Ta;if(f.preInit)for("function"==typeof f.preInit&&(f.preInit=[f.preInit]);0<f.preInit.length;)f.preInit.pop()();var nb=!0;f.noInitialRun&&(nb=!1);Ta();return rb}var yb=!1;"undefined"===typeof self&&(self=require("worker_threads").parentPort);
-self.onmessage=function(J){var da=J.data;if("run"==da.type)if(yb)self.postMessage({type:"error",data:"already running"});else{yb=!0;self.postMessage({type:"run"});var N={};Object.keys(da).forEach(function(I){"type"!==I&&(N[I]=da[I])});N.print=function(I){self.postMessage({type:"stdout",data:I})};N.printErr=function(I){self.postMessage({type:"stderr",data:I})};N.onExit=function(I){self.postMessage({type:"exit",data:I})};N.onAbort=function(I){self.postMessage({type:"abort",data:I})};J=$a(N);var va=
-J.MEMFS.map(function(I){return I.data.buffer});self.postMessage({type:"done",data:J},va);yb=!1}else self.postMessage({type:"error",data:"unknown command"})};self.postMessage({type:"ready"});
+var Xa;
+Xa || (Xa = typeof Module !== 'undefined' ? Module : {});
+function Ya(H) {
+  function ba(a, b, c, e) {
+    a || (a = this);
+    this.parent = a;
+    this.l = a.l;
+    this.ga = null;
+    this.id = d.Qb++;
+    this.name = b;
+    this.mode = c;
+    this.f = {};
+    this.g = {};
+    this.rdev = e;
+  }
+  function L(a, b) {
+    throw b;
+  }
+  function sa(a) {
+    Array.isArray(a) || a instanceof ArrayBuffer ? a = new Uint8Array(a) : a ? a instanceof Uint8Array || (a = new Uint8Array(a.buffer)) : a = new Uint8Array(0);
+    return a;
+  }
+  function G(a) {
+    var b = [];
+    return function(c, e) {
+      if (e && b.length) {
+        return a(R(b, 0));
+      }
+      10 === c || 13 === c ? (U && b.push(c), a(R(b, 0)), b = []) : 0 !== c && b.push(c);
+    };
+  }
+  function wb(a) {
+    return f.locateFile ? f.locateFile(a, N) : N + a;
+  }
+  function ta(a, b) {
+    a || A("Assertion failed: " + b);
+  }
+  function R(a, b, c) {
+    var e = b + c;
+    for (c = b; a[c] && !(c >= e);) {
+      ++c;
+    }
+    if (16 < c - b && a.subarray && Za) {
+      return Za.decode(a.subarray(b, c));
+    }
+    for (e = ""; b < c;) {
+      var g = a[b++];
+      if (g & 128) {
+        var h = a[b++] & 63;
+        if (192 == (g & 224)) {
+          e += String.fromCharCode((g & 31) << 6 | h);
+        } else {
+          var l = a[b++] & 63;
+          g = 224 == (g & 240) ? (g & 15) << 12 | h << 6 | l : (g & 7) << 18 | h << 12 | l << 6 | a[b++] & 63;
+          65536 > g ? e += String.fromCharCode(g) : (g -= 65536, e += String.fromCharCode(55296 | g >> 10, 56320 | g & 1023));
+        }
+      } else {
+        e += String.fromCharCode(g);
+      }
+    }
+    return e;
+  }
+  function ca(a, b) {
+    return a ? R(V, a, b) : "";
+  }
+  function W(a, b, c, e) {
+    if (!(0 < e)) {
+      return 0;
+    }
+    var g = c;
+    e = c + e - 1;
+    for (var h = 0; h < a.length; ++h) {
+      var l = a.charCodeAt(h);
+      if (55296 <= l && 57343 >= l) {
+        var n = a.charCodeAt(++h);
+        l = 65536 + ((l & 1023) << 10) | n & 1023;
+      }
+      if (127 >= l) {
+        if (c >= e) {
+          break;
+        }
+        b[c++] = l;
+      } else {
+        if (2047 >= l) {
+          if (c + 1 >= e) {
+            break;
+          }
+          b[c++] = 192 | l >> 6;
+        } else {
+          if (65535 >= l) {
+            if (c + 2 >= e) {
+              break;
+            }
+            b[c++] = 224 | l >> 12;
+          } else {
+            if (c + 3 >= e) {
+              break;
+            }
+            b[c++] = 240 | l >> 18;
+            b[c++] = 128 | l >> 12 & 63;
+          }
+          b[c++] = 128 | l >> 6 & 63;
+        }
+        b[c++] = 128 | l & 63;
+      }
+    }
+    b[c] = 0;
+    return c - g;
+  }
+  function ha(a) {
+    for (var b = 0, c = 0; c < a.length; ++c) {
+      var e = a.charCodeAt(c);
+      55296 <= e && 57343 >= e && (e = 65536 + ((e & 1023) << 10) | a.charCodeAt(++c) & 1023);
+      127 >= e ? ++b : b = 2047 >= e ? b + 2 : 65535 >= e ? b + 3 : b + 4;
+    }
+    return b;
+  }
+  function $a(a) {
+    var b = ha(a) + 1, c = Ka(b);
+    c && W(a, I, c, b);
+    return c;
+  }
+  function ab(a) {
+    var b = ha(a) + 1, c = La(b);
+    W(a, I, c, b);
+    return c;
+  }
+  function ia(a) {
+    for (; 0 < a.length;) {
+      var b = a.shift();
+      if ("function" == typeof b) {
+        b(f);
+      } else {
+        var c = b.Jb;
+        "number" === typeof c ? void 0 === b.ua ? f.dynCall_v(c) : f.dynCall_vi(c, b.ua) : c(void 0 === b.ua ? null : b.ua);
+      }
+    }
+  }
+  function bb() {
+    X++;
+    f.monitorRunDependencies && f.monitorRunDependencies(X);
+  }
+  function Ma() {
+    X--;
+    f.monitorRunDependencies && f.monitorRunDependencies(X);
+    if (0 == X && (null !== Na && (clearInterval(Na), Na = null), ja)) {
+      var a = ja;
+      ja = null;
+      a();
+    }
+  }
+  function A(a) {
+    if (f.onAbort) {
+      f.onAbort(a);
+    }
+    da(a);
+    E(a);
+    Oa = !0;
+    throw new WebAssembly.RuntimeError("abort(" + a + "). Build with -s ASSERTIONS=1 for more info.");
+  }
+  function Pa(a, b) {
+    return String.prototype.startsWith ? a.startsWith(b) : 0 === a.indexOf(b);
+  }
+  function cb(a) {
+    return Pa(a, "data:application/octet-stream;base64,");
+  }
+  function db() {
+    try {
+      if (ka) {
+        return new Uint8Array(ka);
+      }
+      if (ua) {
+        return ua(O);
+      }
+      throw "both async and sync fetching of the wasm failed";
+    } catch (a) {
+      A(a);
+    }
+  }
+  function xb() {
+    return ka || !va && !Q || "function" !== typeof fetch || Pa(O, "file://") ? new Promise(function(a) {
+      a(db());
+    }) : fetch(O, {credentials:"same-origin"}).then(function(a) {
+      if (!a.ok) {
+        throw "failed to load wasm binary file at '" + O + "'";
+      }
+      return a.arrayBuffer();
+    }).catch(function() {
+      return db();
+    });
+  }
+  function yb(a) {
+    return a.replace(/\b_Z[\w\d_]+/g, function(b) {
+      return b === b ? b : b + " [" + b + "]";
+    });
+  }
+  function Y(a) {
+    return m[eb() >> 2] = a;
+  }
+  function wa() {
+    void 0 === wa.start && (wa.start = Date.now());
+    return 1E3 * (Date.now() - wa.start) | 0;
+  }
+  function la() {
+    if (!la.u) {
+      var a = {USER:"web_user", LOGNAME:"web_user", PATH:"/", PWD:"/", HOME:"/home/web_user", LANG:("object" === typeof navigator && navigator.languages && navigator.languages[0] || "C").replace("-", "_") + ".UTF-8", _:xa || "./this.program"}, b;
+      for (b in fb) {
+        a[b] = fb[b];
+      }
+      var c = [];
+      for (b in a) {
+        c.push(b + "=" + a[b]);
+      }
+      la.u = c;
+    }
+    return la.u;
+  }
+  function gb(a, b) {
+    a = new Date(1000 * m[a >> 2]);
+    m[b >> 2] = a.getUTCSeconds();
+    m[b + 4 >> 2] = a.getUTCMinutes();
+    m[b + 8 >> 2] = a.getUTCHours();
+    m[b + 12 >> 2] = a.getUTCDate();
+    m[b + 16 >> 2] = a.getUTCMonth();
+    m[b + 20 >> 2] = a.getUTCFullYear() - 1900;
+    m[b + 24 >> 2] = a.getUTCDay();
+    m[b + 36 >> 2] = 0;
+    m[b + 32 >> 2] = 0;
+    m[b + 28 >> 2] = (a.getTime() - Date.UTC(a.getUTCFullYear(), 0, 1, 0, 0, 0, 0)) / 864E5 | 0;
+    m[b + 40 >> 2] = zb;
+    return b;
+  }
+  function ya() {
+    function a(h) {
+      return (h = h.toTimeString().match(/\(([A-Za-z ]+)\)$/)) ? h[1] : "GMT";
+    }
+    if (!ya.u) {
+      ya.u = !0;
+      m[hb() >> 2] = 60 * (new Date).getTimezoneOffset();
+      var b = (new Date).getFullYear(), c = new Date(b, 0, 1);
+      b = new Date(b, 6, 1);
+      m[ib() >> 2] = Number(c.getTimezoneOffset() != b.getTimezoneOffset());
+      var e = a(c), g = a(b);
+      e = $a(e);
+      g = $a(g);
+      b.getTimezoneOffset() < c.getTimezoneOffset() ? (m[ea() >> 2] = e, m[ea() + 4 >> 2] = g) : (m[ea() >> 2] = g, m[ea() + 4 >> 2] = e);
+    }
+  }
+  function jb(a, b) {
+    ya();
+    a = new Date(1000 * m[a >> 2]);
+    m[b >> 2] = a.getSeconds();
+    m[b + 4 >> 2] = a.getMinutes();
+    m[b + 8 >> 2] = a.getHours();
+    m[b + 12 >> 2] = a.getDate();
+    m[b + 16 >> 2] = a.getMonth();
+    m[b + 20 >> 2] = a.getFullYear() - 1900;
+    m[b + 24 >> 2] = a.getDay();
+    var c = new Date(a.getFullYear(), 0, 1);
+    m[b + 28 >> 2] = (a.getTime() - c.getTime()) / 864E5 | 0;
+    m[b + 36 >> 2] = -(60 * a.getTimezoneOffset());
+    var e = (new Date(a.getFullYear(), 6, 1)).getTimezoneOffset();
+    c = c.getTimezoneOffset();
+    a = (e != c && a.getTimezoneOffset() == Math.min(c, e)) | 0;
+    m[b + 32 >> 2] = a;
+    a = m[ea() + (a ? 4 : 0) >> 2];
+    m[b + 40 >> 2] = a;
+    return b;
+  }
+  function za(a) {
+    return 0 === a % 4 && (0 !== a % 100 || 0 === a % 400);
+  }
+  function Qa(a, b) {
+    for (var c = 0, e = 0; e <= b; c += a[e++]) {
+    }
+    return c;
+  }
+  function Aa(a, b) {
+    for (a = new Date(a.getTime()); 0 < b;) {
+      var c = za(a.getFullYear()), e = a.getMonth();
+      c = (c ? Ba : Ca)[e];
+      if (b > c - a.getDate()) {
+        b -= c - a.getDate() + 1, a.setDate(1), 11 > e ? a.setMonth(e + 1) : (a.setMonth(0), a.setFullYear(a.getFullYear() + 1));
+      } else {
+        a.setDate(a.getDate() + b);
+        break;
+      }
+    }
+    return a;
+  }
+  function Da(a, b, c) {
+    c = 0 < c ? c : ha(a) + 1;
+    c = Array(c);
+    a = W(a, c, 0, c.length);
+    b && (c.length = a);
+    return c;
+  }
+  function Ea(a) {
+    this.name = "ExitStatus";
+    this.message = "Program terminated with exit(" + a + ")";
+    this.status = a;
+  }
+  function Ra(a) {
+    function b() {
+      if (!Fa && (Fa = !0, f.calledRun = !0, !Oa)) {
+        f.noFSInit || d.R.Ba || d.R();
+        S.R();
+        ia(kb);
+        d.gb = !1;
+        ia(Ab);
+        if (f.onRuntimeInitialized) {
+          f.onRuntimeInitialized();
+        }
+        if (lb) {
+          var c = a, e = f._main;
+          c = c || [];
+          var g = c.length + 1, h = La(4 * (g + 1));
+          m[h >> 2] = ab(xa);
+          for (var l = 1; l < g; l++) {
+            m[(h >> 2) + l] = ab(c[l - 1]);
+          }
+          m[(h >> 2) + g] = 0;
+          try {
+            var n = e(g, h);
+            mb(n, !0);
+          } catch (t) {
+            t instanceof Ea || ("unwind" == t ? Ga = !0 : ((c = t) && "object" === typeof t && t.stack && (c = [t, t.stack]), E("exception thrown: " + c), L(1, t)));
+          } finally {
+          }
+        }
+        if (f.postRun) {
+          for ("function" == typeof f.postRun && (f.postRun = [f.postRun]); f.postRun.length;) {
+            nb.unshift(f.postRun.shift());
+          }
+        }
+        ia(nb);
+      }
+    }
+    a = a || ma;
+    if (!(0 < X)) {
+      if (f.preRun) {
+        for ("function" == typeof f.preRun && (f.preRun = [f.preRun]); f.preRun.length;) {
+          ob.unshift(f.preRun.shift());
+        }
+      }
+      ia(ob);
+      0 < X || (f.setStatus ? (f.setStatus("Running..."), setTimeout(function() {
+        setTimeout(function() {
+          f.setStatus("");
+        }, 1);
+        b();
+      }, 1)) : b());
+    }
+  }
+  function mb(a, b) {
+    if (!b || !Ga || 0 !== a) {
+      if (!Ga && (Oa = !0, ia(Bb), d.quit(), f.onExit)) {
+        f.onExit(a);
+      }
+      L(a, new Ea(a));
+    }
+  }
+  H = H || {};
+  var Cb = A, pb, f = {};
+  Object.keys(H).forEach(function(a) {
+    0 > ["mounts", "MEMFS", "onExit", "chdir"].indexOf(a) && (f[a] = H[a]);
+  });
+  A = function(a) {
+    if (arguments.length) {
+      Cb(a);
+    } else {
+      throw new Ea(0);
+    }
+  };
+  f.stdin = f.stdin || function() {
+  };
+  f.stdout = f.stdout || G(function(a) {
+    da(a);
+  });
+  f.stderr = f.stderr || G(function(a) {
+    E(a);
+  });
+  "object" === typeof process && (f.print = f.print || process.stdout.write.bind(process.stdout), f.printErr = f.printErr || process.stderr.write.bind(process.stderr));
+  f.quit = function(a) {
+    f.stdout(0, !0);
+    f.stderr(0, !0);
+    if (H.onExit) {
+      H.onExit(a);
+    }
+  };
+  f.preRun = function() {
+    (H.mounts || []).forEach(function(a) {
+      var b = d.Ya[a.type];
+      if (!b) {
+        throw Error("Bad mount type");
+      }
+      var c = a.mountpoint;
+      if (!c.match(/^\/[^\/]+$/) || "/." === c || "/.." === c || "/tmp" === c || "/home" === c || "/dev" === c || "/work" === c) {
+        throw Error("Bad mount point");
+      }
+      d.mkdir(c);
+      d.l(b, a.opts, c);
+    });
+    d.mkdir("/work");
+    d.chdir(H.chdir || "/work");
+    (H.MEMFS || []).forEach(function(a) {
+      if (a.name.match(/\//)) {
+        throw Error("Bad file name");
+      }
+      var b = d.open(a.name, "w+");
+      a = sa(a.data);
+      d.write(b, a, 0, a.length);
+      d.close(b);
+    });
+  };
+  f.postRun = function() {
+    var a = Object.create(null);
+    (H.MEMFS || []).forEach(function(b) {
+      a[b.name] = null;
+    });
+    pb = {MEMFS:function(b) {
+      var c = d.h(b).node.c;
+      b = Object.keys(c);
+      c.__proto__ && "__proto__" === c.__proto__.name && b.push("__proto__");
+      return b.map(function(e) {
+        return c[e];
+      });
+    }("/work").filter(function(b) {
+      return !(b.name in a);
+    }).map(function(b) {
+      var c = sa(b.c);
+      return {name:b.name, data:c};
+    })};
+  };
+  var na = {}, T;
+  for (T in f) {
+    f.hasOwnProperty(T) && (na[T] = f[T]);
+  }
+  var ma = [], xa = "./this.program", va = !1, Q = !1, U = !1, qb = !1;
+  va = "object" === typeof window;
+  Q = "function" === typeof importScripts;
+  U = "object" === typeof process && "object" === typeof process.versions && "string" === typeof process.versions.node;
+  qb = !va && !U && !Q;
+  var N = "", Ha, Sa;
+  if (U) {
+    N = Q ? require("path").dirname(N) + "/" : __dirname + "/";
+    var oa = function(a, b) {
+      Ha || (Ha = require("fs"));
+      Sa || (Sa = require("path"));
+      a = Sa.normalize(a);
+      return Ha.readFileSync(a, b ? null : "utf8");
+    };
+    var ua = function(a) {
+      a = oa(a, !0);
+      a.buffer || (a = new Uint8Array(a));
+      ta(a.buffer);
+      return a;
+    };
+    1 < process.argv.length && (xa = process.argv[1].replace(/\\/g, "/"));
+    ma = process.argv.slice(2);
+    "undefined" !== typeof module && (module.exports = f);
+    process.on("uncaughtException", function(a) {
+      if (!(a instanceof Ea)) {
+        throw a;
+      }
+    });
+    process.on("unhandledRejection", A);
+    L = function(a) {
+      process.exit(a);
+    };
+    f.inspect = function() {
+      return "[Emscripten Module object]";
+    };
+  } else {
+    if (qb) {
+      "undefined" != typeof read && (oa = function(a) {
+        return read(a);
+      }), ua = function(a) {
+        if ("function" === typeof readbuffer) {
+          return new Uint8Array(readbuffer(a));
+        }
+        a = read(a, "binary");
+        ta("object" === typeof a);
+        return a;
+      }, "undefined" != typeof scriptArgs ? ma = scriptArgs : "undefined" != typeof arguments && (ma = arguments), "function" === typeof quit && (L = function(a) {
+        quit(a);
+      }), "undefined" !== typeof print && ("undefined" === typeof console && (console = {}), console.log = print, console.warn = console.error = "undefined" !== typeof printErr ? printErr : print);
+    } else {
+      if (va || Q) {
+        Q ? N = self.location.href : document.currentScript && (N = document.currentScript.src), N = 0 !== N.indexOf("blob:") ? N.substr(0, N.lastIndexOf("/") + 1) : "", oa = function(a) {
+          var b = new XMLHttpRequest;
+          b.open("GET", a, !1);
+          b.send(null);
+          return b.responseText;
+        }, Q && (ua = function(a) {
+          var b = new XMLHttpRequest;
+          b.open("GET", a, !1);
+          b.responseType = "arraybuffer";
+          b.send(null);
+          return new Uint8Array(b.response);
+        });
+      }
+    }
+  }
+  var da = f.print || console.log.bind(console), E = f.printErr || console.warn.bind(console);
+  for (T in na) {
+    na.hasOwnProperty(T) && (f[T] = na[T]);
+  }
+  na = null;
+  f.arguments && (ma = f.arguments);
+  f.thisProgram && (xa = f.thisProgram);
+  f.quit && (L = f.quit);
+  var ka;
+  f.wasmBinary && (ka = f.wasmBinary);
+  var Ga;
+  f.noExitRuntime && (Ga = f.noExitRuntime);
+  "object" !== typeof WebAssembly && E("no native wasm support detected");
+  var pa, Db = new WebAssembly.Table({initial:2920, maximum:2920, element:"anyfunc"}), Oa = !1, Za = "undefined" !== typeof TextDecoder ? new TextDecoder("utf8") : void 0;
+  "undefined" !== typeof TextDecoder && new TextDecoder("utf-16le");
+  var I, V, Ta, m, Ua = f.INITIAL_MEMORY || 67108864;
+  f.wasmMemory ? pa = f.wasmMemory : pa = new WebAssembly.Memory({initial:Ua / 65536, maximum:Ua / 65536});
+  if (pa) {
+    var Va = pa.buffer;
+  }
+  Ua = Va.byteLength;
+  (function(a) {
+    Va = a;
+    f.HEAP8 = I = new Int8Array(a);
+    f.HEAP16 = Ta = new Int16Array(a);
+    f.HEAP32 = m = new Int32Array(a);
+    f.HEAPU8 = V = new Uint8Array(a);
+    f.HEAPU16 = new Uint16Array(a);
+    f.HEAPU32 = new Uint32Array(a);
+    f.HEAPF32 = new Float32Array(a);
+    f.HEAPF64 = new Float64Array(a);
+  })(Va);
+  m[583544] = 7577216;
+  var ob = [], kb = [], Ab = [], Bb = [], nb = [], qa = Math.abs, Z = Math.ceil, aa = Math.floor, ra = Math.min, X = 0, Na = null, ja = null;
+  f.preloadedImages = {};
+  f.preloadedAudios = {};
+  var O = "ffmpeg-worker-mp4.wasm";
+  cb(O) || (O = wb(O));
+  var y, J;
+  kb.push({Jb:function() {
+    rb();
+  }});
+  var w = {jb:function(a) {
+    return /^(\/?|)([\s\S]*?)((?:\.{1,2}|[^\/]+?|)(\.[^.\/]*|))(?:[\/]*)$/.exec(a).slice(1);
+  }, Ha:function(a, b) {
+    for (var c = 0, e = a.length - 1; 0 <= e; e--) {
+      var g = a[e];
+      "." === g ? a.splice(e, 1) : ".." === g ? (a.splice(e, 1), c++) : c && (a.splice(e, 1), c--);
+    }
+    if (b) {
+      for (; c; c--) {
+        a.unshift("..");
+      }
+    }
+    return a;
+  }, normalize:function(a) {
+    var b = "/" === a.charAt(0), c = "/" === a.substr(-1);
+    (a = w.Ha(a.split("/").filter(function(e) {
+      return !!e;
+    }), !b).join("/")) || b || (a = ".");
+    a && c && (a += "/");
+    return (b ? "/" : "") + a;
+  }, dirname:function(a) {
+    var b = w.jb(a);
+    a = b[0];
+    b = b[1];
+    if (!a && !b) {
+      return ".";
+    }
+    b && (b = b.substr(0, b.length - 1));
+    return a + b;
+  }, basename:function(a) {
+    if ("/" === a) {
+      return "/";
+    }
+    var b = a.lastIndexOf("/");
+    return -1 === b ? a : a.substr(b + 1);
+  }, extname:function(a) {
+    return w.jb(a)[3];
+  }, join:function() {
+    var a = Array.prototype.slice.call(arguments, 0);
+    return w.normalize(a.join("/"));
+  }, K:function(a, b) {
+    return w.normalize(a + "/" + b);
+  }}, P = {resolve:function() {
+    for (var a = "", b = !1, c = arguments.length - 1; -1 <= c && !b; c--) {
+      b = 0 <= c ? arguments[c] : d.cwd();
+      if ("string" !== typeof b) {
+        throw new TypeError("Arguments to path.resolve must be strings");
+      }
+      if (!b) {
+        return "";
+      }
+      a = b + "/" + a;
+      b = "/" === b.charAt(0);
+    }
+    a = w.Ha(a.split("/").filter(function(e) {
+      return !!e;
+    }), !b).join("/");
+    return (b ? "/" : "") + a || ".";
+  }, relative:function(a, b) {
+    function c(l) {
+      for (var n = 0; n < l.length && "" === l[n]; n++) {
+      }
+      for (var t = l.length - 1; 0 <= t && "" === l[t]; t--) {
+      }
+      return n > t ? [] : l.slice(n, t - n + 1);
+    }
+    a = P.resolve(a).substr(1);
+    b = P.resolve(b).substr(1);
+    a = c(a.split("/"));
+    b = c(b.split("/"));
+    for (var e = Math.min(a.length, b.length), g = e, h = 0; h < e; h++) {
+      if (a[h] !== b[h]) {
+        g = h;
+        break;
+      }
+    }
+    e = [];
+    for (h = g; h < a.length; h++) {
+      e.push("..");
+    }
+    e = e.concat(b.slice(g));
+    return e.join("/");
+  }}, S = {mb:[], R:function() {
+  }, Hc:function() {
+  }, register:function(a, b) {
+    S.mb[a] = {input:[], output:[], X:b};
+    d.Na(a, S.g);
+  }, g:{open:function(a) {
+    var b = S.mb[a.node.rdev];
+    if (!b) {
+      throw new d.b(43);
+    }
+    a.tty = b;
+    a.seekable = !1;
+  }, close:function(a) {
+    a.tty.X.flush(a.tty);
+  }, flush:function(a) {
+    a.tty.X.flush(a.tty);
+  }, read:function(a, b, c, e) {
+    if (!a.tty || !a.tty.X.bb) {
+      throw new d.b(60);
+    }
+    for (var g = 0, h = 0; h < e; h++) {
+      try {
+        var l = a.tty.X.bb(a.tty);
+      } catch (n) {
+        throw new d.b(29);
+      }
+      if (void 0 === l && 0 === g) {
+        throw new d.b(6);
+      }
+      if (null === l || void 0 === l) {
+        break;
+      }
+      g++;
+      b[c + h] = l;
+    }
+    g && (a.node.timestamp = Date.now());
+    return g;
+  }, write:function(a, b, c, e) {
+    if (!a.tty || !a.tty.X.Ja) {
+      throw new d.b(60);
+    }
+    try {
+      for (var g = 0; g < e; g++) {
+        a.tty.X.Ja(a.tty, b[c + g]);
+      }
+    } catch (h) {
+      throw new d.b(29);
+    }
+    e && (a.node.timestamp = Date.now());
+    return g;
+  }}, Fb:{bb:function(a) {
+    if (!a.input.length) {
+      var b = null;
+      if (U) {
+        var c = Buffer.u ? Buffer.u(256) : new Buffer(256), e = 0;
+        try {
+          e = Ha.readSync(process.stdin.fd, c, 0, 256, null);
+        } catch (g) {
+          if (-1 != g.toString().indexOf("EOF")) {
+            e = 0;
+          } else {
+            throw g;
+          }
+        }
+        0 < e ? b = c.slice(0, e).toString("utf-8") : b = null;
+      } else {
+        "undefined" != typeof window && "function" == typeof window.prompt ? (b = window.prompt("Input: "), null !== b && (b += "\n")) : "function" == typeof readline && (b = readline(), null !== b && (b += "\n"));
+      }
+      if (!b) {
+        return null;
+      }
+      a.input = Da(b, !0);
+    }
+    return a.input.shift();
+  }, Ja:function(a, b) {
+    null === b || 10 === b ? (da(R(a.output, 0)), a.output = []) : 0 != b && a.output.push(b);
+  }, flush:function(a) {
+    a.output && 0 < a.output.length && (da(R(a.output, 0)), a.output = []);
+  }}, Eb:{Ja:function(a, b) {
+    null === b || 10 === b ? (E(R(a.output, 0)), a.output = []) : 0 != b && a.output.push(b);
+  }, flush:function(a) {
+    a.output && 0 < a.output.length && (E(R(a.output, 0)), a.output = []);
+  }}}, u = {J:null, l:function() {
+    return u.createNode(null, "/", 16895, 0);
+  }, createNode:function(a, b, c, e) {
+    if (d.Lb(c) || d.isFIFO(c)) {
+      throw new d.b(63);
+    }
+    u.J || (u.J = {dir:{node:{C:u.f.C, o:u.f.o, lookup:u.f.lookup, D:u.f.D, rename:u.f.rename, unlink:u.f.unlink, rmdir:u.f.rmdir, readdir:u.f.readdir, symlink:u.f.symlink}, stream:{v:u.g.v}}, file:{node:{C:u.f.C, o:u.f.o}, stream:{v:u.g.v, read:u.g.read, write:u.g.write, ba:u.g.ba, fa:u.g.fa, W:u.g.W}}, link:{node:{C:u.f.C, o:u.f.o, readlink:u.f.readlink}, stream:{}}, Sa:{node:{C:u.f.C, o:u.f.o}, stream:d.wb}});
+    c = d.createNode(a, b, c, e);
+    d.m(c.mode) ? (c.f = u.J.dir.node, c.g = u.J.dir.stream, c.c = {}) : d.isFile(c.mode) ? (c.f = u.J.file.node, c.g = u.J.file.stream, c.i = 0, c.c = null) : d.S(c.mode) ? (c.f = u.J.link.node, c.g = u.J.link.stream) : d.da(c.mode) && (c.f = u.J.Sa.node, c.g = u.J.Sa.stream);
+    c.timestamp = Date.now();
+    a && (a.c[b] = c);
+    return c;
+  }, wc:function(a) {
+    if (a.c && a.c.subarray) {
+      for (var b = [], c = 0; c < a.i; ++c) {
+        b.push(a.c[c]);
+      }
+      return b;
+    }
+    return a.c;
+  }, xc:function(a) {
+    return a.c ? a.c.subarray ? a.c.subarray(0, a.i) : new Uint8Array(a.c) : new Uint8Array(0);
+  }, Xa:function(a, b) {
+    var c = a.c ? a.c.length : 0;
+    c >= b || (b = Math.max(b, c * (1048576 > c ? 2.0 : 1.125) >>> 0), 0 != c && (b = Math.max(b, 256)), c = a.c, a.c = new Uint8Array(b), 0 < a.i && a.c.set(c.subarray(0, a.i), 0));
+  }, Wb:function(a, b) {
+    if (a.i != b) {
+      if (0 == b) {
+        a.c = null, a.i = 0;
+      } else {
+        if (!a.c || a.c.subarray) {
+          var c = a.c;
+          a.c = new Uint8Array(b);
+          c && a.c.set(c.subarray(0, Math.min(b, a.i)));
+        } else {
+          if (a.c || (a.c = []), a.c.length > b) {
+            a.c.length = b;
+          } else {
+            for (; a.c.length < b;) {
+              a.c.push(0);
+            }
+          }
+        }
+        a.i = b;
+      }
+    }
+  }, f:{C:function(a) {
+    var b = {};
+    b.dev = d.da(a.mode) ? a.id : 1;
+    b.ino = a.id;
+    b.mode = a.mode;
+    b.nlink = 1;
+    b.uid = 0;
+    b.gid = 0;
+    b.rdev = a.rdev;
+    d.m(a.mode) ? b.size = 4096 : d.isFile(a.mode) ? b.size = a.i : d.S(a.mode) ? b.size = a.link.length : b.size = 0;
+    b.atime = new Date(a.timestamp);
+    b.mtime = new Date(a.timestamp);
+    b.ctime = new Date(a.timestamp);
+    b.Qa = 4096;
+    b.blocks = Math.ceil(b.size / b.Qa);
+    return b;
+  }, o:function(a, b) {
+    void 0 !== b.mode && (a.mode = b.mode);
+    void 0 !== b.timestamp && (a.timestamp = b.timestamp);
+    void 0 !== b.size && u.Wb(a, b.size);
+  }, lookup:function() {
+    throw d.za[44];
+  }, D:function(a, b, c, e) {
+    return u.createNode(a, b, c, e);
+  }, rename:function(a, b, c) {
+    if (d.m(a.mode)) {
+      try {
+        var e = d.H(b, c);
+      } catch (h) {
+      }
+      if (e) {
+        for (var g in e.c) {
+          throw new d.b(55);
+        }
+      }
+    }
+    delete a.parent.c[a.name];
+    a.name = c;
+    b.c[c] = a;
+    a.parent = b;
+  }, unlink:function(a, b) {
+    delete a.c[b];
+  }, rmdir:function(a, b) {
+    var c = d.H(a, b), e;
+    for (e in c.c) {
+      throw new d.b(55);
+    }
+    delete a.c[b];
+  }, readdir:function(a) {
+    var b = [".", ".."], c;
+    for (c in a.c) {
+      a.c.hasOwnProperty(c) && b.push(c);
+    }
+    return b;
+  }, symlink:function(a, b, c) {
+    a = u.createNode(a, b, 41471, 0);
+    a.link = c;
+    return a;
+  }, readlink:function(a) {
+    if (!d.S(a.mode)) {
+      throw new d.b(28);
+    }
+    return a.link;
+  }}, g:{read:function(a, b, c, e, g) {
+    var h = a.node.c;
+    if (g >= a.node.i) {
+      return 0;
+    }
+    a = Math.min(a.node.i - g, e);
+    if (8 < a && h.subarray) {
+      b.set(h.subarray(g, g + a), c);
+    } else {
+      for (e = 0; e < a; e++) {
+        b[c + e] = h[g + e];
+      }
+    }
+    return a;
+  }, write:function(a, b, c, e, g, h) {
+    if (!e) {
+      return 0;
+    }
+    a = a.node;
+    a.timestamp = Date.now();
+    if (b.subarray && (!a.c || a.c.subarray)) {
+      if (h) {
+        return a.c = b.subarray(c, c + e), a.i = e;
+      }
+      if (0 === a.i && 0 === g) {
+        return a.c = b.slice(c, c + e), a.i = e;
+      }
+      if (g + e <= a.i) {
+        return a.c.set(b.subarray(c, c + e), g), e;
+      }
+    }
+    u.Xa(a, g + e);
+    if (a.c.subarray && b.subarray) {
+      a.c.set(b.subarray(c, c + e), g);
+    } else {
+      for (h = 0; h < e; h++) {
+        a.c[g + h] = b[c + h];
+      }
+    }
+    a.i = Math.max(a.i, g + e);
+    return e;
+  }, v:function(a, b, c) {
+    1 === c ? b += a.position : 2 === c && d.isFile(a.node.mode) && (b += a.node.i);
+    if (0 > b) {
+      throw new d.b(28);
+    }
+    return b;
+  }, ba:function(a, b, c) {
+    u.Xa(a.node, b + c);
+    a.node.i = Math.max(a.node.i, b + c);
+  }, fa:function(a, b, c, e, g, h, l) {
+    if (!d.isFile(a.node.mode)) {
+      throw new d.b(43);
+    }
+    a = a.node.c;
+    if (l & 2 || a.buffer !== b.buffer) {
+      if (0 < g || g + e < a.length) {
+        a.subarray ? a = a.subarray(g, g + e) : a = Array.prototype.slice.call(a, g, g + e);
+      }
+      g = !0;
+      l = b.buffer == I.buffer;
+      e = Ka(e);
+      if (!e) {
+        throw new d.b(48);
+      }
+      (l ? I : b).set(a, e);
+    } else {
+      g = !1, e = a.byteOffset;
+    }
+    return {Fc:e, ec:g};
+  }, W:function(a, b, c, e, g) {
+    if (!d.isFile(a.node.mode)) {
+      throw new d.b(43);
+    }
+    if (g & 2) {
+      return 0;
+    }
+    u.g.write(a, b, 0, e, c, !1);
+    return 0;
+  }}}, F = {ra:16895, aa:33279, La:null, l:function(a) {
+    function b(h) {
+      h = h.split("/");
+      for (var l = e, n = 0; n < h.length - 1; n++) {
+        var t = h.slice(0, n + 1).join("/");
+        g[t] || (g[t] = F.createNode(l, h[n], F.ra, 0));
+        l = g[t];
+      }
+      return l;
+    }
+    function c(h) {
+      h = h.split("/");
+      return h[h.length - 1];
+    }
+    ta(Q);
+    F.La || (F.La = new FileReaderSync);
+    var e = F.createNode(null, "/", F.ra, 0), g = {};
+    Array.prototype.forEach.call(a.Ia.files || [], function(h) {
+      F.createNode(b(h.name), c(h.name), F.aa, 0, h, h.lastModifiedDate);
+    });
+    (a.Ia.blobs || []).forEach(function(h) {
+      F.createNode(b(h.name), c(h.name), F.aa, 0, h.data);
+    });
+    (a.Ia.packages || []).forEach(function(h) {
+      h.metadata.files.forEach(function(l) {
+        var n = l.filename.substr(1);
+        F.createNode(b(n), c(n), F.aa, 0, h.blob.slice(l.start, l.end));
+      });
+    });
+    return e;
+  }, createNode:function(a, b, c, e, g, h) {
+    e = d.createNode(a, b, c);
+    e.mode = c;
+    e.f = F.f;
+    e.g = F.g;
+    e.timestamp = (h || new Date).getTime();
+    ta(F.aa !== F.ra);
+    c === F.aa ? (e.size = g.size, e.c = g) : (e.size = 4096, e.c = {});
+    a && (a.c[b] = e);
+    return e;
+  }, f:{C:function(a) {
+    return {dev:1, ino:a.id, mode:a.mode, nlink:1, uid:0, gid:0, rdev:void 0, size:a.size, atime:new Date(a.timestamp), mtime:new Date(a.timestamp), ctime:new Date(a.timestamp), Qa:4096, blocks:Math.ceil(a.size / 4096)};
+  }, o:function(a, b) {
+    void 0 !== b.mode && (a.mode = b.mode);
+    void 0 !== b.timestamp && (a.timestamp = b.timestamp);
+  }, lookup:function() {
+    throw new d.b(44);
+  }, D:function() {
+    throw new d.b(63);
+  }, rename:function() {
+    throw new d.b(63);
+  }, unlink:function() {
+    throw new d.b(63);
+  }, rmdir:function() {
+    throw new d.b(63);
+  }, readdir:function(a) {
+    var b = [".", ".."], c;
+    for (c in a.c) {
+      a.c.hasOwnProperty(c) && b.push(c);
+    }
+    return b;
+  }, symlink:function() {
+    throw new d.b(63);
+  }, readlink:function() {
+    throw new d.b(63);
+  }}, g:{read:function(a, b, c, e, g) {
+    if (g >= a.node.size) {
+      return 0;
+    }
+    a = a.node.c.slice(g, g + e);
+    e = F.La.readAsArrayBuffer(a);
+    b.set(new Uint8Array(e), c);
+    return a.size;
+  }, write:function() {
+    throw new d.b(29);
+  }, v:function(a, b, c) {
+    1 === c ? b += a.position : 2 === c && d.isFile(a.node.mode) && (b += a.node.size);
+    if (0 > b) {
+      throw new d.b(28);
+    }
+    return b;
+  }}}, d = {root:null, ha:[], Va:{}, streams:[], Qb:1, I:null, Ua:"/", Ba:!1, gb:!0, s:{}, lb:{ib:{qb:1, rb:2}}, b:null, za:{}, Ya:null, na:0, yc:function(a) {
+    if (!(a instanceof d.b)) {
+      a: {
+        var b = Error();
+        if (!b.stack) {
+          try {
+            throw Error();
+          } catch (c) {
+            b = c;
+          }
+          if (!b.stack) {
+            b = "(no stack trace available)";
+            break a;
+          }
+        }
+        b = b.stack.toString();
+      }
+      f.extraStackTrace && (b += "\n" + f.extraStackTrace());
+      b = yb(b);
+      throw a + " : " + b;
+    }
+    return Y(a.j);
+  }, h:function(a, b) {
+    a = P.resolve(d.cwd(), a);
+    b = b || {};
+    if (!a) {
+      return {path:"", node:null};
+    }
+    var c = {ya:!0, Ma:0}, e;
+    for (e in c) {
+      void 0 === b[e] && (b[e] = c[e]);
+    }
+    if (8 < b.Ma) {
+      throw new d.b(32);
+    }
+    a = w.Ha(a.split("/").filter(function(l) {
+      return !!l;
+    }), !1);
+    var g = d.root;
+    c = "/";
+    for (e = 0; e < a.length; e++) {
+      var h = e === a.length - 1;
+      if (h && b.parent) {
+        break;
+      }
+      g = d.H(g, a[e]);
+      c = w.K(c, a[e]);
+      d.T(g) && (!h || h && b.ya) && (g = g.ga.root);
+      if (!h || b.B) {
+        for (h = 0; d.S(g.mode);) {
+          if (g = d.readlink(c), c = P.resolve(w.dirname(c), g), g = d.h(c, {Ma:b.Ma}).node, 40 < h++) {
+            throw new d.b(32);
+          }
+        }
+      }
+    }
+    return {path:c, node:g};
+  }, F:function(a) {
+    for (var b;;) {
+      if (d.ka(a)) {
+        return a = a.l.hb, b ? "/" !== a[a.length - 1] ? a + "/" + b : a + b : a;
+      }
+      b = b ? a.name + "/" + b : a.name;
+      a = a.parent;
+    }
+  }, Aa:function(a, b) {
+    for (var c = 0, e = 0; e < b.length; e++) {
+      c = (c << 5) - c + b.charCodeAt(e) | 0;
+    }
+    return (a + c >>> 0) % d.I.length;
+  }, eb:function(a) {
+    var b = d.Aa(a.parent.id, a.name);
+    a.V = d.I[b];
+    d.I[b] = a;
+  }, fb:function(a) {
+    var b = d.Aa(a.parent.id, a.name);
+    if (d.I[b] === a) {
+      d.I[b] = a.V;
+    } else {
+      for (b = d.I[b]; b;) {
+        if (b.V === a) {
+          b.V = a.V;
+          break;
+        }
+        b = b.V;
+      }
+    }
+  }, H:function(a, b) {
+    var c = d.Nb(a);
+    if (c) {
+      throw new d.b(c, a);
+    }
+    for (c = d.I[d.Aa(a.id, b)]; c; c = c.V) {
+      var e = c.name;
+      if (c.parent.id === a.id && e === b) {
+        return c;
+      }
+    }
+    return d.lookup(a, b);
+  }, createNode:function(a, b, c, e) {
+    a = new d.ob(a, b, c, e);
+    d.eb(a);
+    return a;
+  }, va:function(a) {
+    d.fb(a);
+  }, ka:function(a) {
+    return a === a.parent;
+  }, T:function(a) {
+    return !!a.ga;
+  }, isFile:function(a) {
+    return 32768 === (a & 61440);
+  }, m:function(a) {
+    return 16384 === (a & 61440);
+  }, S:function(a) {
+    return 40960 === (a & 61440);
+  }, da:function(a) {
+    return 8192 === (a & 61440);
+  }, Lb:function(a) {
+    return 24576 === (a & 61440);
+  }, isFIFO:function(a) {
+    return 4096 === (a & 61440);
+  }, isSocket:function(a) {
+    return 49152 === (a & 49152);
+  }, Ib:{r:0, rs:1052672, "r+":2, w:577, wx:705, xw:705, "w+":578, "wx+":706, "xw+":706, a:1089, ax:1217, xa:1217, "a+":1090, "ax+":1218, "xa+":1218}, Pb:function(a) {
+    var b = d.Ib[a];
+    if ("undefined" === typeof b) {
+      throw Error("Unknown file open mode: " + a);
+    }
+    return b;
+  }, Za:function(a) {
+    var b = ["r", "w", "rw"][a & 3];
+    a & 512 && (b += "w");
+    return b;
+  }, N:function(a, b) {
+    if (d.gb) {
+      return 0;
+    }
+    if (-1 === b.indexOf("r") || a.mode & 292) {
+      if (-1 !== b.indexOf("w") && !(a.mode & 146) || -1 !== b.indexOf("x") && !(a.mode & 73)) {
+        return 2;
+      }
+    } else {
+      return 2;
+    }
+    return 0;
+  }, Nb:function(a) {
+    var b = d.N(a, "x");
+    return b ? b : a.f.lookup ? 0 : 2;
+  }, Ga:function(a, b) {
+    try {
+      return d.H(a, b), 20;
+    } catch (c) {
+    }
+    return d.N(a, "wx");
+  }, la:function(a, b, c) {
+    try {
+      var e = d.H(a, b);
+    } catch (g) {
+      return g.j;
+    }
+    if (a = d.N(a, "wx")) {
+      return a;
+    }
+    if (c) {
+      if (!d.m(e.mode)) {
+        return 54;
+      }
+      if (d.ka(e) || d.F(e) === d.cwd()) {
+        return 10;
+      }
+    } else {
+      if (d.m(e.mode)) {
+        return 31;
+      }
+    }
+    return 0;
+  }, Ob:function(a, b) {
+    return a ? d.S(a.mode) ? 32 : d.m(a.mode) && ("r" !== d.Za(b) || b & 512) ? 31 : d.N(a, d.Za(b)) : 44;
+  }, pb:4096, Rb:function(a, b) {
+    b = b || d.pb;
+    for (a = a || 0; a <= b; a++) {
+      if (!d.streams[a]) {
+        return a;
+      }
+    }
+    throw new d.b(33);
+  }, M:function(a) {
+    return d.streams[a];
+  }, Db:function(a, b, c) {
+    d.sa || (d.sa = function() {
+    }, d.sa.prototype = {object:{get:function() {
+      return this.node;
+    }, set:function(h) {
+      this.node = h;
+    }}});
+    var e = new d.sa, g;
+    for (g in a) {
+      e[g] = a[g];
+    }
+    a = e;
+    b = d.Rb(b, c);
+    a.fd = b;
+    return d.streams[b] = a;
+  }, xb:function(a) {
+    d.streams[a] = null;
+  }, wb:{open:function(a) {
+    a.g = d.Kb(a.node.rdev).g;
+    a.g.open && a.g.open(a);
+  }, v:function() {
+    throw new d.b(70);
+  }}, Fa:function(a) {
+    return a >> 8;
+  }, Cc:function(a) {
+    return a & 255;
+  }, U:function(a, b) {
+    return a << 8 | b;
+  }, Na:function(a, b) {
+    d.Va[a] = {g:b};
+  }, Kb:function(a) {
+    return d.Va[a];
+  }, ab:function(a) {
+    var b = [];
+    for (a = [a]; a.length;) {
+      var c = a.pop();
+      b.push(c);
+      a.push.apply(a, c.ha);
+    }
+    return b;
+  }, kb:function(a, b) {
+    function c(l) {
+      d.na--;
+      return b(l);
+    }
+    function e(l) {
+      if (l) {
+        if (!e.u) {
+          return e.u = !0, c(l);
+        }
+      } else {
+        ++h >= g.length && c(null);
+      }
+    }
+    "function" === typeof a && (b = a, a = !1);
+    d.na++;
+    1 < d.na && E("warning: " + d.na + " FS.syncfs operations in flight at once, probably just doing extra work");
+    var g = d.ab(d.root.l), h = 0;
+    g.forEach(function(l) {
+      if (!l.type.kb) {
+        return e(null);
+      }
+      l.type.kb(l, a, e);
+    });
+  }, l:function(a, b, c) {
+    var e = "/" === c, g = !c;
+    if (e && d.root) {
+      throw new d.b(10);
+    }
+    if (!e && !g) {
+      var h = d.h(c, {ya:!1});
+      c = h.path;
+      h = h.node;
+      if (d.T(h)) {
+        throw new d.b(10);
+      }
+      if (!d.m(h.mode)) {
+        throw new d.b(54);
+      }
+    }
+    b = {type:a, Ia:b, hb:c, ha:[]};
+    a = a.l(b);
+    a.l = b;
+    b.root = a;
+    e ? d.root = a : h && (h.ga = b, h.l && h.l.ha.push(b));
+    return a;
+  }, Kc:function(a) {
+    a = d.h(a, {ya:!1});
+    if (!d.T(a.node)) {
+      throw new d.b(28);
+    }
+    a = a.node;
+    var b = a.ga, c = d.ab(b);
+    Object.keys(d.I).forEach(function(e) {
+      for (e = d.I[e]; e;) {
+        var g = e.V;
+        -1 !== c.indexOf(e.l) && d.va(e);
+        e = g;
+      }
+    });
+    a.ga = null;
+    a.l.ha.splice(a.l.ha.indexOf(b), 1);
+  }, lookup:function(a, b) {
+    return a.f.lookup(a, b);
+  }, D:function(a, b, c) {
+    var e = d.h(a, {parent:!0}).node;
+    a = w.basename(a);
+    if (!a || "." === a || ".." === a) {
+      throw new d.b(28);
+    }
+    var g = d.Ga(e, a);
+    if (g) {
+      throw new d.b(g);
+    }
+    if (!e.f.D) {
+      throw new d.b(63);
+    }
+    return e.f.D(e, a, b, c);
+  }, create:function(a, b) {
+    return d.D(a, (void 0 !== b ? b : 438) & 4095 | 32768, 0);
+  }, mkdir:function(a, b) {
+    return d.D(a, (void 0 !== b ? b : 511) & 1023 | 16384, 0);
+  }, Dc:function(a, b) {
+    a = a.split("/");
+    for (var c = "", e = 0; e < a.length; ++e) {
+      if (a[e]) {
+        c += "/" + a[e];
+        try {
+          d.mkdir(c, b);
+        } catch (g) {
+          if (20 != g.j) {
+            throw g;
+          }
+        }
+      }
+    }
+  }, ma:function(a, b, c) {
+    "undefined" === typeof c && (c = b, b = 438);
+    return d.D(a, b | 8192, c);
+  }, symlink:function(a, b) {
+    if (!P.resolve(a)) {
+      throw new d.b(44);
+    }
+    var c = d.h(b, {parent:!0}).node;
+    if (!c) {
+      throw new d.b(44);
+    }
+    b = w.basename(b);
+    var e = d.Ga(c, b);
+    if (e) {
+      throw new d.b(e);
+    }
+    if (!c.f.symlink) {
+      throw new d.b(63);
+    }
+    return c.f.symlink(c, b, a);
+  }, rename:function(a, b) {
+    var c = w.dirname(a), e = w.dirname(b), g = w.basename(a), h = w.basename(b);
+    try {
+      var l = d.h(a, {parent:!0});
+      var n = l.node;
+      l = d.h(b, {parent:!0});
+      var t = l.node;
+    } catch (q) {
+      throw new d.b(10);
+    }
+    if (!n || !t) {
+      throw new d.b(44);
+    }
+    if (n.l !== t.l) {
+      throw new d.b(75);
+    }
+    l = d.H(n, g);
+    e = P.relative(a, e);
+    if ("." !== e.charAt(0)) {
+      throw new d.b(28);
+    }
+    e = P.relative(b, c);
+    if ("." !== e.charAt(0)) {
+      throw new d.b(55);
+    }
+    try {
+      var p = d.H(t, h);
+    } catch (q) {
+    }
+    if (l !== p) {
+      c = d.m(l.mode);
+      if (g = d.la(n, g, c)) {
+        throw new d.b(g);
+      }
+      if (g = p ? d.la(t, h, c) : d.Ga(t, h)) {
+        throw new d.b(g);
+      }
+      if (!n.f.rename) {
+        throw new d.b(63);
+      }
+      if (d.T(l) || p && d.T(p)) {
+        throw new d.b(10);
+      }
+      if (t !== n && (g = d.N(n, "w"))) {
+        throw new d.b(g);
+      }
+      try {
+        d.s.willMovePath && d.s.willMovePath(a, b);
+      } catch (q) {
+        E("FS.trackingDelegate['willMovePath']('" + a + "', '" + b + "') threw an exception: " + q.message);
+      }
+      d.fb(l);
+      try {
+        n.f.rename(l, t, h);
+      } catch (q) {
+        throw q;
+      } finally {
+        d.eb(l);
+      }
+      try {
+        if (d.s.onMovePath) {
+          d.s.onMovePath(a, b);
+        }
+      } catch (q) {
+        E("FS.trackingDelegate['onMovePath']('" + a + "', '" + b + "') threw an exception: " + q.message);
+      }
+    }
+  }, rmdir:function(a) {
+    var b = d.h(a, {parent:!0}).node, c = w.basename(a), e = d.H(b, c), g = d.la(b, c, !0);
+    if (g) {
+      throw new d.b(g);
+    }
+    if (!b.f.rmdir) {
+      throw new d.b(63);
+    }
+    if (d.T(e)) {
+      throw new d.b(10);
+    }
+    try {
+      d.s.willDeletePath && d.s.willDeletePath(a);
+    } catch (h) {
+      E("FS.trackingDelegate['willDeletePath']('" + a + "') threw an exception: " + h.message);
+    }
+    b.f.rmdir(b, c);
+    d.va(e);
+    try {
+      if (d.s.onDeletePath) {
+        d.s.onDeletePath(a);
+      }
+    } catch (h) {
+      E("FS.trackingDelegate['onDeletePath']('" + a + "') threw an exception: " + h.message);
+    }
+  }, readdir:function(a) {
+    a = d.h(a, {B:!0}).node;
+    if (!a.f.readdir) {
+      throw new d.b(54);
+    }
+    return a.f.readdir(a);
+  }, unlink:function(a) {
+    var b = d.h(a, {parent:!0}).node, c = w.basename(a), e = d.H(b, c), g = d.la(b, c, !1);
+    if (g) {
+      throw new d.b(g);
+    }
+    if (!b.f.unlink) {
+      throw new d.b(63);
+    }
+    if (d.T(e)) {
+      throw new d.b(10);
+    }
+    try {
+      d.s.willDeletePath && d.s.willDeletePath(a);
+    } catch (h) {
+      E("FS.trackingDelegate['willDeletePath']('" + a + "') threw an exception: " + h.message);
+    }
+    b.f.unlink(b, c);
+    d.va(e);
+    try {
+      if (d.s.onDeletePath) {
+        d.s.onDeletePath(a);
+      }
+    } catch (h) {
+      E("FS.trackingDelegate['onDeletePath']('" + a + "') threw an exception: " + h.message);
+    }
+  }, readlink:function(a) {
+    a = d.h(a).node;
+    if (!a) {
+      throw new d.b(44);
+    }
+    if (!a.f.readlink) {
+      throw new d.b(28);
+    }
+    return P.resolve(d.F(a.parent), a.f.readlink(a));
+  }, stat:function(a, b) {
+    a = d.h(a, {B:!b}).node;
+    if (!a) {
+      throw new d.b(44);
+    }
+    if (!a.f.C) {
+      throw new d.b(63);
+    }
+    return a.f.C(a);
+  }, lstat:function(a) {
+    return d.stat(a, !0);
+  }, chmod:function(a, b, c) {
+    var e;
+    "string" === typeof a ? e = d.h(a, {B:!c}).node : e = a;
+    if (!e.f.o) {
+      throw new d.b(63);
+    }
+    e.f.o(e, {mode:b & 4095 | e.mode & -4096, timestamp:Date.now()});
+  }, lchmod:function(a, b) {
+    d.chmod(a, b, !0);
+  }, fchmod:function(a, b) {
+    a = d.M(a);
+    if (!a) {
+      throw new d.b(8);
+    }
+    d.chmod(a.node, b);
+  }, chown:function(a, b, c, e) {
+    var g;
+    "string" === typeof a ? g = d.h(a, {B:!e}).node : g = a;
+    if (!g.f.o) {
+      throw new d.b(63);
+    }
+    g.f.o(g, {timestamp:Date.now()});
+  }, lchown:function(a, b, c) {
+    d.chown(a, b, c, !0);
+  }, fchown:function(a, b, c) {
+    a = d.M(a);
+    if (!a) {
+      throw new d.b(8);
+    }
+    d.chown(a.node, b, c);
+  }, truncate:function(a, b) {
+    if (0 > b) {
+      throw new d.b(28);
+    }
+    var c;
+    "string" === typeof a ? c = d.h(a, {B:!0}).node : c = a;
+    if (!c.f.o) {
+      throw new d.b(63);
+    }
+    if (d.m(c.mode)) {
+      throw new d.b(31);
+    }
+    if (!d.isFile(c.mode)) {
+      throw new d.b(28);
+    }
+    if (a = d.N(c, "w")) {
+      throw new d.b(a);
+    }
+    c.f.o(c, {size:b, timestamp:Date.now()});
+  }, uc:function(a, b) {
+    a = d.M(a);
+    if (!a) {
+      throw new d.b(8);
+    }
+    if (0 === (a.flags & 2097155)) {
+      throw new d.b(28);
+    }
+    d.truncate(a.node, b);
+  }, Lc:function(a, b, c) {
+    a = d.h(a, {B:!0}).node;
+    a.f.o(a, {timestamp:Math.max(b, c)});
+  }, open:function(a, b, c, e, g) {
+    if ("" === a) {
+      throw new d.b(44);
+    }
+    b = "string" === typeof b ? d.Pb(b) : b;
+    c = b & 64 ? ("undefined" === typeof c ? 438 : c) & 4095 | 32768 : 0;
+    if ("object" === typeof a) {
+      var h = a;
+    } else {
+      a = w.normalize(a);
+      try {
+        h = d.h(a, {B:!(b & 131072)}).node;
+      } catch (n) {
+      }
+    }
+    var l = !1;
+    if (b & 64) {
+      if (h) {
+        if (b & 128) {
+          throw new d.b(20);
+        }
+      } else {
+        h = d.D(a, c, 0), l = !0;
+      }
+    }
+    if (!h) {
+      throw new d.b(44);
+    }
+    d.da(h.mode) && (b &= -513);
+    if (b & 65536 && !d.m(h.mode)) {
+      throw new d.b(54);
+    }
+    if (!l && (c = d.Ob(h, b))) {
+      throw new d.b(c);
+    }
+    b & 512 && d.truncate(h, 0);
+    b &= -131713;
+    e = d.Db({node:h, path:d.F(h), flags:b, seekable:!0, position:0, g:h.g, cc:[], error:!1}, e, g);
+    e.g.open && e.g.open(e);
+    !f.logReadFiles || b & 1 || (d.Ka || (d.Ka = {}), a in d.Ka || (d.Ka[a] = 1, E("FS.trackingDelegate error on read file: " + a)));
+    try {
+      d.s.onOpenFile && (g = 0, 1 !== (b & 2097155) && (g |= d.lb.ib.qb), 0 !== (b & 2097155) && (g |= d.lb.ib.rb), d.s.onOpenFile(a, g));
+    } catch (n) {
+      E("FS.trackingDelegate['onOpenFile']('" + a + "', flags) threw an exception: " + n.message);
+    }
+    return e;
+  }, close:function(a) {
+    if (d.ea(a)) {
+      throw new d.b(8);
+    }
+    a.P && (a.P = null);
+    try {
+      a.g.close && a.g.close(a);
+    } catch (b) {
+      throw b;
+    } finally {
+      d.xb(a.fd);
+    }
+    a.fd = null;
+  }, ea:function(a) {
+    return null === a.fd;
+  }, v:function(a, b, c) {
+    if (d.ea(a)) {
+      throw new d.b(8);
+    }
+    if (!a.seekable || !a.g.v) {
+      throw new d.b(70);
+    }
+    if (0 != c && 1 != c && 2 != c) {
+      throw new d.b(28);
+    }
+    a.position = a.g.v(a, b, c);
+    a.cc = [];
+    return a.position;
+  }, read:function(a, b, c, e, g) {
+    if (0 > e || 0 > g) {
+      throw new d.b(28);
+    }
+    if (d.ea(a)) {
+      throw new d.b(8);
+    }
+    if (1 === (a.flags & 2097155)) {
+      throw new d.b(8);
+    }
+    if (d.m(a.node.mode)) {
+      throw new d.b(31);
+    }
+    if (!a.g.read) {
+      throw new d.b(28);
+    }
+    var h = "undefined" !== typeof g;
+    if (!h) {
+      g = a.position;
+    } else {
+      if (!a.seekable) {
+        throw new d.b(70);
+      }
+    }
+    b = a.g.read(a, b, c, e, g);
+    h || (a.position += b);
+    return b;
+  }, write:function(a, b, c, e, g, h) {
+    if (0 > e || 0 > g) {
+      throw new d.b(28);
+    }
+    if (d.ea(a)) {
+      throw new d.b(8);
+    }
+    if (0 === (a.flags & 2097155)) {
+      throw new d.b(8);
+    }
+    if (d.m(a.node.mode)) {
+      throw new d.b(31);
+    }
+    if (!a.g.write) {
+      throw new d.b(28);
+    }
+    a.seekable && a.flags & 1024 && d.v(a, 0, 2);
+    var l = "undefined" !== typeof g;
+    if (!l) {
+      g = a.position;
+    } else {
+      if (!a.seekable) {
+        throw new d.b(70);
+      }
+    }
+    b = a.g.write(a, b, c, e, g, h);
+    l || (a.position += b);
+    try {
+      if (a.path && d.s.onWriteToFile) {
+        d.s.onWriteToFile(a.path);
+      }
+    } catch (n) {
+      E("FS.trackingDelegate['onWriteToFile']('" + a.path + "') threw an exception: " + n.message);
+    }
+    return b;
+  }, ba:function(a, b, c) {
+    if (d.ea(a)) {
+      throw new d.b(8);
+    }
+    if (0 > b || 0 >= c) {
+      throw new d.b(28);
+    }
+    if (0 === (a.flags & 2097155)) {
+      throw new d.b(8);
+    }
+    if (!d.isFile(a.node.mode) && !d.m(a.node.mode)) {
+      throw new d.b(43);
+    }
+    if (!a.g.ba) {
+      throw new d.b(138);
+    }
+    a.g.ba(a, b, c);
+  }, fa:function(a, b, c, e, g, h, l) {
+    if (0 !== (h & 2) && 0 === (l & 2) && 2 !== (a.flags & 2097155)) {
+      throw new d.b(2);
+    }
+    if (1 === (a.flags & 2097155)) {
+      throw new d.b(2);
+    }
+    if (!a.g.fa) {
+      throw new d.b(43);
+    }
+    return a.g.fa(a, b, c, e, g, h, l);
+  }, W:function(a, b, c, e, g) {
+    return a && a.g.W ? a.g.W(a, b, c, e, g) : 0;
+  }, Ec:function() {
+    return 0;
+  }, Ca:function(a, b, c) {
+    if (!a.g.Ca) {
+      throw new d.b(59);
+    }
+    return a.g.Ca(a, b, c);
+  }, readFile:function(a, b) {
+    b = b || {};
+    b.flags = b.flags || "r";
+    b.encoding = b.encoding || "binary";
+    if ("utf8" !== b.encoding && "binary" !== b.encoding) {
+      throw Error('Invalid encoding type "' + b.encoding + '"');
+    }
+    var c, e = d.open(a, b.flags);
+    a = d.stat(a).size;
+    var g = new Uint8Array(a);
+    d.read(e, g, 0, a, 0);
+    "utf8" === b.encoding ? c = R(g, 0) : "binary" === b.encoding && (c = g);
+    d.close(e);
+    return c;
+  }, writeFile:function(a, b, c) {
+    c = c || {};
+    c.flags = c.flags || "w";
+    a = d.open(a, c.flags, c.mode);
+    if ("string" === typeof b) {
+      var e = new Uint8Array(ha(b) + 1);
+      b = W(b, e, 0, e.length);
+      d.write(a, e, 0, b, void 0, c.vb);
+    } else {
+      if (ArrayBuffer.isView(b)) {
+        d.write(a, b, 0, b.byteLength, void 0, c.vb);
+      } else {
+        throw Error("Unsupported data type");
+      }
+    }
+    d.close(a);
+  }, cwd:function() {
+    return d.Ua;
+  }, chdir:function(a) {
+    a = d.h(a, {B:!0});
+    if (null === a.node) {
+      throw new d.b(44);
+    }
+    if (!d.m(a.node.mode)) {
+      throw new d.b(54);
+    }
+    var b = d.N(a.node, "x");
+    if (b) {
+      throw new d.b(b);
+    }
+    d.Ua = a.path;
+  }, zb:function() {
+    d.mkdir("/tmp");
+    d.mkdir("/home");
+    d.mkdir("/home/web_user");
+  }, yb:function() {
+    d.mkdir("/dev");
+    d.Na(d.U(1, 3), {read:function() {
+      return 0;
+    }, write:function(e, g, h, l) {
+      return l;
+    }});
+    d.ma("/dev/null", d.U(1, 3));
+    S.register(d.U(5, 0), S.Fb);
+    S.register(d.U(6, 0), S.Eb);
+    d.ma("/dev/tty", d.U(5, 0));
+    d.ma("/dev/tty1", d.U(6, 0));
+    if ("object" === typeof crypto && "function" === typeof crypto.getRandomValues) {
+      var a = new Uint8Array(1);
+      var b = function() {
+        crypto.getRandomValues(a);
+        return a[0];
+      };
+    } else {
+      if (U) {
+        try {
+          var c = require("crypto");
+          b = function() {
+            return c.randomBytes(1)[0];
+          };
+        } catch (e) {
+        }
+      }
+    }
+    b || (b = function() {
+      A("random_device");
+    });
+    d.L("/dev", "random", b);
+    d.L("/dev", "urandom", b);
+    d.mkdir("/dev/shm");
+    d.mkdir("/dev/shm/tmp");
+  }, Bb:function() {
+    d.mkdir("/proc");
+    d.mkdir("/proc/self");
+    d.mkdir("/proc/self/fd");
+    d.l({l:function() {
+      var a = d.createNode("/proc/self", "fd", 16895, 73);
+      a.f = {lookup:function(b, c) {
+        var e = d.M(+c);
+        if (!e) {
+          throw new d.b(8);
+        }
+        b = {parent:null, l:{hb:"fake"}, f:{readlink:function() {
+          return e.path;
+        }}};
+        return b.parent = b;
+      }};
+      return a;
+    }}, {}, "/proc/self/fd");
+  }, Cb:function() {
+    f.stdin ? d.L("/dev", "stdin", f.stdin) : d.symlink("/dev/tty", "/dev/stdin");
+    f.stdout ? d.L("/dev", "stdout", null, f.stdout) : d.symlink("/dev/tty", "/dev/stdout");
+    f.stderr ? d.L("/dev", "stderr", null, f.stderr) : d.symlink("/dev/tty1", "/dev/stderr");
+    d.open("/dev/stdin", "r");
+    d.open("/dev/stdout", "w");
+    d.open("/dev/stderr", "w");
+  }, Wa:function() {
+    d.b || (d.b = function(a, b) {
+      this.node = b;
+      this.Xb = function(c) {
+        this.j = c;
+      };
+      this.Xb(a);
+      this.message = "FS error";
+    }, d.b.prototype = Error(), d.b.prototype.constructor = d.b, [44].forEach(function(a) {
+      d.za[a] = new d.b(a);
+      d.za[a].stack = "<generic error, no stack>";
+    }));
+  }, Yb:function() {
+    d.Wa();
+    d.I = Array(4096);
+    d.l(u, {}, "/");
+    d.zb();
+    d.yb();
+    d.Bb();
+    d.Ya = {MEMFS:u, WORKERFS:F};
+  }, R:function(a, b, c) {
+    d.R.Ba = !0;
+    d.Wa();
+    f.stdin = a || f.stdin;
+    f.stdout = b || f.stdout;
+    f.stderr = c || f.stderr;
+    d.Cb();
+  }, quit:function() {
+    d.R.Ba = !1;
+    var a = f._fflush;
+    a && a(0);
+    for (a = 0; a < d.streams.length; a++) {
+      var b = d.streams[a];
+      b && d.close(b);
+    }
+  }, ja:function(a, b) {
+    var c = 0;
+    a && (c |= 365);
+    b && (c |= 146);
+    return c;
+  }, zc:function(a, b) {
+    a = w.join.apply(null, a);
+    b && "/" == a[0] && (a = a.substr(1));
+    return a;
+  }, dc:function(a, b) {
+    return P.resolve(b, a);
+  }, Ic:function(a) {
+    return w.normalize(a);
+  }, tc:function(a, b) {
+    a = d.ta(a, b);
+    if (a.exists) {
+      return a.object;
+    }
+    Y(a.error);
+    return null;
+  }, ta:function(a, b) {
+    try {
+      var c = d.h(a, {B:!b});
+      a = c.path;
+    } catch (g) {
+    }
+    var e = {ka:!1, exists:!1, error:0, name:null, path:null, object:null, Sb:!1, Ub:null, Tb:null};
+    try {
+      c = d.h(a, {parent:!0}), e.Sb = !0, e.Ub = c.path, e.Tb = c.node, e.name = w.basename(a), c = d.h(a, {B:!b}), e.exists = !0, e.path = c.path, e.object = c.node, e.name = c.node.name, e.ka = "/" === c.path;
+    } catch (g) {
+      e.error = g.j;
+    }
+    return e;
+  }, ic:function(a, b, c, e) {
+    a = w.K("string" === typeof a ? a : d.F(a), b);
+    return d.mkdir(a, d.ja(c, e));
+  }, lc:function(a, b) {
+    a = "string" === typeof a ? a : d.F(a);
+    for (b = b.split("/").reverse(); b.length;) {
+      var c = b.pop();
+      if (c) {
+        var e = w.K(a, c);
+        try {
+          d.mkdir(e);
+        } catch (g) {
+        }
+        a = e;
+      }
+    }
+    return e;
+  }, Ab:function(a, b, c, e, g) {
+    a = w.K("string" === typeof a ? a : d.F(a), b);
+    return d.create(a, d.ja(e, g));
+  }, Ta:function(a, b, c, e, g, h) {
+    a = b ? w.K("string" === typeof a ? a : d.F(a), b) : a;
+    e = d.ja(e, g);
+    g = d.create(a, e);
+    if (c) {
+      if ("string" === typeof c) {
+        a = Array(c.length);
+        b = 0;
+        for (var l = c.length; b < l; ++b) {
+          a[b] = c.charCodeAt(b);
+        }
+        c = a;
+      }
+      d.chmod(g, e | 146);
+      a = d.open(g, "w");
+      d.write(a, c, 0, c.length, 0, h);
+      d.close(a);
+      d.chmod(g, e);
+    }
+    return g;
+  }, L:function(a, b, c, e) {
+    a = w.K("string" === typeof a ? a : d.F(a), b);
+    b = d.ja(!!c, !!e);
+    d.L.Fa || (d.L.Fa = 64);
+    var g = d.U(d.L.Fa++, 0);
+    d.Na(g, {open:function(h) {
+      h.seekable = !1;
+    }, close:function() {
+      e && e.buffer && e.buffer.length && e(10);
+    }, read:function(h, l, n, t) {
+      for (var p = 0, q = 0; q < t; q++) {
+        try {
+          var z = c();
+        } catch (C) {
+          throw new d.b(29);
+        }
+        if (void 0 === z && 0 === p) {
+          throw new d.b(6);
+        }
+        if (null === z || void 0 === z) {
+          break;
+        }
+        p++;
+        l[n + q] = z;
+      }
+      p && (h.node.timestamp = Date.now());
+      return p;
+    }, write:function(h, l, n, t) {
+      for (var p = 0; p < t; p++) {
+        try {
+          e(l[n + p]);
+        } catch (q) {
+          throw new d.b(29);
+        }
+      }
+      t && (h.node.timestamp = Date.now());
+      return p;
+    }});
+    return d.ma(a, b, g);
+  }, kc:function(a, b, c) {
+    a = w.K("string" === typeof a ? a : d.F(a), b);
+    return d.symlink(c, a);
+  }, $a:function(a) {
+    if (a.Da || a.Mb || a.link || a.c) {
+      return !0;
+    }
+    var b = !0;
+    if ("undefined" !== typeof XMLHttpRequest) {
+      throw Error("Lazy loading should have been performed (contents set) in createLazyFile, but it was not. Lazy loading only works in web workers. Use --embed-file or --preload-file in emcc on the main thread.");
+    }
+    if (oa) {
+      try {
+        a.c = Da(oa(a.url), !0), a.i = a.c.length;
+      } catch (c) {
+        b = !1;
+      }
+    } else {
+      throw Error("Cannot load without read() or XMLHttpRequest.");
+    }
+    b || Y(29);
+    return b;
+  }, jc:function(a, b, c, e, g) {
+    function h() {
+      this.Ea = !1;
+      this.u = [];
+    }
+    h.prototype.get = function(p) {
+      if (!(p > this.length - 1 || 0 > p)) {
+        var q = p % this.chunkSize;
+        return this.cb(p / this.chunkSize | 0)[q];
+      }
+    };
+    h.prototype.ub = function(p) {
+      this.cb = p;
+    };
+    h.prototype.Ra = function() {
+      var p = new XMLHttpRequest;
+      p.open("HEAD", c, !1);
+      p.send(null);
+      if (!(200 <= p.status && 300 > p.status || 304 === p.status)) {
+        throw Error("Couldn't load " + c + ". Status: " + p.status);
+      }
+      var q = Number(p.getResponseHeader("Content-length")), z, C = (z = p.getResponseHeader("Accept-Ranges")) && "bytes" === z;
+      p = (z = p.getResponseHeader("Content-Encoding")) && "gzip" === z;
+      var k = 1048576;
+      C || (k = q);
+      var r = this;
+      r.ub(function(x) {
+        var D = x * k, M = (x + 1) * k - 1;
+        M = Math.min(M, q - 1);
+        if ("undefined" === typeof r.u[x]) {
+          var Wa = r.u;
+          if (D > M) {
+            throw Error("invalid range (" + D + ", " + M + ") or no bytes requested!");
+          }
+          if (M > q - 1) {
+            throw Error("only " + q + " bytes available! programmer error!");
+          }
+          var B = new XMLHttpRequest;
+          B.open("GET", c, !1);
+          q !== k && B.setRequestHeader("Range", "bytes=" + D + "-" + M);
+          "undefined" != typeof Uint8Array && (B.responseType = "arraybuffer");
+          B.overrideMimeType && B.overrideMimeType("text/plain; charset=x-user-defined");
+          B.send(null);
+          if (!(200 <= B.status && 300 > B.status || 304 === B.status)) {
+            throw Error("Couldn't load " + c + ". Status: " + B.status);
+          }
+          D = void 0 !== B.response ? new Uint8Array(B.response || []) : Da(B.responseText || "", !0);
+          Wa[x] = D;
+        }
+        if ("undefined" === typeof r.u[x]) {
+          throw Error("doXHR failed!");
+        }
+        return r.u[x];
+      });
+      if (p || !q) {
+        k = q = 1, k = q = this.cb(0).length, da("LazyFiles on gzip forces download of the whole file when length is accessed");
+      }
+      this.tb = q;
+      this.sb = k;
+      this.Ea = !0;
+    };
+    if ("undefined" !== typeof XMLHttpRequest) {
+      if (!Q) {
+        throw "Cannot do synchronous binary XHRs outside webworkers in modern browsers. Use --embed-file or --preload-file in emcc";
+      }
+      var l = new h;
+      Object.defineProperties(l, {length:{get:function() {
+        this.Ea || this.Ra();
+        return this.tb;
+      }}, chunkSize:{get:function() {
+        this.Ea || this.Ra();
+        return this.sb;
+      }}});
+      l = {Da:!1, c:l};
+    } else {
+      l = {Da:!1, url:c};
+    }
+    var n = d.Ab(a, b, l, e, g);
+    l.c ? n.c = l.c : l.url && (n.c = null, n.url = l.url);
+    Object.defineProperties(n, {i:{get:function() {
+      return this.c.length;
+    }}});
+    var t = {};
+    Object.keys(n.g).forEach(function(p) {
+      var q = n.g[p];
+      t[p] = function() {
+        if (!d.$a(n)) {
+          throw new d.b(29);
+        }
+        return q.apply(null, arguments);
+      };
+    });
+    t.read = function(p, q, z, C, k) {
+      if (!d.$a(n)) {
+        throw new d.b(29);
+      }
+      p = p.node.c;
+      if (k >= p.length) {
+        return 0;
+      }
+      C = Math.min(p.length - k, C);
+      if (p.slice) {
+        for (var r = 0; r < C; r++) {
+          q[z + r] = p[k + r];
+        }
+      } else {
+        for (r = 0; r < C; r++) {
+          q[z + r] = p.get(k + r);
+        }
+      }
+      return C;
+    };
+    n.g = t;
+    return n;
+  }, mc:function(a, b, c, e, g, h, l, n, t, p) {
+    function q(k) {
+      function r(D) {
+        p && p();
+        n || d.Ta(a, b, D, e, g, t);
+        h && h();
+        Ma(C);
+      }
+      var x = !1;
+      f.preloadPlugins.forEach(function(D) {
+        !x && D.canHandle(z) && (D.handle(k, z, r, function() {
+          l && l();
+          Ma(C);
+        }), x = !0);
+      });
+      x || r(k);
+    }
+    sb.R();
+    var z = b ? P.resolve(w.K(a, b)) : a, C = "cp " + z;
+    bb(C);
+    "string" == typeof c ? sb.fc(c, function(k) {
+      q(k);
+    }, l) : q(c);
+  }, indexedDB:function() {
+    return window.indexedDB || window.mozIndexedDB || window.webkitIndexedDB || window.msIndexedDB;
+  }, Oa:function() {
+    return "EM_FS_" + window.location.pathname;
+  }, Pa:20, $:"FILE_DATA", Gc:function(a, b, c) {
+    b = b || function() {
+    };
+    c = c || function() {
+    };
+    var e = d.indexedDB();
+    try {
+      var g = e.open(d.Oa(), d.Pa);
+    } catch (h) {
+      return c(h);
+    }
+    g.onupgradeneeded = function() {
+      da("creating db");
+      g.result.createObjectStore(d.$);
+    };
+    g.onsuccess = function() {
+      var h = g.result.transaction([d.$], "readwrite"), l = h.objectStore(d.$), n = 0, t = 0, p = a.length;
+      a.forEach(function(q) {
+        q = l.put(d.ta(q).object.c, q);
+        q.onsuccess = function() {
+          n++;
+          n + t == p && (0 == t ? b() : c());
+        };
+        q.onerror = function() {
+          t++;
+          n + t == p && (0 == t ? b() : c());
+        };
+      });
+      h.onerror = c;
+    };
+    g.onerror = c;
+  }, Ac:function(a, b, c) {
+    b = b || function() {
+    };
+    c = c || function() {
+    };
+    var e = d.indexedDB();
+    try {
+      var g = e.open(d.Oa(), d.Pa);
+    } catch (h) {
+      return c(h);
+    }
+    g.onupgradeneeded = c;
+    g.onsuccess = function() {
+      var h = g.result;
+      try {
+        var l = h.transaction([d.$], "readonly");
+      } catch (z) {
+        c(z);
+        return;
+      }
+      var n = l.objectStore(d.$), t = 0, p = 0, q = a.length;
+      a.forEach(function(z) {
+        var C = n.get(z);
+        C.onsuccess = function() {
+          d.ta(z).exists && d.unlink(z);
+          d.Ta(w.dirname(z), w.basename(z), C.result, !0, !0, !0);
+          t++;
+          t + p == q && (0 == p ? b() : c());
+        };
+        C.onerror = function() {
+          p++;
+          t + p == q && (0 == p ? b() : c());
+        };
+      });
+      l.onerror = c;
+    };
+    g.onerror = c;
+  }}, v = {Bc:{}, nb:5, umask:511, hc:function(a, b) {
+    if ("/" !== b[0]) {
+      if (-100 === a) {
+        a = d.cwd();
+      } else {
+        a = d.M(a);
+        if (!a) {
+          throw new d.b(8);
+        }
+        a = a.path;
+      }
+      b = w.K(a, b);
+    }
+    return b;
+  }, wa:function(a, b, c) {
+    try {
+      var e = a(b);
+    } catch (g) {
+      if (g && g.node && w.normalize(b) !== w.normalize(d.F(g.node))) {
+        return -54;
+      }
+      throw g;
+    }
+    m[c >> 2] = e.dev;
+    m[c + 4 >> 2] = 0;
+    m[c + 8 >> 2] = e.ino;
+    m[c + 12 >> 2] = e.mode;
+    m[c + 16 >> 2] = e.nlink;
+    m[c + 20 >> 2] = e.uid;
+    m[c + 24 >> 2] = e.gid;
+    m[c + 28 >> 2] = e.rdev;
+    m[c + 32 >> 2] = 0;
+    J = [e.size >>> 0, (y = e.size, 1.0 <= +qa(y) ? 0.0 < y ? (ra(+aa(y / 4294967296.0), 4294967295.0) | 0) >>> 0 : ~~+Z((y - +(~~y >>> 0)) / 4294967296.0) >>> 0 : 0)];
+    m[c + 40 >> 2] = J[0];
+    m[c + 44 >> 2] = J[1];
+    m[c + 48 >> 2] = 4096;
+    m[c + 52 >> 2] = e.blocks;
+    m[c + 56 >> 2] = e.atime.getTime() / 1000 | 0;
+    m[c + 60 >> 2] = 0;
+    m[c + 64 >> 2] = e.mtime.getTime() / 1000 | 0;
+    m[c + 68 >> 2] = 0;
+    m[c + 72 >> 2] = e.ctime.getTime() / 1000 | 0;
+    m[c + 76 >> 2] = 0;
+    J = [e.ino >>> 0, (y = e.ino, 1.0 <= +qa(y) ? 0.0 < y ? (ra(+aa(y / 4294967296.0), 4294967295.0) | 0) >>> 0 : ~~+Z((y - +(~~y >>> 0)) / 4294967296.0) >>> 0 : 0)];
+    m[c + 80 >> 2] = J[0];
+    m[c + 84 >> 2] = J[1];
+    return 0;
+  }, rc:function(a, b, c, e, g) {
+    a = V.slice(a, a + c);
+    d.W(b, a, g, c, e);
+  }, pc:function(a, b) {
+    a = w.normalize(a);
+    "/" === a[a.length - 1] && (a = a.substr(0, a.length - 1));
+    d.mkdir(a, b, 0);
+    return 0;
+  }, qc:function(a, b, c) {
+    switch(b & 61440) {
+      case 32768:
+      case 8192:
+      case 24576:
+      case 4096:
+      case 49152:
+        break;
+      default:
+        return -28;
+    }
+    d.D(a, b, c);
+    return 0;
+  }, sc:function(a, b, c) {
+    if (0 >= c) {
+      return -28;
+    }
+    a = d.readlink(a);
+    var e = Math.min(c, ha(a)), g = I[b + e];
+    W(a, V, b, c + 1);
+    I[b + e] = g;
+    return e;
+  }, nc:function(a, b) {
+    if (b & -8) {
+      return -28;
+    }
+    a = d.h(a, {B:!0}).node;
+    if (!a) {
+      return -44;
+    }
+    var c = "";
+    b & 4 && (c += "r");
+    b & 2 && (c += "w");
+    b & 1 && (c += "x");
+    return c && d.N(a, c) ? -2 : 0;
+  }, oc:function(a, b, c) {
+    var e = d.M(c);
+    e && d.close(e);
+    return d.open(a, b, 0, c, c).fd;
+  }, Gb:function(a, b, c, e) {
+    for (var g = 0, h = 0; h < c; h++) {
+      var l = m[b + (8 * h + 4) >> 2], n = d.read(a, I, m[b + 8 * h >> 2], l, e);
+      if (0 > n) {
+        return -1;
+      }
+      g += n;
+      if (n < l) {
+        break;
+      }
+    }
+    return g;
+  }, Hb:function(a, b, c, e) {
+    for (var g = 0, h = 0; h < c; h++) {
+      var l = d.write(a, I, m[b + 8 * h >> 2], m[b + (8 * h + 4) >> 2], e);
+      if (0 > l) {
+        return -1;
+      }
+      g += l;
+    }
+    return g;
+  }, Z:void 0, get:function() {
+    v.Z += 4;
+    return m[v.Z - 4 >> 2];
+  }, O:function(a) {
+    return ca(a);
+  }, G:function(a) {
+    a = d.M(a);
+    if (!a) {
+      throw new d.b(8);
+    }
+    return a;
+  }, vc:function(a) {
+    return a;
+  }}, fa;
+  U ? fa = function() {
+    var a = process.hrtime();
+    return 1e3 * a[0] + a[1] / 1e6;
+  } : "undefined" !== typeof dateNow ? fa = dateNow : fa = function() {
+    return performance.now();
+  };
+  var fb = {}, zb = (W("GMT", V, 2334240, 4), 2334240), Ba = [31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31], Ca = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+  Object.defineProperties(ba.prototype, {read:{get:function() {
+    return 365 === (this.mode & 365);
+  }, set:function(a) {
+    a ? this.mode |= 365 : this.mode &= -366;
+  }}, write:{get:function() {
+    return 146 === (this.mode & 146);
+  }, set:function(a) {
+    a ? this.mode |= 146 : this.mode &= -147;
+  }}, Mb:{get:function() {
+    return d.m(this.mode);
+  }}, Da:{get:function() {
+    return d.da(this.mode);
+  }}});
+  d.ob = ba;
+  d.Yb();
+  var sb, tb = {__assert_fail:function(a, b, c, e) {
+    A("Assertion failed: " + ca(a) + ", at: " + [b ? ca(b) : "unknown filename", c, e ? ca(e) : "unknown function"]);
+  }, __sys__newselect:function(a, b, c, e) {
+    for (var g = 0, h = b ? m[b >> 2] : 0, l = b ? m[b + 4 >> 2] : 0, n = c ? m[c >> 2] : 0, t = c ? m[c + 4 >> 2] : 0, p = e ? m[e >> 2] : 0, q = e ? m[e + 4 >> 2] : 0, z = 0, C = 0, k = 0, r = 0, x = 0, D = 0, M = (b ? m[b >> 2] : 0) | (c ? m[c >> 2] : 0) | (e ? m[e >> 2] : 0), Wa = (b ? m[b + 4 >> 2] : 0) | (c ? m[c + 4 >> 2] : 0) | (e ? m[e + 4 >> 2] : 0), B = 0; B < a; B++) {
+      var K = 1 << B % 32;
+      if (32 > B ? M & K : Wa & K) {
+        var Ia = d.M(B);
+        if (!Ia) {
+          throw new d.b(8);
+        }
+        var Ja = v.nb;
+        Ia.g.Vb && (Ja = Ia.g.Vb(Ia));
+        Ja & 1 && (32 > B ? h & K : l & K) && (32 > B ? z |= K : C |= K, g++);
+        Ja & 4 && (32 > B ? n & K : t & K) && (32 > B ? k |= K : r |= K, g++);
+        Ja & 2 && (32 > B ? p & K : q & K) && (32 > B ? x |= K : D |= K, g++);
+      }
+    }
+    b && (m[b >> 2] = z, m[b + 4 >> 2] = C);
+    c && (m[c >> 2] = k, m[c + 4 >> 2] = r);
+    e && (m[e >> 2] = x, m[e + 4 >> 2] = D);
+    return g;
+  }, __sys_fcntl64:function(a, b, c) {
+    v.Z = c;
+    try {
+      var e = v.G(a);
+      switch(b) {
+        case 0:
+          var g = v.get();
+          return 0 > g ? -28 : d.open(e.path, e.flags, 0, g).fd;
+        case 1:
+        case 2:
+          return 0;
+        case 3:
+          return e.flags;
+        case 4:
+          return g = v.get(), e.flags |= g, 0;
+        case 12:
+          return g = v.get(), Ta[g + 0 >> 1] = 2, 0;
+        case 13:
+        case 14:
+          return 0;
+        case 16:
+        case 8:
+          return -28;
+        case 9:
+          return Y(28), -1;
+        default:
+          return -28;
+      }
+    } catch (h) {
+      return "undefined" !== typeof d && h instanceof d.b || A(h), -h.j;
+    }
+  }, __sys_fstat64:function(a, b) {
+    try {
+      var c = v.G(a);
+      return v.wa(d.stat, c.path, b);
+    } catch (e) {
+      return "undefined" !== typeof d && e instanceof d.b || A(e), -e.j;
+    }
+  }, __sys_getdents64:function(a, b, c) {
+    try {
+      var e = v.G(a);
+      e.P || (e.P = d.readdir(e.path));
+      a = 0;
+      for (var g = d.v(e, 0, 1), h = Math.floor(g / 280); h < e.P.length && a + 280 <= c;) {
+        var l = e.P[h];
+        if ("." === l[0]) {
+          var n = 1;
+          var t = 4;
+        } else {
+          var p = d.H(e.node, l);
+          n = p.id;
+          t = d.da(p.mode) ? 2 : d.m(p.mode) ? 4 : d.S(p.mode) ? 10 : 8;
+        }
+        J = [n >>> 0, (y = n, 1.0 <= +qa(y) ? 0.0 < y ? (ra(+aa(y / 4294967296.0), 4294967295.0) | 0) >>> 0 : ~~+Z((y - +(~~y >>> 0)) / 4294967296.0) >>> 0 : 0)];
+        m[b + a >> 2] = J[0];
+        m[b + a + 4 >> 2] = J[1];
+        J = [280 * (h + 1) >>> 0, (y = 280 * (h + 1), 1.0 <= +qa(y) ? 0.0 < y ? (ra(+aa(y / 4294967296.0), 4294967295.0) | 0) >>> 0 : ~~+Z((y - +(~~y >>> 0)) / 4294967296.0) >>> 0 : 0)];
+        m[b + a + 8 >> 2] = J[0];
+        m[b + a + 12 >> 2] = J[1];
+        Ta[b + a + 16 >> 1] = 280;
+        I[b + a + 18 >> 0] = t;
+        W(l, V, b + a + 19, 256);
+        a += 280;
+        h += 1;
+      }
+      d.v(e, 280 * h, 0);
+      return a;
+    } catch (q) {
+      return "undefined" !== typeof d && q instanceof d.b || A(q), -q.j;
+    }
+  }, __sys_ioctl:function(a, b, c) {
+    v.Z = c;
+    try {
+      var e = v.G(a);
+      switch(b) {
+        case 21509:
+        case 21505:
+          return e.tty ? 0 : -59;
+        case 21510:
+        case 21511:
+        case 21512:
+        case 21506:
+        case 21507:
+        case 21508:
+          return e.tty ? 0 : -59;
+        case 21519:
+          if (!e.tty) {
+            return -59;
+          }
+          var g = v.get();
+          return m[g >> 2] = 0;
+        case 21520:
+          return e.tty ? -28 : -59;
+        case 21531:
+          return g = v.get(), d.Ca(e, b, g);
+        case 21523:
+          return e.tty ? 0 : -59;
+        case 21524:
+          return e.tty ? 0 : -59;
+        default:
+          A("bad ioctl syscall " + b);
+      }
+    } catch (h) {
+      return "undefined" !== typeof d && h instanceof d.b || A(h), -h.j;
+    }
+  }, __sys_lstat64:function(a, b) {
+    try {
+      return a = v.O(a), v.wa(d.lstat, a, b);
+    } catch (c) {
+      return "undefined" !== typeof d && c instanceof d.b || A(c), -c.j;
+    }
+  }, __sys_madvise1:function() {
+    return 0;
+  }, __sys_open:function(a, b, c) {
+    v.Z = c;
+    try {
+      var e = v.O(a), g = v.get();
+      return d.open(e, b, g).fd;
+    } catch (h) {
+      return "undefined" !== typeof d && h instanceof d.b || A(h), -h.j;
+    }
+  }, __sys_read:function(a, b, c) {
+    try {
+      var e = v.G(a);
+      return d.read(e, I, b, c);
+    } catch (g) {
+      return "undefined" !== typeof d && g instanceof d.b || A(g), -g.j;
+    }
+  }, __sys_rename:function(a, b) {
+    try {
+      return a = v.O(a), b = v.O(b), d.rename(a, b), 0;
+    } catch (c) {
+      return "undefined" !== typeof d && c instanceof d.b || A(c), -c.j;
+    }
+  }, __sys_rmdir:function(a) {
+    try {
+      return a = v.O(a), d.rmdir(a), 0;
+    } catch (b) {
+      return "undefined" !== typeof d && b instanceof d.b || A(b), -b.j;
+    }
+  }, __sys_stat64:function(a, b) {
+    try {
+      return a = v.O(a), v.wa(d.stat, a, b);
+    } catch (c) {
+      return "undefined" !== typeof d && c instanceof d.b || A(c), -c.j;
+    }
+  }, __sys_unlink:function(a) {
+    try {
+      return a = v.O(a), d.unlink(a), 0;
+    } catch (b) {
+      return "undefined" !== typeof d && b instanceof d.b || A(b), -b.j;
+    }
+  }, abort:function() {
+    A();
+  }, clock:wa, clock_gettime:function(a, b) {
+    if (0 === a) {
+      a = Date.now();
+    } else {
+      if (1 === a || 4 === a) {
+        a = fa();
+      } else {
+        return Y(28), -1;
+      }
+    }
+    m[b >> 2] = a / 1000 | 0;
+    m[b + 4 >> 2] = a % 1000 * 1E6 | 0;
+    return 0;
+  }, emscripten_get_sbrk_ptr:function() {
+    return 2334176;
+  }, emscripten_memcpy_big:function(a, b, c) {
+    V.copyWithin(a, b, b + c);
+  }, emscripten_resize_heap:function() {
+    A("OOM");
+  }, environ_get:function(a, b) {
+    var c = 0;
+    la().forEach(function(e, g) {
+      var h = b + c;
+      g = m[a + 4 * g >> 2] = h;
+      for (h = 0; h < e.length; ++h) {
+        I[g++ >> 0] = e.charCodeAt(h);
+      }
+      I[g >> 0] = 0;
+      c += e.length + 1;
+    });
+    return 0;
+  }, environ_sizes_get:function(a, b) {
+    var c = la();
+    m[a >> 2] = c.length;
+    var e = 0;
+    c.forEach(function(g) {
+      e += g.length + 1;
+    });
+    m[b >> 2] = e;
+    return 0;
+  }, exit:function(a) {
+    mb(a);
+  }, fd_close:function(a) {
+    try {
+      var b = v.G(a);
+      d.close(b);
+      return 0;
+    } catch (c) {
+      return "undefined" !== typeof d && c instanceof d.b || A(c), c.j;
+    }
+  }, fd_fdstat_get:function(a, b) {
+    try {
+      var c = v.G(a);
+      I[b >> 0] = c.tty ? 2 : d.m(c.mode) ? 3 : d.S(c.mode) ? 7 : 4;
+      return 0;
+    } catch (e) {
+      return "undefined" !== typeof d && e instanceof d.b || A(e), e.j;
+    }
+  }, fd_read:function(a, b, c, e) {
+    try {
+      var g = v.G(a), h = v.Gb(g, b, c);
+      m[e >> 2] = h;
+      return 0;
+    } catch (l) {
+      return "undefined" !== typeof d && l instanceof d.b || A(l), l.j;
+    }
+  }, fd_seek:function(a, b, c, e, g) {
+    try {
+      var h = v.G(a);
+      a = 4294967296 * c + (b >>> 0);
+      if (-9007199254740992 >= a || 9007199254740992 <= a) {
+        return -61;
+      }
+      d.v(h, a, e);
+      J = [h.position >>> 0, (y = h.position, 1.0 <= +qa(y) ? 0.0 < y ? (ra(+aa(y / 4294967296.0), 4294967295.0) | 0) >>> 0 : ~~+Z((y - +(~~y >>> 0)) / 4294967296.0) >>> 0 : 0)];
+      m[g >> 2] = J[0];
+      m[g + 4 >> 2] = J[1];
+      h.P && 0 === a && 0 === e && (h.P = null);
+      return 0;
+    } catch (l) {
+      return "undefined" !== typeof d && l instanceof d.b || A(l), l.j;
+    }
+  }, fd_write:function(a, b, c, e) {
+    try {
+      var g = v.G(a), h = v.Hb(g, b, c);
+      m[e >> 2] = h;
+      return 0;
+    } catch (l) {
+      return "undefined" !== typeof d && l instanceof d.b || A(l), l.j;
+    }
+  }, gmtime:function(a) {
+    return gb(a, 2334192);
+  }, gmtime_r:gb, localtime:function(a) {
+    return jb(a, 2334192);
+  }, localtime_r:jb, memory:pa, mktime:function(a) {
+    ya();
+    var b = new Date(m[a + 20 >> 2] + 1900, m[a + 16 >> 2], m[a + 12 >> 2], m[a + 8 >> 2], m[a + 4 >> 2], m[a >> 2], 0), c = m[a + 32 >> 2], e = b.getTimezoneOffset(), g = new Date(b.getFullYear(), 0, 1), h = (new Date(b.getFullYear(), 6, 1)).getTimezoneOffset(), l = g.getTimezoneOffset(), n = Math.min(l, h);
+    0 > c ? m[a + 32 >> 2] = Number(h != l && n == e) : 0 < c != (n == e) && (h = Math.max(l, h), b.setTime(b.getTime() + 60000 * ((0 < c ? n : h) - e)));
+    m[a + 24 >> 2] = b.getDay();
+    m[a + 28 >> 2] = (b.getTime() - g.getTime()) / 864E5 | 0;
+    return b.getTime() / 1000 | 0;
+  }, nanosleep:function(a, b) {
+    if (0 === a) {
+      return Y(28), -1;
+    }
+    var c = m[a >> 2];
+    a = m[a + 4 >> 2];
+    if (0 > a || 999999999 < a || 0 > c) {
+      return Y(28), -1;
+    }
+    0 !== b && (m[b >> 2] = 0, m[b + 4 >> 2] = 0);
+    b = 1e6 * c + a / 1000;
+    for (c = fa(); fa() - c < b / 1000;) {
+    }
+  }, round:function(a) {
+    a = +a;
+    return 0 <= a ? +aa(a + 0.5) : +Z(a - 0.5);
+  }, roundf:function(a) {
+    a = +a;
+    return 0 <= a ? +aa(a + 0.5) : +Z(a - 0.5);
+  }, setTempRet0:function() {
+  }, signal:function() {
+    return 0;
+  }, strftime:function(a, b, c, e) {
+    function g(k, r, x) {
+      for (k = "number" === typeof k ? k.toString() : k || ""; k.length < r;) {
+        k = x[0] + k;
+      }
+      return k;
+    }
+    function h(k, r) {
+      return g(k, r, "0");
+    }
+    function l(k, r) {
+      function x(M) {
+        return 0 > M ? -1 : 0 < M ? 1 : 0;
+      }
+      var D;
+      0 === (D = x(k.getFullYear() - r.getFullYear())) && 0 === (D = x(k.getMonth() - r.getMonth())) && (D = x(k.getDate() - r.getDate()));
+      return D;
+    }
+    function n(k) {
+      switch(k.getDay()) {
+        case 0:
+          return new Date(k.getFullYear() - 1, 11, 29);
+        case 1:
+          return k;
+        case 2:
+          return new Date(k.getFullYear(), 0, 3);
+        case 3:
+          return new Date(k.getFullYear(), 0, 2);
+        case 4:
+          return new Date(k.getFullYear(), 0, 1);
+        case 5:
+          return new Date(k.getFullYear() - 1, 11, 31);
+        case 6:
+          return new Date(k.getFullYear() - 1, 11, 30);
+      }
+    }
+    function t(k) {
+      k = Aa(new Date(k.A + 1900, 0, 1), k.qa);
+      var r = new Date(k.getFullYear() + 1, 0, 4), x = n(new Date(k.getFullYear(), 0, 4));
+      r = n(r);
+      return 0 >= l(x, k) ? 0 >= l(r, k) ? k.getFullYear() + 1 : k.getFullYear() : k.getFullYear() - 1;
+    }
+    var p = m[e + 40 >> 2];
+    e = {ac:m[e >> 2], $b:m[e + 4 >> 2], oa:m[e + 8 >> 2], ia:m[e + 12 >> 2], Y:m[e + 16 >> 2], A:m[e + 20 >> 2], pa:m[e + 24 >> 2], qa:m[e + 28 >> 2], Jc:m[e + 32 >> 2], Zb:m[e + 36 >> 2], bc:p ? ca(p) : ""};
+    c = ca(c);
+    p = {"%c":"%a %b %d %H:%M:%S %Y", "%D":"%m/%d/%y", "%F":"%Y-%m-%d", "%h":"%b", "%r":"%I:%M:%S %p", "%R":"%H:%M", "%T":"%H:%M:%S", "%x":"%m/%d/%y", "%X":"%H:%M:%S", "%Ec":"%c", "%EC":"%C", "%Ex":"%m/%d/%y", "%EX":"%H:%M:%S", "%Ey":"%y", "%EY":"%Y", "%Od":"%d", "%Oe":"%e", "%OH":"%H", "%OI":"%I", "%Om":"%m", "%OM":"%M", "%OS":"%S", "%Ou":"%u", "%OU":"%U", "%OV":"%V", "%Ow":"%w", "%OW":"%W", "%Oy":"%y"};
+    for (var q in p) {
+      c = c.replace(new RegExp(q, "g"), p[q]);
+    }
+    var z = "Sunday Monday Tuesday Wednesday Thursday Friday Saturday".split(" "), C = "January February March April May June July August September October November December".split(" ");
+    p = {"%a":function(k) {
+      return z[k.pa].substring(0, 3);
+    }, "%A":function(k) {
+      return z[k.pa];
+    }, "%b":function(k) {
+      return C[k.Y].substring(0, 3);
+    }, "%B":function(k) {
+      return C[k.Y];
+    }, "%C":function(k) {
+      return h((k.A + 1900) / 100 | 0, 2);
+    }, "%d":function(k) {
+      return h(k.ia, 2);
+    }, "%e":function(k) {
+      return g(k.ia, 2, " ");
+    }, "%g":function(k) {
+      return t(k).toString().substring(2);
+    }, "%G":function(k) {
+      return t(k);
+    }, "%H":function(k) {
+      return h(k.oa, 2);
+    }, "%I":function(k) {
+      k = k.oa;
+      0 == k ? k = 12 : 12 < k && (k -= 12);
+      return h(k, 2);
+    }, "%j":function(k) {
+      return h(k.ia + Qa(za(k.A + 1900) ? Ba : Ca, k.Y - 1), 3);
+    }, "%m":function(k) {
+      return h(k.Y + 1, 2);
+    }, "%M":function(k) {
+      return h(k.$b, 2);
+    }, "%n":function() {
+      return "\n";
+    }, "%p":function(k) {
+      return 0 <= k.oa && 12 > k.oa ? "AM" : "PM";
+    }, "%S":function(k) {
+      return h(k.ac, 2);
+    }, "%t":function() {
+      return "\t";
+    }, "%u":function(k) {
+      return k.pa || 7;
+    }, "%U":function(k) {
+      var r = new Date(k.A + 1900, 0, 1), x = 0 === r.getDay() ? r : Aa(r, 7 - r.getDay());
+      k = new Date(k.A + 1900, k.Y, k.ia);
+      return 0 > l(x, k) ? (r = Qa(za(k.getFullYear()) ? Ba : Ca, k.getMonth() - 1) - 31, h(Math.ceil((31 - x.getDate() + r + k.getDate()) / 7), 2)) : 0 === l(x, r) ? "01" : "00";
+    }, "%V":function(k) {
+      var r = new Date(k.A + 1901, 0, 4), x = n(new Date(k.A + 1900, 0, 4));
+      r = n(r);
+      var D = Aa(new Date(k.A + 1900, 0, 1), k.qa);
+      return 0 > l(D, x) ? "53" : 0 >= l(r, D) ? "01" : h(Math.ceil((x.getFullYear() < k.A + 1900 ? k.qa + 32 - x.getDate() : k.qa + 1 - x.getDate()) / 7), 2);
+    }, "%w":function(k) {
+      return k.pa;
+    }, "%W":function(k) {
+      var r = new Date(k.A, 0, 1), x = 1 === r.getDay() ? r : Aa(r, 0 === r.getDay() ? 1 : 7 - r.getDay() + 1);
+      k = new Date(k.A + 1900, k.Y, k.ia);
+      return 0 > l(x, k) ? (r = Qa(za(k.getFullYear()) ? Ba : Ca, k.getMonth() - 1) - 31, h(Math.ceil((31 - x.getDate() + r + k.getDate()) / 7), 2)) : 0 === l(x, r) ? "01" : "00";
+    }, "%y":function(k) {
+      return (k.A + 1900).toString().substring(2);
+    }, "%Y":function(k) {
+      return k.A + 1900;
+    }, "%z":function(k) {
+      k = k.Zb;
+      var r = 0 <= k;
+      k = Math.abs(k) / 60;
+      return (r ? "+" : "-") + String("0000" + (k / 60 * 100 + k % 60)).slice(-4);
+    }, "%Z":function(k) {
+      return k.bc;
+    }, "%%":function() {
+      return "%";
+    }};
+    for (q in p) {
+      0 <= c.indexOf(q) && (c = c.replace(new RegExp(q, "g"), p[q](e)));
+    }
+    q = Da(c, !1);
+    if (q.length > b) {
+      return 0;
+    }
+    I.set(q, a);
+    return q.length - 1;
+  }, table:Db, time:function(a) {
+    var b = Date.now() / 1000 | 0;
+    a && (m[a >> 2] = b);
+    return b;
+  }}, ub = function() {
+    function a(g) {
+      f.asm = g.exports;
+      Ma("wasm-instantiate");
+    }
+    function b(g) {
+      a(g.instance);
+    }
+    function c(g) {
+      return xb().then(function(h) {
+        return WebAssembly.instantiate(h, e);
+      }).then(g, function(h) {
+        E("failed to asynchronously prepare wasm: " + h);
+        A(h);
+      });
+    }
+    var e = {env:tb, wasi_snapshot_preview1:tb};
+    bb("wasm-instantiate");
+    if (f.instantiateWasm) {
+      try {
+        return f.instantiateWasm(e, a);
+      } catch (g) {
+        return E("Module.instantiateWasm callback failed with error: " + g), !1;
+      }
+    }
+    (function() {
+      if (ka || "function" !== typeof WebAssembly.instantiateStreaming || cb(O) || Pa(O, "file://") || "function" !== typeof fetch) {
+        return c(b);
+      }
+      fetch(O, {credentials:"same-origin"}).then(function(g) {
+        return WebAssembly.instantiateStreaming(g, e).then(b, function(h) {
+          E("wasm streaming compile failed: " + h);
+          E("falling back to ArrayBuffer instantiation");
+          c(b);
+        });
+      });
+    })();
+    return {};
+  }();
+  f.asm = ub;
+  var rb = f.___wasm_call_ctors = function() {
+    return (rb = f.___wasm_call_ctors = f.asm.__wasm_call_ctors).apply(null, arguments);
+  }, eb = f.___errno_location = function() {
+    return (eb = f.___errno_location = f.asm.__errno_location).apply(null, arguments);
+  };
+  f._fflush = function() {
+    return (f._fflush = f.asm.fflush).apply(null, arguments);
+  };
+  f._main = function() {
+    return (f._main = f.asm.main).apply(null, arguments);
+  };
+  f._free = function() {
+    return (f._free = f.asm.free).apply(null, arguments);
+  };
+  var Ka = f._malloc = function() {
+    return (Ka = f._malloc = f.asm.malloc).apply(null, arguments);
+  }, ea = f.__get_tzname = function() {
+    return (ea = f.__get_tzname = f.asm._get_tzname).apply(null, arguments);
+  }, ib = f.__get_daylight = function() {
+    return (ib = f.__get_daylight = f.asm._get_daylight).apply(null, arguments);
+  }, hb = f.__get_timezone = function() {
+    return (hb = f.__get_timezone = f.asm._get_timezone).apply(null, arguments);
+  };
+  f.stackSave = function() {
+    return (f.stackSave = f.asm.stackSave).apply(null, arguments);
+  };
+  var La = f.stackAlloc = function() {
+    return (La = f.stackAlloc = f.asm.stackAlloc).apply(null, arguments);
+  };
+  f.stackRestore = function() {
+    return (f.stackRestore = f.asm.stackRestore).apply(null, arguments);
+  };
+  f.__growWasmMemory = function() {
+    return (f.__growWasmMemory = f.asm.__growWasmMemory).apply(null, arguments);
+  };
+  f.dynCall_iii = function() {
+    return (f.dynCall_iii = f.asm.dynCall_iii).apply(null, arguments);
+  };
+  f.dynCall_viiii = function() {
+    return (f.dynCall_viiii = f.asm.dynCall_viiii).apply(null, arguments);
+  };
+  f.dynCall_vi = function() {
+    return (f.dynCall_vi = f.asm.dynCall_vi).apply(null, arguments);
+  };
+  f.dynCall_iiii = function() {
+    return (f.dynCall_iiii = f.asm.dynCall_iiii).apply(null, arguments);
+  };
+  f.dynCall_ii = function() {
+    return (f.dynCall_ii = f.asm.dynCall_ii).apply(null, arguments);
+  };
+  f.dynCall_iiiiii = function() {
+    return (f.dynCall_iiiiii = f.asm.dynCall_iiiiii).apply(null, arguments);
+  };
+  f.dynCall_iiiii = function() {
+    return (f.dynCall_iiiii = f.asm.dynCall_iiiii).apply(null, arguments);
+  };
+  f.dynCall_iiiiiiiii = function() {
+    return (f.dynCall_iiiiiiiii = f.asm.dynCall_iiiiiiiii).apply(null, arguments);
+  };
+  f.dynCall_vii = function() {
+    return (f.dynCall_vii = f.asm.dynCall_vii).apply(null, arguments);
+  };
+  f.dynCall_jiji = function() {
+    return (f.dynCall_jiji = f.asm.dynCall_jiji).apply(null, arguments);
+  };
+  f.dynCall_jiiji = function() {
+    return (f.dynCall_jiiji = f.asm.dynCall_jiiji).apply(null, arguments);
+  };
+  f.dynCall_viiiiiiff = function() {
+    return (f.dynCall_viiiiiiff = f.asm.dynCall_viiiiiiff).apply(null, arguments);
+  };
+  f.dynCall_viii = function() {
+    return (f.dynCall_viii = f.asm.dynCall_viii).apply(null, arguments);
+  };
+  f.dynCall_viiiii = function() {
+    return (f.dynCall_viiiii = f.asm.dynCall_viiiii).apply(null, arguments);
+  };
+  f.dynCall_viiiiiifi = function() {
+    return (f.dynCall_viiiiiifi = f.asm.dynCall_viiiiiifi).apply(null, arguments);
+  };
+  f.dynCall_iiiiiii = function() {
+    return (f.dynCall_iiiiiii = f.asm.dynCall_iiiiiii).apply(null, arguments);
+  };
+  f.dynCall_viiiiii = function() {
+    return (f.dynCall_viiiiii = f.asm.dynCall_viiiiii).apply(null, arguments);
+  };
+  f.dynCall_viiiiiiiii = function() {
+    return (f.dynCall_viiiiiiiii = f.asm.dynCall_viiiiiiiii).apply(null, arguments);
+  };
+  f.dynCall_viiiiiiii = function() {
+    return (f.dynCall_viiiiiiii = f.asm.dynCall_viiiiiiii).apply(null, arguments);
+  };
+  f.dynCall_fiiii = function() {
+    return (f.dynCall_fiiii = f.asm.dynCall_fiiii).apply(null, arguments);
+  };
+  f.dynCall_iiiiiiiiiiiiiifii = function() {
+    return (f.dynCall_iiiiiiiiiiiiiifii = f.asm.dynCall_iiiiiiiiiiiiiifii).apply(null, arguments);
+  };
+  f.dynCall_fiifi = function() {
+    return (f.dynCall_fiifi = f.asm.dynCall_fiifi).apply(null, arguments);
+  };
+  f.dynCall_viiiiiii = function() {
+    return (f.dynCall_viiiiiii = f.asm.dynCall_viiiiiii).apply(null, arguments);
+  };
+  f.dynCall_viiiifii = function() {
+    return (f.dynCall_viiiifii = f.asm.dynCall_viiiifii).apply(null, arguments);
+  };
+  f.dynCall_fii = function() {
+    return (f.dynCall_fii = f.asm.dynCall_fii).apply(null, arguments);
+  };
+  f.dynCall_viiiiiiiiii = function() {
+    return (f.dynCall_viiiiiiiiii = f.asm.dynCall_viiiiiiiiii).apply(null, arguments);
+  };
+  f.dynCall_viiiiiiiiiiii = function() {
+    return (f.dynCall_viiiiiiiiiiii = f.asm.dynCall_viiiiiiiiiiii).apply(null, arguments);
+  };
+  f.dynCall_iiiiiiii = function() {
+    return (f.dynCall_iiiiiiii = f.asm.dynCall_iiiiiiii).apply(null, arguments);
+  };
+  f.dynCall_dd = function() {
+    return (f.dynCall_dd = f.asm.dynCall_dd).apply(null, arguments);
+  };
+  f.dynCall_viifi = function() {
+    return (f.dynCall_viifi = f.asm.dynCall_viifi).apply(null, arguments);
+  };
+  f.dynCall_fiii = function() {
+    return (f.dynCall_fiii = f.asm.dynCall_fiii).apply(null, arguments);
+  };
+  f.dynCall_viidi = function() {
+    return (f.dynCall_viidi = f.asm.dynCall_viidi).apply(null, arguments);
+  };
+  f.dynCall_did = function() {
+    return (f.dynCall_did = f.asm.dynCall_did).apply(null, arguments);
+  };
+  f.dynCall_fiiiiiiiiffii = function() {
+    return (f.dynCall_fiiiiiiiiffii = f.asm.dynCall_fiiiiiiiiffii).apply(null, arguments);
+  };
+  f.dynCall_viiif = function() {
+    return (f.dynCall_viiif = f.asm.dynCall_viiif).apply(null, arguments);
+  };
+  f.dynCall_viiiif = function() {
+    return (f.dynCall_viiiif = f.asm.dynCall_viiiif).apply(null, arguments);
+  };
+  f.dynCall_viiiiiiifi = function() {
+    return (f.dynCall_viiiiiiifi = f.asm.dynCall_viiiiiiifi).apply(null, arguments);
+  };
+  f.dynCall_viiijj = function() {
+    return (f.dynCall_viiijj = f.asm.dynCall_viiijj).apply(null, arguments);
+  };
+  f.dynCall_iiiiiiidiiddii = function() {
+    return (f.dynCall_iiiiiiidiiddii = f.asm.dynCall_iiiiiiidiiddii).apply(null, arguments);
+  };
+  f.dynCall_jij = function() {
+    return (f.dynCall_jij = f.asm.dynCall_jij).apply(null, arguments);
+  };
+  f.dynCall_jii = function() {
+    return (f.dynCall_jii = f.asm.dynCall_jii).apply(null, arguments);
+  };
+  f.dynCall_iiijjji = function() {
+    return (f.dynCall_iiijjji = f.asm.dynCall_iiijjji).apply(null, arguments);
+  };
+  f.dynCall_iiiji = function() {
+    return (f.dynCall_iiiji = f.asm.dynCall_iiiji).apply(null, arguments);
+  };
+  f.dynCall_jiiij = function() {
+    return (f.dynCall_jiiij = f.asm.dynCall_jiiij).apply(null, arguments);
+  };
+  f.dynCall_v = function() {
+    return (f.dynCall_v = f.asm.dynCall_v).apply(null, arguments);
+  };
+  f.dynCall_iiifii = function() {
+    return (f.dynCall_iiifii = f.asm.dynCall_iiifii).apply(null, arguments);
+  };
+  f.dynCall_iidiiii = function() {
+    return (f.dynCall_iidiiii = f.asm.dynCall_iidiiii).apply(null, arguments);
+  };
+  f.dynCall_iij = function() {
+    return (f.dynCall_iij = f.asm.dynCall_iij).apply(null, arguments);
+  };
+  f.dynCall_iiiiiiiiii = function() {
+    return (f.dynCall_iiiiiiiiii = f.asm.dynCall_iiiiiiiiii).apply(null, arguments);
+  };
+  f.dynCall_viiiiiiiiiii = function() {
+    return (f.dynCall_viiiiiiiiiii = f.asm.dynCall_viiiiiiiiiii).apply(null, arguments);
+  };
+  f.asm = ub;
+  var Fa;
+  ja = function b() {
+    Fa || Ra();
+    Fa || (ja = b);
+  };
+  f.run = Ra;
+  if (f.preInit) {
+    for ("function" == typeof f.preInit && (f.preInit = [f.preInit]); 0 < f.preInit.length;) {
+      f.preInit.pop()();
+    }
+  }
+  var lb = !0;
+  f.noInitialRun && (lb = !1);
+  Ra();
+  return pb;
+}
+var vb = !1;
+"undefined" === typeof self && (self = require("worker_threads").parentPort);
+self.onmessage = function(H) {
+  var ba = H.data;
+  if ("run" == ba.type) {
+    if (vb) {
+      self.postMessage({type:"error", data:"already running"});
+    } else {
+      vb = !0;
+      self.postMessage({type:"run"});
+      var L = {};
+      Object.keys(ba).forEach(function(G) {
+        "type" !== G && (L[G] = ba[G]);
+      });
+      L.print = function(G) {
+        self.postMessage({type:"stdout", data:G});
+      };
+      L.printErr = function(G) {
+        self.postMessage({type:"stderr", data:G});
+      };
+      L.onExit = function(G) {
+        self.postMessage({type:"exit", data:G});
+      };
+      L.onAbort = function(G) {
+        self.postMessage({type:"abort", data:G});
+      };
+      H = Ya(L);
+      var sa = H.MEMFS.map(function(G) {
+        return G.data.buffer;
+      });
+      self.postMessage({type:"done", data:H}, sa);
+      vb = !1;
+    }
+  } else {
+    self.postMessage({type:"error", data:"unknown command"});
+  }
+};
+self.postMessage({type:"ready"});
+
