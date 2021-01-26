@@ -197,7 +197,6 @@ EMCC_COMMON_ARGS = \
 	-s ASSERTIONS=0 \
 	-s EXIT_RUNTIME=1 \
 	-s TOTAL_MEMORY=67108864 \
-	-lworkerfs.js \
 	--pre-js $(PRE_JS) \
 	-o $@
 
