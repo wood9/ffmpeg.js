@@ -196,19 +196,17 @@ EMCC_COMMON_ARGS = \
 	-s WASM=1 \
 	-s ASSERTIONS=0 \
 	-s EXIT_RUNTIME=1 \
-	-s NODEJS_CATCH_EXIT=0 \
-	-s NODEJS_CATCH_REJECTION=0 \
 	-s TOTAL_MEMORY=67108864 \
-	-lnodefs.js -lworkerfs.js \
+	-lworkerfs.js \
 	--pre-js $(PRE_JS) \
 	-o $@
 
 ffmpeg-mp4.js: $(FFMPEG_MP4_BC) $(PRE_JS) $(POST_JS_SYNC)
 	emcc $(FFMPEG_MP4_BC) $(MP4_SHARED_DEPS) \
 		--post-js $(POST_JS_SYNC) \
-		$(EMCC_COMMON_ARGS) -O2
+		$(EMCC_COMMON_ARGS) -O1
 
 ffmpeg-worker-mp4.js: $(FFMPEG_MP4_BC) $(PRE_JS) $(POST_JS_WORKER)
 	emcc $(FFMPEG_MP4_BC) $(MP4_SHARED_DEPS) \
 		--post-js $(POST_JS_WORKER) \
-		$(EMCC_COMMON_ARGS) -O2
+		$(EMCC_COMMON_ARGS) -O1
