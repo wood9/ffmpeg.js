@@ -26,12 +26,11 @@ MP4_SHARED_DEPS = \
 	build/lame/dist/lib/libmp3lame.so \
 	build/x264/dist/lib/libx264.so
 
-all: webm mp4
-webm: ffmpeg-webm.js ffmpeg-worker-webm.js
+all: mp4
 mp4: ffmpeg-mp4.js ffmpeg-worker-mp4.js
 
 clean: clean-js \
-	clean-opus clean-libvpx clean-ffmpeg-webm \
+	clean-opus clean-libvpx \
 	clean-lame clean-x264 clean-ffmpeg-mp4
 clean-js:
 	rm -f ffmpeg*.js
@@ -39,8 +38,6 @@ clean-opus:
 	cd build/opus && git clean -xdf
 clean-libvpx:
 	cd build/libvpx && git clean -xdf
-clean-ffmpeg-webm:
-	cd build/ffmpeg-webm && git clean -xdf
 clean-lame:
 	cd build/lame && git clean -xdf
 clean-x264:
