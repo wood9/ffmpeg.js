@@ -130,7 +130,7 @@ function __ffmpegjs(__ffmpegjs_opts) {
       transfer.push(data.buffer);
       return ret;
     });
-
+    
     self.postMessage({ type: "done", data: ret }, transfer);
 
     __ffmpegjs_return = {"MEMFS": outFiles};
