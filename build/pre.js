@@ -119,11 +119,19 @@ function __ffmpegjs(__ffmpegjs_opts) {
     (__ffmpegjs_opts["MEMFS"] || []).forEach(function(file) {
       inFiles[file.name] = null;
     });
+
+    var ret = {};
+    var transfer = []
     var outFiles = listFiles("/work").filter(function(file) {
       return !(file.name in inFiles);
     }).map(function(file) {
       var data = __ffmpegjs_toU8(file.contents);
-      return {"name": file.name, "data": data};
+      ret = {"name": file.name, "data": data};
+      transfer.push(data.buffer);
+      return ret;
     });
+
+    self.postMessage({ type: "done", data: ret }, transfer);
+
     __ffmpegjs_return = {"MEMFS": outFiles};
   };

@@ -4,9 +4,9 @@
 var __ffmpegjs_running = false;
 
 // Shim for nodejs
-if (typeof self === "undefined") {
-  self = require("worker_threads")["parentPort"];
-}
+// if (typeof self === "undefined") {
+//   self = require("worker_threads")["parentPort"];
+// }
 
 self.onmessage = function(e) {
   var msg = e.data;
@@ -36,13 +36,13 @@ self.onmessage = function(e) {
       };
       // TODO(Kagami): Should we wrap this function into try/catch in
       // case of possible exception?
-      var result = __ffmpegjs(opts);
-      var memfs = result ? result["MEMFS"] : [];
-      memfs = memfs || [];
-      var transfer = memfs.map(function(file) {
-        return file["data"].buffer;
-      });
-      self.postMessage({"type": "done", "data": result}, transfer);
+      // var result = __ffmpegjs(opts);
+      // var memfs = result ? result["MEMFS"] : [];
+      // memfs = memfs || [];
+      // var transfer = memfs.map(function(file) {
+      //   return file["data"].buffer;
+      // });
+      // self.postMessage({"type": "done", "data": result}, transfer);
       __ffmpegjs_running = false;
     }
   } else {
