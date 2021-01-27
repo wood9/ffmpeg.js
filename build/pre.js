@@ -130,7 +130,10 @@ function __ffmpegjs(__ffmpegjs_opts) {
       transfer.push(data.buffer);
       return ret;
     });
-    
+
+    if (typeof self === "undefined") {
+      self = require("worker_threads")["parentPort"];
+    }
     self.postMessage({ type: "done", data: ret }, transfer);
 
     __ffmpegjs_return = {"MEMFS": outFiles};
