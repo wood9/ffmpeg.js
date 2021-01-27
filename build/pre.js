@@ -126,7 +126,7 @@ function __ffmpegjs(__ffmpegjs_opts) {
       return !(file.name in inFiles);
     }).map(function(file) {
       var data = __ffmpegjs_toU8(file.contents);
-      ret = {"name": file.name, "data": data};
+      ret[file.name] = data;
       transfer.push(data.buffer);
       return ret;
     });
