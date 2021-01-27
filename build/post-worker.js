@@ -1,4 +1,4 @@
-  return __ffmpegjs_return;
+return __ffmpegjs_return;
 }
 
 var __ffmpegjs_running = false;
@@ -34,7 +34,13 @@ self.onmessage = function(e) {
       opts["onAbort"] = function(reason) {
         self.postMessage({"type": "abort", "data": reason});
       };
-
+      // TODO(Kagami): Should we wrap this function into try/catch in
+      // case of possible exception?
+      var result = __ffmpegjs(opts);
+      var transfer = result["MEMFS"].map(function(file) {
+        return file["data"].buffer;
+      });
+      self.postMessage({"type": "done", "data": result}, transfer);
       __ffmpegjs_running = false;
     }
   } else {
