@@ -2974,8 +2974,8 @@ self.onmessage = function(H) {
       K.onAbort = function(F) {
         self.postMessage({type:"abort", data:F});
       };
-      var P = (H = Va(K)) ? H.MEMFS : {};
-      P = P || {};
+      var P = (H = Va(K)) ? H.MEMFS : [];
+      P = P || [];
       P = P.map(function(F) {
         return F.data.buffer;
       });
