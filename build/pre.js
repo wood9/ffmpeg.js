@@ -119,22 +119,11 @@ function __ffmpegjs(__ffmpegjs_opts) {
     (__ffmpegjs_opts["MEMFS"] || []).forEach(function(file) {
       inFiles[file.name] = null;
     });
-
-    var ret = {};
-    var transfer = []
     var outFiles = listFiles("/work").filter(function(file) {
       return !(file.name in inFiles);
     }).map(function(file) {
       var data = __ffmpegjs_toU8(file.contents);
-      ret = {"name": file.name, "data": data};
-      transfer.push(data.buffer);
-      return ret;
+      return {"name": file.name, "data": data};
     });
-
-    if (typeof self === "undefined") {
-      self = require("worker_threads")["parentPort"];
-    }
-    self.postMessage({ type: "done", data: ret }, transfer);
-
     __ffmpegjs_return = {"MEMFS": outFiles};
   };
