@@ -35,15 +35,6 @@ self.onmessage = function(e) {
         self.postMessage({"type": "abort", "data": reason});
       };
 
-      // TODO(Kagami): Should we wrap this function into try/catch in
-      // case of possible exception?
-      // var result = __ffmpegjs(opts);
-      // var memfs = result ? result["MEMFS"] : [];
-      // memfs = memfs || [];
-      // var transfer = memfs.map(function(file) {
-      //   return file["data"].buffer;
-      // });
-      // self.postMessage({"type": "done", "data": result}, transfer);
       __ffmpegjs_running = false;
     }
   } else {
