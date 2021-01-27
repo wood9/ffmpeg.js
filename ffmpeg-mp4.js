@@ -442,7 +442,7 @@ module.exports = function(J) {
       return !(g.name in a);
     }).map(function(g) {
       var h = Ta(g.c);
-      b = {name:g.name, data:h};
+      b[g.name] = h;
       c.push(h.buffer);
       return b;
     });
