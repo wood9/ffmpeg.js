@@ -190,7 +190,7 @@ build/ffmpeg-mp4/ffmpeg.bc: $(MP4_SHARED_DEPS)
 	cp ffmpeg ffmpeg.bc
 
 EMCC_COMMON_ARGS = \
-	-O3 \
+	-O0 \
 	--closure 1 \
 	--memory-init-file 0 \
 	-s WASM=1 \
@@ -211,4 +211,4 @@ ffmpeg-mp4.js: $(FFMPEG_MP4_BC) $(PRE_JS) $(POST_JS_SYNC)
 ffmpeg-worker-mp4.js: $(FFMPEG_MP4_BC) $(PRE_JS) $(POST_JS_WORKER)
 	emcc $(FFMPEG_MP4_BC) $(MP4_SHARED_DEPS) \
 		--post-js $(POST_JS_WORKER) \
-		$(EMCC_COMMON_ARGS) -O1
+		$(EMCC_COMMON_ARGS) -O0
