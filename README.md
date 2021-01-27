@@ -133,7 +133,7 @@ It's recommended to use [Docker](https://www.docker.com/) to build ffmpeg.js.
 
 *  Build everything:
     ```bash
-    docker run --rm -it -v /path/to/ffmpeg.js:/mnt -w /opt wood9/ffmpeg.js
+    docker run --rm -it -v /path/to/ffmpeg.js:/mnt -w /opt kagamihi/ffmpeg.js
     ```
 
 *  Clone ffmpeg.js repository with submodules:
