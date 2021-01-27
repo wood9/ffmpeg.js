@@ -37,8 +37,8 @@ self.onmessage = function(e) {
       // TODO(Kagami): Should we wrap this function into try/catch in
       // case of possible exception?
       var result = __ffmpegjs(opts);
-      var memfs = result ? result["MEMFS"] : {};
-      memfs = memfs || {};
+      var memfs = result ? result["MEMFS"] : [];
+      memfs = memfs || [];
       var transfer = memfs.map(function(file) {
         return file["data"].buffer;
       });
