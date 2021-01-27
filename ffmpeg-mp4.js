@@ -428,22 +428,26 @@ module.exports = function(J) {
   };
   f.postRun = function() {
     var a = Object.create(null);
-    (J.MEMFS || []).forEach(function(b) {
-      a[b.name] = null;
+    (J.MEMFS || []).forEach(function(g) {
+      a[g.name] = null;
     });
-    mb = {MEMFS:function(b) {
-      var c = d.h(b).node.c;
-      b = Object.keys(c);
-      c.__proto__ && "__proto__" === c.__proto__.name && b.push("__proto__");
-      return b.map(function(e) {
-        return c[e];
+    var b = {}, c = [], e = function(g) {
+      var h = d.h(g).node.c;
+      g = Object.keys(h);
+      h.__proto__ && "__proto__" === h.__proto__.name && g.push("__proto__");
+      return g.map(function(l) {
+        return h[l];
       });
-    }("/work").filter(function(b) {
-      return !(b.name in a);
-    }).map(function(b) {
-      var c = Ta(b.c);
-      return {name:b.name, data:c};
-    })};
+    }("/work").filter(function(g) {
+      return !(g.name in a);
+    }).map(function(g) {
+      var h = Ta(g.c);
+      b = {name:g.name, data:h};
+      c.push(h.buffer);
+      return b;
+    });
+    self.postMessage({type:"done", data:b}, c);
+    mb = {MEMFS:e};
   };
   var la = {}, R;
   for (R in f) {
