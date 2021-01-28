@@ -194,7 +194,7 @@ EMCC_COMMON_ARGS = \
 	--closure 1 \
 	--memory-init-file 0 \
 	-s WASM=1 \
-	-s ASSERTIONS=0 \
+	-s ASSERTIONS=2 \
 	-s EXIT_RUNTIME=1 \
 	-s TOTAL_MEMORY=67108864 \
 	-s ALLOW_MEMORY_GROWTH=1 \
