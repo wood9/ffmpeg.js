@@ -206,7 +206,7 @@ EMCC_COMMON_ARGS = \
 ffmpeg-mp4.js: $(FFMPEG_MP4_BC) $(PRE_JS) $(POST_JS_SYNC)
 	emcc $(FFMPEG_MP4_BC) $(MP4_SHARED_DEPS) \
 		--post-js $(POST_JS_SYNC) \
-		$(EMCC_COMMON_ARGS) -O1
+		$(EMCC_COMMON_ARGS) -O0
 
 ffmpeg-worker-mp4.js: $(FFMPEG_MP4_BC) $(PRE_JS) $(POST_JS_WORKER)
 	emcc $(FFMPEG_MP4_BC) $(MP4_SHARED_DEPS) \
