@@ -194,13 +194,15 @@ EMCC_COMMON_ARGS = \
 	--closure 1 \
 	--memory-init-file 0 \
 	-s WASM=1 \
-	-s ASSERTIONS=2 \
+	-s ASSERTIONS=1 \
+	-s VERBOSE=1 \
 	-s EXIT_RUNTIME=1 \
 	-s TOTAL_MEMORY=67108864 \
 	-s ALLOW_MEMORY_GROWTH=1 \
 	-s NODEJS_CATCH_EXIT=0 \
 	-s NODEJS_CATCH_REJECTION=0 \
 	--pre-js $(PRE_JS) \
+	-lworkerfs.js \
 	-o $@
 
 ffmpeg-mp4.js: $(FFMPEG_MP4_BC) $(PRE_JS) $(POST_JS_SYNC)
