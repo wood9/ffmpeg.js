@@ -16,9 +16,9 @@
 	ignore = dirty
 [submodule "build/ffmpeg-webm"]
 	path = build/ffmpeg-webm
-	url = https://github.com/wood9/ffmpeg-v4.3.n.git
+	url = https://git.ffmpeg.org/ffmpeg.git
 	ignore = dirty
 [submodule "build/ffmpeg-mp4"]
 	path = build/ffmpeg-mp4
-	url = https://github.com/wood9/ffmpeg-v4.3.n.git
+	url = https://git.ffmpeg.org/ffmpeg.git
 	ignore = dirty
