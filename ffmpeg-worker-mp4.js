@@ -1654,6 +1654,9 @@ function preMain() {
 
 function exitRuntime() {
   checkStackCookie();
+  callRuntimeCallbacks(__ATEXIT__);
+  FS.quit();
+TTY.shutdown();
   runtimeExited = true;
 }
 
@@ -1683,6 +1686,7 @@ function addOnPreMain(cb) {
 }
 
 function addOnExit(cb) {
+  __ATEXIT__.unshift(cb);
 }
 
 function addOnPostRun(cb) {
@@ -6567,49 +6571,9 @@ function run(args) {
 }
 Module['run'] = run;
 
-function checkUnflushedContent() {
-  // Compiler settings do not allow exiting the runtime, so flushing
-  // the streams is not possible. but in ASSERTIONS mode we check
-  // if there was something to flush, and if so tell the user they
-  // should request that the runtime be exitable.
-  // Normally we would not even include flush() at all, but in ASSERTIONS
-  // builds we do so just for this check, and here we see if there is any
-  // content to flush, that is, we check if there would have been
-  // something a non-ASSERTIONS build would have not seen.
-  // How we flush the streams depends on whether we are in SYSCALLS_REQUIRE_FILESYSTEM=0
-  // mode (which has its own special function for this; otherwise, all
-  // the code is inside libc)
-  var print = out;
-  var printErr = err;
-  var has = false;
-  out = err = function(x) {
-    has = true;
-  }
-  try { // it doesn't matter if it fails
-    var flush = Module['_fflush'];
-    if (flush) flush(0);
-    // also flush in the JS FS layer
-    ['stdout', 'stderr'].forEach(function(name) {
-      var info = FS.analyzePath('/dev/' + name);
-      if (!info) return;
-      var stream = info.object;
-      var rdev = stream.rdev;
-      var tty = TTY.ttys[rdev];
-      if (tty && tty.output && tty.output.length) {
-        has = true;
-      }
-    });
-  } catch(e) {}
-  out = print;
-  err = printErr;
-  if (has) {
-    warnOnce('stdio streams had content in them that was not flushed. you should set EXIT_RUNTIME to 1 (see the FAQ), or make sure to emit a newline when you printf etc.');
-  }
-}
 
 /** @param {boolean|number=} implicit */
 function exit(status, implicit) {
-  checkUnflushedContent();
 
   // if this is just main exit-ing implicitly, and the status is 0, then we
   // don't need to do anything here and can just leave. if the status is
@@ -6622,7 +6586,7 @@ function exit(status, implicit) {
   if (noExitRuntime) {
     // if exit() was called, we may warn the user if the runtime isn't actually being shut down
     if (!implicit) {
-      err('program exited (with status: ' + status + '), but EXIT_RUNTIME is not set, so halting execution but not exiting the runtime or preventing further async execution (build with EXIT_RUNTIME=1, if you want a true shutdown)');
+      err('program exited (with status: ' + status + '), but noExitRuntime is set due to an async operation, so halting execution but not exiting the runtime or preventing further async execution (you can use emscripten_force_exit, if you want to force a true shutdown)');
     }
   } else {
 
@@ -6650,7 +6614,6 @@ var shouldRunNow = true;
 if (Module['noInitialRun']) shouldRunNow = false;
 
 
-  noExitRuntime = true;
 
 run();
 
