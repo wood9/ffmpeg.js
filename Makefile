@@ -192,13 +192,10 @@ build/ffmpeg-mp4/ffmpeg.bc: $(MP4_SHARED_DEPS)
 
 EMCC_COMMON_ARGS = \
 	-O0 \
-	-g4 \
 	--memory-init-file 0 \
 	-s WASM=1 \
-  	-s ASSERTIONS=1 \
-  	-s VERBOSE=1 \
   	-s EXIT_RUNTIME=1 \
-	-s TOTAL_MEMORY=67108864 \
+	-s INITIAL_MEMORY=536870912 \
 	-s ALLOW_MEMORY_GROWTH=1 \
 	-s NODEJS_CATCH_EXIT=0 \
 	-s NODEJS_CATCH_REJECTION=0 \
