@@ -802,6 +802,7 @@ if (typeof WebAssembly !== 'object') {
 function setValue(ptr, value, type, noSafe) {
   type = type || 'i8';
   if (type.charAt(type.length-1) === '*') type = 'i32'; // pointers are 32-bit
+  if (noSafe) {
     switch(type) {
       case 'i1': HEAP8[((ptr)>>0)]=value; break;
       case 'i8': HEAP8[((ptr)>>0)]=value; break;
@@ -812,6 +813,18 @@ function setValue(ptr, value, type, noSafe) {
       case 'double': HEAPF64[((ptr)>>3)]=value; break;
       default: abort('invalid type for setValue: ' + type);
     }
+  } else {
+    switch(type) {
+      case 'i1': SAFE_HEAP_STORE(((ptr)|0), ((value)|0), 1); break;
+      case 'i8': SAFE_HEAP_STORE(((ptr)|0), ((value)|0), 1); break;
+      case 'i16': SAFE_HEAP_STORE(((ptr)|0), ((value)|0), 2); break;
+      case 'i32': SAFE_HEAP_STORE(((ptr)|0), ((value)|0), 4); break;
+      case 'i64': (tempI64 = [value>>>0,(tempDouble=value,(+(Math_abs(tempDouble))) >= 1.0 ? (tempDouble > 0.0 ? ((Math_min((+(Math_floor((tempDouble)/4294967296.0))), 4294967295.0))|0)>>>0 : (~~((+(Math_ceil((tempDouble - +(((~~(tempDouble)))>>>0))/4294967296.0)))))>>>0) : 0)],SAFE_HEAP_STORE(((ptr)|0), ((tempI64[0])|0), 4),SAFE_HEAP_STORE((((ptr)+(4))|0), ((tempI64[1])|0), 4)); break;
+      case 'float': SAFE_HEAP_STORE_D(((ptr)|0), Math_fround(value), 4); break;
+      case 'double': SAFE_HEAP_STORE_D(((ptr)|0), (+(value)), 8); break;
+      default: abort('invalid type for setValue: ' + type);
+    }
+  }
 }
 
 /** @param {number} ptr
@@ -820,6 +833,7 @@ function setValue(ptr, value, type, noSafe) {
 function getValue(ptr, type, noSafe) {
   type = type || 'i8';
   if (type.charAt(type.length-1) === '*') type = 'i32'; // pointers are 32-bit
+  if (noSafe) {
     switch(type) {
       case 'i1': return HEAP8[((ptr)>>0)];
       case 'i8': return HEAP8[((ptr)>>0)];
@@ -830,10 +844,80 @@ function getValue(ptr, type, noSafe) {
       case 'double': return HEAPF64[((ptr)>>3)];
       default: abort('invalid type for getValue: ' + type);
     }
+  } else {
+    switch(type) {
+      case 'i1': return ((SAFE_HEAP_LOAD(((ptr)|0), 1, 0))|0);
+      case 'i8': return ((SAFE_HEAP_LOAD(((ptr)|0), 1, 0))|0);
+      case 'i16': return ((SAFE_HEAP_LOAD(((ptr)|0), 2, 0))|0);
+      case 'i32': return ((SAFE_HEAP_LOAD(((ptr)|0), 4, 0))|0);
+      case 'i64': return ((SAFE_HEAP_LOAD(((ptr)|0), 8, 0))|0);
+      case 'float': return Math_fround(SAFE_HEAP_LOAD_D(((ptr)|0), 4, 0));
+      case 'double': return (+(SAFE_HEAP_LOAD_D(((ptr)|0), 8, 0)));
+      default: abort('invalid type for getValue: ' + type);
+    }
+  }
   return null;
 }
 
 
+/** @param {number|boolean=} isFloat */
+function getSafeHeapType(bytes, isFloat) {
+  switch (bytes) {
+    case 1: return 'i8';
+    case 2: return 'i16';
+    case 4: return isFloat ? 'float' : 'i32';
+    case 8: return 'double';
+    default: assert(0);
+  }
+}
+
+
+/** @param {number|boolean=} isFloat */
+function SAFE_HEAP_STORE(dest, value, bytes, isFloat) {
+  if (dest <= 0) abort('segmentation fault storing ' + bytes + ' bytes to address ' + dest);
+  if (dest % bytes !== 0) abort('alignment error storing to address ' + dest + ', which was expected to be aligned to a multiple of ' + bytes);
+  if (dest + bytes > HEAPU32[DYNAMICTOP_PTR>>2]) abort('segmentation fault, exceeded the top of the available dynamic heap when storing ' + bytes + ' bytes to address ' + dest + '. DYNAMICTOP=' + HEAP32[DYNAMICTOP_PTR>>2]);
+  assert(DYNAMICTOP_PTR);
+  assert(HEAP32[DYNAMICTOP_PTR>>2] <= HEAP8.length);
+  setValue(dest, value, getSafeHeapType(bytes, isFloat), 1);
+}
+function SAFE_HEAP_STORE_D(dest, value, bytes) {
+  SAFE_HEAP_STORE(dest, value, bytes, true);
+}
+
+/** @param {number|boolean=} isFloat */
+function SAFE_HEAP_LOAD(dest, bytes, unsigned, isFloat) {
+  if (dest <= 0) abort('segmentation fault loading ' + bytes + ' bytes from address ' + dest);
+  if (dest % bytes !== 0) abort('alignment error loading from address ' + dest + ', which was expected to be aligned to a multiple of ' + bytes);
+  if (dest + bytes > HEAPU32[DYNAMICTOP_PTR>>2]) abort('segmentation fault, exceeded the top of the available dynamic heap when loading ' + bytes + ' bytes from address ' + dest + '. DYNAMICTOP=' + HEAP32[DYNAMICTOP_PTR>>2]);
+  assert(DYNAMICTOP_PTR);
+  assert(HEAP32[DYNAMICTOP_PTR>>2] <= HEAP8.length);
+  var type = getSafeHeapType(bytes, isFloat);
+  var ret = getValue(dest, type, 1);
+  if (unsigned) ret = unSign(ret, parseInt(type.substr(1), 10), 1);
+  return ret;
+}
+function SAFE_HEAP_LOAD_D(dest, bytes, unsigned) {
+  return SAFE_HEAP_LOAD(dest, bytes, unsigned, true);
+}
+
+function SAFE_FT_MASK(value, mask) {
+  var ret = value & mask;
+  if (ret !== value) {
+    abort('Function table mask error: function pointer is ' + value + ' which is masked by ' + mask + ', the likely cause of this is that the function pointer is being called by the wrong type.');
+  }
+  return ret;
+}
+
+function segfault() {
+  abort('segmentation fault');
+}
+function alignfault() {
+  abort('alignment fault');
+}
+function ftfault() {
+  abort('Function table mask error');
+}
 
 
 
@@ -1211,7 +1295,7 @@ function lengthBytesUTF8(str) {
 function AsciiToString(ptr) {
   var str = '';
   while (1) {
-    var ch = HEAPU8[((ptr++)>>0)];
+    var ch = ((SAFE_HEAP_LOAD(((ptr++)|0), 1, 1))|0);
     if (!ch) return str;
     str += String.fromCharCode(ch);
   }
@@ -1245,7 +1329,7 @@ function UTF16ToString(ptr) {
 
     var str = '';
     while (1) {
-      var codeUnit = HEAP16[(((ptr)+(i*2))>>1)];
+      var codeUnit = ((SAFE_HEAP_LOAD((((ptr)+(i*2))|0), 2, 0))|0);
       if (codeUnit == 0) return str;
       ++i;
       // fromCharCode constructs a character from a UTF-16 code unit, so we can pass the UTF16 string right through.
@@ -1279,11 +1363,11 @@ function stringToUTF16(str, outPtr, maxBytesToWrite) {
   for (var i = 0; i < numCharsToWrite; ++i) {
     // charCodeAt returns a UTF-16 encoded code unit, so it can be directly written to the HEAP.
     var codeUnit = str.charCodeAt(i); // possibly a lead surrogate
-    HEAP16[((outPtr)>>1)]=codeUnit;
+    SAFE_HEAP_STORE(((outPtr)|0), ((codeUnit)|0), 2);
     outPtr += 2;
   }
   // Null-terminate the pointer to the HEAP.
-  HEAP16[((outPtr)>>1)]=0;
+  SAFE_HEAP_STORE(((outPtr)|0), ((0)|0), 2);
   return outPtr - startPtr;
 }
 
@@ -1299,7 +1383,7 @@ function UTF32ToString(ptr) {
 
   var str = '';
   while (1) {
-    var utf32 = HEAP32[(((ptr)+(i*4))>>2)];
+    var utf32 = ((SAFE_HEAP_LOAD((((ptr)+(i*4))|0), 4, 0))|0);
     if (utf32 == 0) return str;
     ++i;
     // Gotcha: fromCharCode constructs a character from a UTF-16 encoded code (pair), not from a Unicode code point! So encode the code point to UTF-16 for constructing.
@@ -1342,12 +1426,12 @@ function stringToUTF32(str, outPtr, maxBytesToWrite) {
       var trailSurrogate = str.charCodeAt(++i);
       codeUnit = 0x10000 + ((codeUnit & 0x3FF) << 10) | (trailSurrogate & 0x3FF);
     }
-    HEAP32[((outPtr)>>2)]=codeUnit;
+    SAFE_HEAP_STORE(((outPtr)|0), ((codeUnit)|0), 4);
     outPtr += 4;
     if (outPtr + 4 > endPtr) break;
   }
   // Null-terminate the pointer to the HEAP.
-  HEAP32[((outPtr)>>2)]=0;
+  SAFE_HEAP_STORE(((outPtr)|0), ((0)|0), 4);
   return outPtr - startPtr;
 }
 
@@ -1413,10 +1497,10 @@ function writeArrayToMemory(array, buffer) {
 function writeAsciiToMemory(str, buffer, dontAddNull) {
   for (var i = 0; i < str.length; ++i) {
     assert(str.charCodeAt(i) === str.charCodeAt(i)&0xff);
-    HEAP8[((buffer++)>>0)]=str.charCodeAt(i);
+    SAFE_HEAP_STORE(((buffer++)|0), ((str.charCodeAt(i))|0), 1);
   }
   // Null-terminate the pointer to the HEAP.
-  if (!dontAddNull) HEAP8[((buffer)>>0)]=0;
+  if (!dontAddNull) SAFE_HEAP_STORE(((buffer)|0), ((0)|0), 1);
 }
 
 
@@ -1927,7 +2011,7 @@ function getBinary() {
     if (readBinary) {
       return readBinary(wasmBinaryFile);
     } else {
-      throw "both async and sync fetching of the wasm failed";
+      throw "sync fetching of the wasm failed: you can preload it to Module['wasmBinary'] manually, or emcc.py will do that for you when generating HTML (but not JS)";
     }
   }
   catch (err) {
@@ -2005,26 +2089,24 @@ function createWasm() {
   }
 
   // Prefer streaming instantiation if available.
-  function instantiateAsync() {
-    if (!wasmBinary &&
-        typeof WebAssembly.instantiateStreaming === 'function' &&
-        !isDataURI(wasmBinaryFile) &&
-        // Don't use streaming for file:// delivered objects in a webview, fetch them synchronously.
-        !isFileURI(wasmBinaryFile) &&
-        typeof fetch === 'function') {
-      fetch(wasmBinaryFile, { credentials: 'same-origin' }).then(function (response) {
-        var result = WebAssembly.instantiateStreaming(response, info);
-        return result.then(receiveInstantiatedSource, function(reason) {
-            // We expect the most common failure cause to be a bad MIME type for the binary,
-            // in which case falling back to ArrayBuffer instantiation should work.
-            err('wasm streaming compile failed: ' + reason);
-            err('falling back to ArrayBuffer instantiation');
-            instantiateArrayBuffer(receiveInstantiatedSource);
-          });
-      });
-    } else {
-      return instantiateArrayBuffer(receiveInstantiatedSource);
+  function instantiateSync() {
+    var instance;
+    var module;
+    var binary;
+    try {
+      binary = getBinary();
+      module = new WebAssembly.Module(binary);
+      instance = new WebAssembly.Instance(module, info);
+    } catch (e) {
+      var str = e.toString();
+      err('failed to compile wasm module: ' + str);
+      if (str.indexOf('imported Memory') >= 0 ||
+          str.indexOf('memory import') >= 0) {
+        err('Memory size incompatibility issues may be due to changing INITIAL_MEMORY at runtime to something too large. Use ALLOW_MEMORY_GROWTH to allow any size memory (and also make sure not to set INITIAL_MEMORY at runtime to something smaller than it was at compile time).');
+      }
+      throw e;
     }
+    receiveInstance(instance, module);
   }
   // User shell pages can write their own Module.instantiateWasm = function(imports, successCallback) callback
   // to manually instantiate the Wasm module themselves. This allows pages to run the instantiation parallel
@@ -2039,8 +2121,8 @@ function createWasm() {
     }
   }
 
-  instantiateAsync();
-  return {}; // no exports yet; we'll fill them in later
+  instantiateSync();
+  return Module['asm']; // exports were assigned here
 }
 
 
@@ -2123,12 +2205,12 @@ var ASM_CONSTS = {
   
       var total = 0;
       
-      var srcReadLow = (readfds ? HEAP32[((readfds)>>2)] : 0),
-          srcReadHigh = (readfds ? HEAP32[(((readfds)+(4))>>2)] : 0);
-      var srcWriteLow = (writefds ? HEAP32[((writefds)>>2)] : 0),
-          srcWriteHigh = (writefds ? HEAP32[(((writefds)+(4))>>2)] : 0);
-      var srcExceptLow = (exceptfds ? HEAP32[((exceptfds)>>2)] : 0),
-          srcExceptHigh = (exceptfds ? HEAP32[(((exceptfds)+(4))>>2)] : 0);
+      var srcReadLow = (readfds ? ((SAFE_HEAP_LOAD(((readfds)|0), 4, 0))|0) : 0),
+          srcReadHigh = (readfds ? ((SAFE_HEAP_LOAD((((readfds)+(4))|0), 4, 0))|0) : 0);
+      var srcWriteLow = (writefds ? ((SAFE_HEAP_LOAD(((writefds)|0), 4, 0))|0) : 0),
+          srcWriteHigh = (writefds ? ((SAFE_HEAP_LOAD((((writefds)+(4))|0), 4, 0))|0) : 0);
+      var srcExceptLow = (exceptfds ? ((SAFE_HEAP_LOAD(((exceptfds)|0), 4, 0))|0) : 0),
+          srcExceptHigh = (exceptfds ? ((SAFE_HEAP_LOAD((((exceptfds)+(4))|0), 4, 0))|0) : 0);
   
       var dstReadLow = 0,
           dstReadHigh = 0;
@@ -2137,12 +2219,12 @@ var ASM_CONSTS = {
       var dstExceptLow = 0,
           dstExceptHigh = 0;
   
-      var allLow = (readfds ? HEAP32[((readfds)>>2)] : 0) |
-                   (writefds ? HEAP32[((writefds)>>2)] : 0) |
-                   (exceptfds ? HEAP32[((exceptfds)>>2)] : 0);
-      var allHigh = (readfds ? HEAP32[(((readfds)+(4))>>2)] : 0) |
-                    (writefds ? HEAP32[(((writefds)+(4))>>2)] : 0) |
-                    (exceptfds ? HEAP32[(((exceptfds)+(4))>>2)] : 0);
+      var allLow = (readfds ? ((SAFE_HEAP_LOAD(((readfds)|0), 4, 0))|0) : 0) |
+                   (writefds ? ((SAFE_HEAP_LOAD(((writefds)|0), 4, 0))|0) : 0) |
+                   (exceptfds ? ((SAFE_HEAP_LOAD(((exceptfds)|0), 4, 0))|0) : 0);
+      var allHigh = (readfds ? ((SAFE_HEAP_LOAD((((readfds)+(4))|0), 4, 0))|0) : 0) |
+                    (writefds ? ((SAFE_HEAP_LOAD((((writefds)+(4))|0), 4, 0))|0) : 0) |
+                    (exceptfds ? ((SAFE_HEAP_LOAD((((exceptfds)+(4))|0), 4, 0))|0) : 0);
   
       var check = function(fd, low, high, val) {
         return (fd < 32 ? (low & val) : (high & val));
@@ -2178,16 +2260,16 @@ var ASM_CONSTS = {
       }
   
       if (readfds) {
-        HEAP32[((readfds)>>2)]=dstReadLow;
-        HEAP32[(((readfds)+(4))>>2)]=dstReadHigh;
+        SAFE_HEAP_STORE(((readfds)|0), ((dstReadLow)|0), 4);
+        SAFE_HEAP_STORE((((readfds)+(4))|0), ((dstReadHigh)|0), 4);
       }
       if (writefds) {
-        HEAP32[((writefds)>>2)]=dstWriteLow;
-        HEAP32[(((writefds)+(4))>>2)]=dstWriteHigh;
+        SAFE_HEAP_STORE(((writefds)|0), ((dstWriteLow)|0), 4);
+        SAFE_HEAP_STORE((((writefds)+(4))|0), ((dstWriteHigh)|0), 4);
       }
       if (exceptfds) {
-        HEAP32[((exceptfds)>>2)]=dstExceptLow;
-        HEAP32[(((exceptfds)+(4))>>2)]=dstExceptHigh;
+        SAFE_HEAP_STORE(((exceptfds)|0), ((dstExceptLow)|0), 4);
+        SAFE_HEAP_STORE((((exceptfds)+(4))|0), ((dstExceptHigh)|0), 4);
       }
       
       return total;
@@ -2195,7 +2277,7 @@ var ASM_CONSTS = {
 
   
   function setErrNo(value) {
-      HEAP32[((___errno_location())>>2)]=value;
+      SAFE_HEAP_STORE(((___errno_location())|0), ((value)|0), 4);
       return value;
     }
   
@@ -4612,25 +4694,25 @@ var ASM_CONSTS = {
           }
           throw e;
         }
-        HEAP32[((buf)>>2)]=stat.dev;
-        HEAP32[(((buf)+(4))>>2)]=0;
-        HEAP32[(((buf)+(8))>>2)]=stat.ino;
-        HEAP32[(((buf)+(12))>>2)]=stat.mode;
-        HEAP32[(((buf)+(16))>>2)]=stat.nlink;
-        HEAP32[(((buf)+(20))>>2)]=stat.uid;
-        HEAP32[(((buf)+(24))>>2)]=stat.gid;
-        HEAP32[(((buf)+(28))>>2)]=stat.rdev;
-        HEAP32[(((buf)+(32))>>2)]=0;
-        (tempI64 = [stat.size>>>0,(tempDouble=stat.size,(+(Math_abs(tempDouble))) >= 1.0 ? (tempDouble > 0.0 ? ((Math_min((+(Math_floor((tempDouble)/4294967296.0))), 4294967295.0))|0)>>>0 : (~~((+(Math_ceil((tempDouble - +(((~~(tempDouble)))>>>0))/4294967296.0)))))>>>0) : 0)],HEAP32[(((buf)+(40))>>2)]=tempI64[0],HEAP32[(((buf)+(44))>>2)]=tempI64[1]);
-        HEAP32[(((buf)+(48))>>2)]=4096;
-        HEAP32[(((buf)+(52))>>2)]=stat.blocks;
-        HEAP32[(((buf)+(56))>>2)]=(stat.atime.getTime() / 1000)|0;
-        HEAP32[(((buf)+(60))>>2)]=0;
-        HEAP32[(((buf)+(64))>>2)]=(stat.mtime.getTime() / 1000)|0;
-        HEAP32[(((buf)+(68))>>2)]=0;
-        HEAP32[(((buf)+(72))>>2)]=(stat.ctime.getTime() / 1000)|0;
-        HEAP32[(((buf)+(76))>>2)]=0;
-        (tempI64 = [stat.ino>>>0,(tempDouble=stat.ino,(+(Math_abs(tempDouble))) >= 1.0 ? (tempDouble > 0.0 ? ((Math_min((+(Math_floor((tempDouble)/4294967296.0))), 4294967295.0))|0)>>>0 : (~~((+(Math_ceil((tempDouble - +(((~~(tempDouble)))>>>0))/4294967296.0)))))>>>0) : 0)],HEAP32[(((buf)+(80))>>2)]=tempI64[0],HEAP32[(((buf)+(84))>>2)]=tempI64[1]);
+        SAFE_HEAP_STORE(((buf)|0), ((stat.dev)|0), 4);
+        SAFE_HEAP_STORE((((buf)+(4))|0), ((0)|0), 4);
+        SAFE_HEAP_STORE((((buf)+(8))|0), ((stat.ino)|0), 4);
+        SAFE_HEAP_STORE((((buf)+(12))|0), ((stat.mode)|0), 4);
+        SAFE_HEAP_STORE((((buf)+(16))|0), ((stat.nlink)|0), 4);
+        SAFE_HEAP_STORE((((buf)+(20))|0), ((stat.uid)|0), 4);
+        SAFE_HEAP_STORE((((buf)+(24))|0), ((stat.gid)|0), 4);
+        SAFE_HEAP_STORE((((buf)+(28))|0), ((stat.rdev)|0), 4);
+        SAFE_HEAP_STORE((((buf)+(32))|0), ((0)|0), 4);
+        (tempI64 = [stat.size>>>0,(tempDouble=stat.size,(+(Math_abs(tempDouble))) >= 1.0 ? (tempDouble > 0.0 ? ((Math_min((+(Math_floor((tempDouble)/4294967296.0))), 4294967295.0))|0)>>>0 : (~~((+(Math_ceil((tempDouble - +(((~~(tempDouble)))>>>0))/4294967296.0)))))>>>0) : 0)],SAFE_HEAP_STORE((((buf)+(40))|0), ((tempI64[0])|0), 4),SAFE_HEAP_STORE((((buf)+(44))|0), ((tempI64[1])|0), 4));
+        SAFE_HEAP_STORE((((buf)+(48))|0), ((4096)|0), 4);
+        SAFE_HEAP_STORE((((buf)+(52))|0), ((stat.blocks)|0), 4);
+        SAFE_HEAP_STORE((((buf)+(56))|0), (((stat.atime.getTime() / 1000)|0)|0), 4);
+        SAFE_HEAP_STORE((((buf)+(60))|0), ((0)|0), 4);
+        SAFE_HEAP_STORE((((buf)+(64))|0), (((stat.mtime.getTime() / 1000)|0)|0), 4);
+        SAFE_HEAP_STORE((((buf)+(68))|0), ((0)|0), 4);
+        SAFE_HEAP_STORE((((buf)+(72))|0), (((stat.ctime.getTime() / 1000)|0)|0), 4);
+        SAFE_HEAP_STORE((((buf)+(76))|0), ((0)|0), 4);
+        (tempI64 = [stat.ino>>>0,(tempDouble=stat.ino,(+(Math_abs(tempDouble))) >= 1.0 ? (tempDouble > 0.0 ? ((Math_min((+(Math_floor((tempDouble)/4294967296.0))), 4294967295.0))|0)>>>0 : (~~((+(Math_ceil((tempDouble - +(((~~(tempDouble)))>>>0))/4294967296.0)))))>>>0) : 0)],SAFE_HEAP_STORE((((buf)+(80))|0), ((tempI64[0])|0), 4),SAFE_HEAP_STORE((((buf)+(84))|0), ((tempI64[1])|0), 4));
         return 0;
       },doMsync:function(addr, stream, len, flags, offset) {
         var buffer = HEAPU8.slice(addr, addr + len);
@@ -4693,8 +4775,8 @@ var ASM_CONSTS = {
       },doReadv:function(stream, iov, iovcnt, offset) {
         var ret = 0;
         for (var i = 0; i < iovcnt; i++) {
-          var ptr = HEAP32[(((iov)+(i*8))>>2)];
-          var len = HEAP32[(((iov)+(i*8 + 4))>>2)];
+          var ptr = ((SAFE_HEAP_LOAD((((iov)+(i*8))|0), 4, 0))|0);
+          var len = ((SAFE_HEAP_LOAD((((iov)+(i*8 + 4))|0), 4, 0))|0);
           var curr = FS.read(stream, HEAP8,ptr, len, offset);
           if (curr < 0) return -1;
           ret += curr;
@@ -4704,8 +4786,8 @@ var ASM_CONSTS = {
       },doWritev:function(stream, iov, iovcnt, offset) {
         var ret = 0;
         for (var i = 0; i < iovcnt; i++) {
-          var ptr = HEAP32[(((iov)+(i*8))>>2)];
-          var len = HEAP32[(((iov)+(i*8 + 4))>>2)];
+          var ptr = ((SAFE_HEAP_LOAD((((iov)+(i*8))|0), 4, 0))|0);
+          var len = ((SAFE_HEAP_LOAD((((iov)+(i*8 + 4))|0), 4, 0))|0);
           var curr = FS.write(stream, HEAP8,ptr, len, offset);
           if (curr < 0) return -1;
           ret += curr;
@@ -4714,7 +4796,7 @@ var ASM_CONSTS = {
       },varargs:undefined,get:function() {
         assert(SYSCALLS.varargs != undefined);
         SYSCALLS.varargs += 4;
-        var ret = HEAP32[(((SYSCALLS.varargs)-(4))>>2)];
+        var ret = ((SAFE_HEAP_LOAD((((SYSCALLS.varargs)-(4))|0), 4, 0))|0);
         return ret;
       },getStr:function(ptr) {
         var ret = UTF8ToString(ptr);
@@ -4757,7 +4839,7 @@ var ASM_CONSTS = {
           var arg = SYSCALLS.get();
           var offset = 0;
           // We're always unlocked.
-          HEAP16[(((arg)+(offset))>>1)]=2;
+          SAFE_HEAP_STORE((((arg)+(offset))|0), ((2)|0), 2);
           return 0;
         }
         case 13:
@@ -4822,10 +4904,10 @@ var ASM_CONSTS = {
                  FS.isLink(child.mode) ? 10 :   // DT_LNK, symbolic link.
                  8;                             // DT_REG, regular file.
         }
-        (tempI64 = [id>>>0,(tempDouble=id,(+(Math_abs(tempDouble))) >= 1.0 ? (tempDouble > 0.0 ? ((Math_min((+(Math_floor((tempDouble)/4294967296.0))), 4294967295.0))|0)>>>0 : (~~((+(Math_ceil((tempDouble - +(((~~(tempDouble)))>>>0))/4294967296.0)))))>>>0) : 0)],HEAP32[((dirp + pos)>>2)]=tempI64[0],HEAP32[(((dirp + pos)+(4))>>2)]=tempI64[1]);
-        (tempI64 = [(idx + 1) * struct_size>>>0,(tempDouble=(idx + 1) * struct_size,(+(Math_abs(tempDouble))) >= 1.0 ? (tempDouble > 0.0 ? ((Math_min((+(Math_floor((tempDouble)/4294967296.0))), 4294967295.0))|0)>>>0 : (~~((+(Math_ceil((tempDouble - +(((~~(tempDouble)))>>>0))/4294967296.0)))))>>>0) : 0)],HEAP32[(((dirp + pos)+(8))>>2)]=tempI64[0],HEAP32[(((dirp + pos)+(12))>>2)]=tempI64[1]);
-        HEAP16[(((dirp + pos)+(16))>>1)]=280;
-        HEAP8[(((dirp + pos)+(18))>>0)]=type;
+        (tempI64 = [id>>>0,(tempDouble=id,(+(Math_abs(tempDouble))) >= 1.0 ? (tempDouble > 0.0 ? ((Math_min((+(Math_floor((tempDouble)/4294967296.0))), 4294967295.0))|0)>>>0 : (~~((+(Math_ceil((tempDouble - +(((~~(tempDouble)))>>>0))/4294967296.0)))))>>>0) : 0)],SAFE_HEAP_STORE(((dirp + pos)|0), ((tempI64[0])|0), 4),SAFE_HEAP_STORE((((dirp + pos)+(4))|0), ((tempI64[1])|0), 4));
+        (tempI64 = [(idx + 1) * struct_size>>>0,(tempDouble=(idx + 1) * struct_size,(+(Math_abs(tempDouble))) >= 1.0 ? (tempDouble > 0.0 ? ((Math_min((+(Math_floor((tempDouble)/4294967296.0))), 4294967295.0))|0)>>>0 : (~~((+(Math_ceil((tempDouble - +(((~~(tempDouble)))>>>0))/4294967296.0)))))>>>0) : 0)],SAFE_HEAP_STORE((((dirp + pos)+(8))|0), ((tempI64[0])|0), 4),SAFE_HEAP_STORE((((dirp + pos)+(12))|0), ((tempI64[1])|0), 4));
+        SAFE_HEAP_STORE((((dirp + pos)+(16))|0), ((280)|0), 2);
+        SAFE_HEAP_STORE((((dirp + pos)+(18))|0), ((type)|0), 1);
         stringToUTF8(name, dirp + pos + 19, 256);
         pos += struct_size;
         idx += 1;
@@ -4860,7 +4942,7 @@ var ASM_CONSTS = {
         case 21519: {
           if (!stream.tty) return -59;
           var argp = SYSCALLS.get();
-          HEAP32[((argp)>>2)]=0;
+          SAFE_HEAP_STORE(((argp)|0), ((0)|0), 4);
           return 0;
         }
         case 21520: {
@@ -5006,8 +5088,8 @@ var ASM_CONSTS = {
         setErrNo(28);
         return -1;
       }
-      HEAP32[((tp)>>2)]=(now/1000)|0; // seconds
-      HEAP32[(((tp)+(4))>>2)]=((now % 1000)*1000*1000)|0; // nanoseconds
+      SAFE_HEAP_STORE(((tp)|0), (((now/1000)|0)|0), 4); // seconds
+      SAFE_HEAP_STORE((((tp)+(4))|0), ((((now % 1000)*1000*1000)|0)|0), 4); // nanoseconds
       return 0;
     }
 
@@ -5116,7 +5198,7 @@ var ASM_CONSTS = {
       var bufSize = 0;
       getEnvStrings().forEach(function(string, i) {
         var ptr = environ_buf + bufSize;
-        HEAP32[(((__environ)+(i * 4))>>2)]=ptr;
+        SAFE_HEAP_STORE((((__environ)+(i * 4))|0), ((ptr)|0), 4);
         writeAsciiToMemory(string, ptr);
         bufSize += string.length + 1;
       });
@@ -5125,12 +5207,12 @@ var ASM_CONSTS = {
 
   function _environ_sizes_get(penviron_count, penviron_buf_size) {
       var strings = getEnvStrings();
-      HEAP32[((penviron_count)>>2)]=strings.length;
+      SAFE_HEAP_STORE(((penviron_count)|0), ((strings.length)|0), 4);
       var bufSize = 0;
       strings.forEach(function(string) {
         bufSize += string.length + 1;
       });
-      HEAP32[((penviron_buf_size)>>2)]=bufSize;
+      SAFE_HEAP_STORE(((penviron_buf_size)|0), ((bufSize)|0), 4);
       return 0;
     }
 
@@ -5160,10 +5242,10 @@ var ASM_CONSTS = {
                  FS.isDir(stream.mode) ? 3 :
                  FS.isLink(stream.mode) ? 7 :
                  4;
-      HEAP8[((pbuf)>>0)]=type;
-      // TODO HEAP16[(((pbuf)+(2))>>1)]=?;
-      // TODO (tempI64 = [?>>>0,(tempDouble=?,(+(Math_abs(tempDouble))) >= 1.0 ? (tempDouble > 0.0 ? ((Math_min((+(Math_floor((tempDouble)/4294967296.0))), 4294967295.0))|0)>>>0 : (~~((+(Math_ceil((tempDouble - +(((~~(tempDouble)))>>>0))/4294967296.0)))))>>>0) : 0)],HEAP32[(((pbuf)+(8))>>2)]=tempI64[0],HEAP32[(((pbuf)+(12))>>2)]=tempI64[1]);
-      // TODO (tempI64 = [?>>>0,(tempDouble=?,(+(Math_abs(tempDouble))) >= 1.0 ? (tempDouble > 0.0 ? ((Math_min((+(Math_floor((tempDouble)/4294967296.0))), 4294967295.0))|0)>>>0 : (~~((+(Math_ceil((tempDouble - +(((~~(tempDouble)))>>>0))/4294967296.0)))))>>>0) : 0)],HEAP32[(((pbuf)+(16))>>2)]=tempI64[0],HEAP32[(((pbuf)+(20))>>2)]=tempI64[1]);
+      SAFE_HEAP_STORE(((pbuf)|0), ((type)|0), 1);
+      // TODO SAFE_HEAP_STORE((((pbuf)+(2))|0), ((?)|0), 2);
+      // TODO (tempI64 = [?>>>0,(tempDouble=?,(+(Math_abs(tempDouble))) >= 1.0 ? (tempDouble > 0.0 ? ((Math_min((+(Math_floor((tempDouble)/4294967296.0))), 4294967295.0))|0)>>>0 : (~~((+(Math_ceil((tempDouble - +(((~~(tempDouble)))>>>0))/4294967296.0)))))>>>0) : 0)],SAFE_HEAP_STORE((((pbuf)+(8))|0), ((tempI64[0])|0), 4),SAFE_HEAP_STORE((((pbuf)+(12))|0), ((tempI64[1])|0), 4));
+      // TODO (tempI64 = [?>>>0,(tempDouble=?,(+(Math_abs(tempDouble))) >= 1.0 ? (tempDouble > 0.0 ? ((Math_min((+(Math_floor((tempDouble)/4294967296.0))), 4294967295.0))|0)>>>0 : (~~((+(Math_ceil((tempDouble - +(((~~(tempDouble)))>>>0))/4294967296.0)))))>>>0) : 0)],SAFE_HEAP_STORE((((pbuf)+(16))|0), ((tempI64[0])|0), 4),SAFE_HEAP_STORE((((pbuf)+(20))|0), ((tempI64[1])|0), 4));
       return 0;
     } catch (e) {
     if (typeof FS === 'undefined' || !(e instanceof FS.ErrnoError)) abort(e);
@@ -5175,7 +5257,7 @@ var ASM_CONSTS = {
   
       var stream = SYSCALLS.getStreamFromFD(fd);
       var num = SYSCALLS.doReadv(stream, iov, iovcnt);
-      HEAP32[((pnum)>>2)]=num
+      SAFE_HEAP_STORE(((pnum)|0), ((num)|0), 4)
       return 0;
     } catch (e) {
     if (typeof FS === 'undefined' || !(e instanceof FS.ErrnoError)) abort(e);
@@ -5198,7 +5280,7 @@ var ASM_CONSTS = {
       }
   
       FS.llseek(stream, offset, whence);
-      (tempI64 = [stream.position>>>0,(tempDouble=stream.position,(+(Math_abs(tempDouble))) >= 1.0 ? (tempDouble > 0.0 ? ((Math_min((+(Math_floor((tempDouble)/4294967296.0))), 4294967295.0))|0)>>>0 : (~~((+(Math_ceil((tempDouble - +(((~~(tempDouble)))>>>0))/4294967296.0)))))>>>0) : 0)],HEAP32[((newOffset)>>2)]=tempI64[0],HEAP32[(((newOffset)+(4))>>2)]=tempI64[1]);
+      (tempI64 = [stream.position>>>0,(tempDouble=stream.position,(+(Math_abs(tempDouble))) >= 1.0 ? (tempDouble > 0.0 ? ((Math_min((+(Math_floor((tempDouble)/4294967296.0))), 4294967295.0))|0)>>>0 : (~~((+(Math_ceil((tempDouble - +(((~~(tempDouble)))>>>0))/4294967296.0)))))>>>0) : 0)],SAFE_HEAP_STORE(((newOffset)|0), ((tempI64[0])|0), 4),SAFE_HEAP_STORE((((newOffset)+(4))|0), ((tempI64[1])|0), 4));
       if (stream.getdents && offset === 0 && whence === 0) stream.getdents = null; // reset readdir state
       return 0;
     } catch (e) {
@@ -5211,7 +5293,7 @@ var ASM_CONSTS = {
   
       var stream = SYSCALLS.getStreamFromFD(fd);
       var num = SYSCALLS.doWritev(stream, iov, iovcnt);
-      HEAP32[((pnum)>>2)]=num
+      SAFE_HEAP_STORE(((pnum)|0), ((num)|0), 4)
       return 0;
     } catch (e) {
     if (typeof FS === 'undefined' || !(e instanceof FS.ErrnoError)) abort(e);
@@ -5224,20 +5306,20 @@ var ASM_CONSTS = {
   
   
   var ___tm_timezone=(stringToUTF8("GMT", 2373920, 4), 2373920);function _gmtime_r(time, tmPtr) {
-      var date = new Date(HEAP32[((time)>>2)]*1000);
-      HEAP32[((tmPtr)>>2)]=date.getUTCSeconds();
-      HEAP32[(((tmPtr)+(4))>>2)]=date.getUTCMinutes();
-      HEAP32[(((tmPtr)+(8))>>2)]=date.getUTCHours();
-      HEAP32[(((tmPtr)+(12))>>2)]=date.getUTCDate();
-      HEAP32[(((tmPtr)+(16))>>2)]=date.getUTCMonth();
-      HEAP32[(((tmPtr)+(20))>>2)]=date.getUTCFullYear()-1900;
-      HEAP32[(((tmPtr)+(24))>>2)]=date.getUTCDay();
-      HEAP32[(((tmPtr)+(36))>>2)]=0;
-      HEAP32[(((tmPtr)+(32))>>2)]=0;
+      var date = new Date(((SAFE_HEAP_LOAD(((time)|0), 4, 0))|0)*1000);
+      SAFE_HEAP_STORE(((tmPtr)|0), ((date.getUTCSeconds())|0), 4);
+      SAFE_HEAP_STORE((((tmPtr)+(4))|0), ((date.getUTCMinutes())|0), 4);
+      SAFE_HEAP_STORE((((tmPtr)+(8))|0), ((date.getUTCHours())|0), 4);
+      SAFE_HEAP_STORE((((tmPtr)+(12))|0), ((date.getUTCDate())|0), 4);
+      SAFE_HEAP_STORE((((tmPtr)+(16))|0), ((date.getUTCMonth())|0), 4);
+      SAFE_HEAP_STORE((((tmPtr)+(20))|0), ((date.getUTCFullYear()-1900)|0), 4);
+      SAFE_HEAP_STORE((((tmPtr)+(24))|0), ((date.getUTCDay())|0), 4);
+      SAFE_HEAP_STORE((((tmPtr)+(36))|0), ((0)|0), 4);
+      SAFE_HEAP_STORE((((tmPtr)+(32))|0), ((0)|0), 4);
       var start = Date.UTC(date.getUTCFullYear(), 0, 1, 0, 0, 0, 0);
       var yday = ((date.getTime() - start) / (1000 * 60 * 60 * 24))|0;
-      HEAP32[(((tmPtr)+(28))>>2)]=yday;
-      HEAP32[(((tmPtr)+(40))>>2)]=___tm_timezone;
+      SAFE_HEAP_STORE((((tmPtr)+(28))|0), ((yday)|0), 4);
+      SAFE_HEAP_STORE((((tmPtr)+(40))|0), ((___tm_timezone)|0), 4);
   
       return tmPtr;
     }function _gmtime(time) {
@@ -5257,12 +5339,12 @@ var ASM_CONSTS = {
       // Coordinated Universal Time (UTC) and local standard time."), the same
       // as returned by getTimezoneOffset().
       // See http://pubs.opengroup.org/onlinepubs/009695399/functions/tzset.html
-      HEAP32[((__get_timezone())>>2)]=(new Date()).getTimezoneOffset() * 60;
+      SAFE_HEAP_STORE(((__get_timezone())|0), (((new Date()).getTimezoneOffset() * 60)|0), 4);
   
       var currentYear = new Date().getFullYear();
       var winter = new Date(currentYear, 0, 1);
       var summer = new Date(currentYear, 6, 1);
-      HEAP32[((__get_daylight())>>2)]=Number(winter.getTimezoneOffset() != summer.getTimezoneOffset());
+      SAFE_HEAP_STORE(((__get_daylight())|0), ((Number(winter.getTimezoneOffset() != summer.getTimezoneOffset()))|0), 4);
   
       function extractZone(date) {
         var match = date.toTimeString().match(/\(([A-Za-z ]+)\)$/);
@@ -5274,36 +5356,36 @@ var ASM_CONSTS = {
       var summerNamePtr = allocateUTF8(summerName);
       if (summer.getTimezoneOffset() < winter.getTimezoneOffset()) {
         // Northern hemisphere
-        HEAP32[((__get_tzname())>>2)]=winterNamePtr;
-        HEAP32[(((__get_tzname())+(4))>>2)]=summerNamePtr;
+        SAFE_HEAP_STORE(((__get_tzname())|0), ((winterNamePtr)|0), 4);
+        SAFE_HEAP_STORE((((__get_tzname())+(4))|0), ((summerNamePtr)|0), 4);
       } else {
-        HEAP32[((__get_tzname())>>2)]=summerNamePtr;
-        HEAP32[(((__get_tzname())+(4))>>2)]=winterNamePtr;
+        SAFE_HEAP_STORE(((__get_tzname())|0), ((summerNamePtr)|0), 4);
+        SAFE_HEAP_STORE((((__get_tzname())+(4))|0), ((winterNamePtr)|0), 4);
       }
     }function _localtime_r(time, tmPtr) {
       _tzset();
-      var date = new Date(HEAP32[((time)>>2)]*1000);
-      HEAP32[((tmPtr)>>2)]=date.getSeconds();
-      HEAP32[(((tmPtr)+(4))>>2)]=date.getMinutes();
-      HEAP32[(((tmPtr)+(8))>>2)]=date.getHours();
-      HEAP32[(((tmPtr)+(12))>>2)]=date.getDate();
-      HEAP32[(((tmPtr)+(16))>>2)]=date.getMonth();
-      HEAP32[(((tmPtr)+(20))>>2)]=date.getFullYear()-1900;
-      HEAP32[(((tmPtr)+(24))>>2)]=date.getDay();
+      var date = new Date(((SAFE_HEAP_LOAD(((time)|0), 4, 0))|0)*1000);
+      SAFE_HEAP_STORE(((tmPtr)|0), ((date.getSeconds())|0), 4);
+      SAFE_HEAP_STORE((((tmPtr)+(4))|0), ((date.getMinutes())|0), 4);
+      SAFE_HEAP_STORE((((tmPtr)+(8))|0), ((date.getHours())|0), 4);
+      SAFE_HEAP_STORE((((tmPtr)+(12))|0), ((date.getDate())|0), 4);
+      SAFE_HEAP_STORE((((tmPtr)+(16))|0), ((date.getMonth())|0), 4);
+      SAFE_HEAP_STORE((((tmPtr)+(20))|0), ((date.getFullYear()-1900)|0), 4);
+      SAFE_HEAP_STORE((((tmPtr)+(24))|0), ((date.getDay())|0), 4);
   
       var start = new Date(date.getFullYear(), 0, 1);
       var yday = ((date.getTime() - start.getTime()) / (1000 * 60 * 60 * 24))|0;
-      HEAP32[(((tmPtr)+(28))>>2)]=yday;
-      HEAP32[(((tmPtr)+(36))>>2)]=-(date.getTimezoneOffset() * 60);
+      SAFE_HEAP_STORE((((tmPtr)+(28))|0), ((yday)|0), 4);
+      SAFE_HEAP_STORE((((tmPtr)+(36))|0), ((-(date.getTimezoneOffset() * 60))|0), 4);
   
       // Attention: DST is in December in South, and some regions don't have DST at all.
       var summerOffset = new Date(date.getFullYear(), 6, 1).getTimezoneOffset();
       var winterOffset = start.getTimezoneOffset();
       var dst = (summerOffset != winterOffset && date.getTimezoneOffset() == Math.min(winterOffset, summerOffset))|0;
-      HEAP32[(((tmPtr)+(32))>>2)]=dst;
+      SAFE_HEAP_STORE((((tmPtr)+(32))|0), ((dst)|0), 4);
   
-      var zonePtr = HEAP32[(((__get_tzname())+(dst ? 4 : 0))>>2)];
-      HEAP32[(((tmPtr)+(40))>>2)]=zonePtr;
+      var zonePtr = ((SAFE_HEAP_LOAD((((__get_tzname())+(dst ? 4 : 0))|0), 4, 0))|0);
+      SAFE_HEAP_STORE((((tmPtr)+(40))|0), ((zonePtr)|0), 4);
   
       return tmPtr;
     }function _localtime(time) {
@@ -5313,18 +5395,18 @@ var ASM_CONSTS = {
 
   function _mktime(tmPtr) {
       _tzset();
-      var date = new Date(HEAP32[(((tmPtr)+(20))>>2)] + 1900,
-                          HEAP32[(((tmPtr)+(16))>>2)],
-                          HEAP32[(((tmPtr)+(12))>>2)],
-                          HEAP32[(((tmPtr)+(8))>>2)],
-                          HEAP32[(((tmPtr)+(4))>>2)],
-                          HEAP32[((tmPtr)>>2)],
+      var date = new Date(((SAFE_HEAP_LOAD((((tmPtr)+(20))|0), 4, 0))|0) + 1900,
+                          ((SAFE_HEAP_LOAD((((tmPtr)+(16))|0), 4, 0))|0),
+                          ((SAFE_HEAP_LOAD((((tmPtr)+(12))|0), 4, 0))|0),
+                          ((SAFE_HEAP_LOAD((((tmPtr)+(8))|0), 4, 0))|0),
+                          ((SAFE_HEAP_LOAD((((tmPtr)+(4))|0), 4, 0))|0),
+                          ((SAFE_HEAP_LOAD(((tmPtr)|0), 4, 0))|0),
                           0);
   
       // There's an ambiguous hour when the time goes back; the tm_isdst field is
       // used to disambiguate it.  Date() basically guesses, so we fix it up if it
       // guessed wrong, or fill in tm_isdst with the guess if it's -1.
-      var dst = HEAP32[(((tmPtr)+(32))>>2)];
+      var dst = ((SAFE_HEAP_LOAD((((tmPtr)+(32))|0), 4, 0))|0);
       var guessedOffset = date.getTimezoneOffset();
       var start = new Date(date.getFullYear(), 0, 1);
       var summerOffset = new Date(date.getFullYear(), 6, 1).getTimezoneOffset();
@@ -5332,7 +5414,7 @@ var ASM_CONSTS = {
       var dstOffset = Math.min(winterOffset, summerOffset); // DST is in December in South
       if (dst < 0) {
         // Attention: some regions don't have DST at all.
-        HEAP32[(((tmPtr)+(32))>>2)]=Number(summerOffset != winterOffset && dstOffset == guessedOffset);
+        SAFE_HEAP_STORE((((tmPtr)+(32))|0), ((Number(summerOffset != winterOffset && dstOffset == guessedOffset))|0), 4);
       } else if ((dst > 0) != (dstOffset == guessedOffset)) {
         var nonDstOffset = Math.max(winterOffset, summerOffset);
         var trueOffset = dst > 0 ? dstOffset : nonDstOffset;
@@ -5340,9 +5422,9 @@ var ASM_CONSTS = {
         date.setTime(date.getTime() + (trueOffset - guessedOffset)*60000);
       }
   
-      HEAP32[(((tmPtr)+(24))>>2)]=date.getDay();
+      SAFE_HEAP_STORE((((tmPtr)+(24))|0), ((date.getDay())|0), 4);
       var yday = ((date.getTime() - start.getTime()) / (1000 * 60 * 60 * 24))|0;
-      HEAP32[(((tmPtr)+(28))>>2)]=yday;
+      SAFE_HEAP_STORE((((tmPtr)+(28))|0), ((yday)|0), 4);
   
       return (date.getTime() / 1000)|0;
     }
@@ -5362,15 +5444,15 @@ var ASM_CONSTS = {
         setErrNo(28);
         return -1;
       }
-      var seconds = HEAP32[((rqtp)>>2)];
-      var nanoseconds = HEAP32[(((rqtp)+(4))>>2)];
+      var seconds = ((SAFE_HEAP_LOAD(((rqtp)|0), 4, 0))|0);
+      var nanoseconds = ((SAFE_HEAP_LOAD((((rqtp)+(4))|0), 4, 0))|0);
       if (nanoseconds < 0 || nanoseconds > 999999999 || seconds < 0) {
         setErrNo(28);
         return -1;
       }
       if (rmtp !== 0) {
-        HEAP32[((rmtp)>>2)]=0;
-        HEAP32[(((rmtp)+(4))>>2)]=0;
+        SAFE_HEAP_STORE(((rmtp)|0), ((0)|0), 4);
+        SAFE_HEAP_STORE((((rmtp)+(4))|0), ((0)|0), 4);
       }
       return _usleep((seconds * 1e6) + (nanoseconds / 1000));
     }
@@ -5445,19 +5527,19 @@ var ASM_CONSTS = {
       // size_t strftime(char *restrict s, size_t maxsize, const char *restrict format, const struct tm *restrict timeptr);
       // http://pubs.opengroup.org/onlinepubs/009695399/functions/strftime.html
   
-      var tm_zone = HEAP32[(((tm)+(40))>>2)];
+      var tm_zone = ((SAFE_HEAP_LOAD((((tm)+(40))|0), 4, 0))|0);
   
       var date = {
-        tm_sec: HEAP32[((tm)>>2)],
-        tm_min: HEAP32[(((tm)+(4))>>2)],
-        tm_hour: HEAP32[(((tm)+(8))>>2)],
-        tm_mday: HEAP32[(((tm)+(12))>>2)],
-        tm_mon: HEAP32[(((tm)+(16))>>2)],
-        tm_year: HEAP32[(((tm)+(20))>>2)],
-        tm_wday: HEAP32[(((tm)+(24))>>2)],
-        tm_yday: HEAP32[(((tm)+(28))>>2)],
-        tm_isdst: HEAP32[(((tm)+(32))>>2)],
-        tm_gmtoff: HEAP32[(((tm)+(36))>>2)],
+        tm_sec: ((SAFE_HEAP_LOAD(((tm)|0), 4, 0))|0),
+        tm_min: ((SAFE_HEAP_LOAD((((tm)+(4))|0), 4, 0))|0),
+        tm_hour: ((SAFE_HEAP_LOAD((((tm)+(8))|0), 4, 0))|0),
+        tm_mday: ((SAFE_HEAP_LOAD((((tm)+(12))|0), 4, 0))|0),
+        tm_mon: ((SAFE_HEAP_LOAD((((tm)+(16))|0), 4, 0))|0),
+        tm_year: ((SAFE_HEAP_LOAD((((tm)+(20))|0), 4, 0))|0),
+        tm_wday: ((SAFE_HEAP_LOAD((((tm)+(24))|0), 4, 0))|0),
+        tm_yday: ((SAFE_HEAP_LOAD((((tm)+(28))|0), 4, 0))|0),
+        tm_isdst: ((SAFE_HEAP_LOAD((((tm)+(32))|0), 4, 0))|0),
+        tm_gmtoff: ((SAFE_HEAP_LOAD((((tm)+(36))|0), 4, 0))|0),
         tm_zone: tm_zone ? UTF8ToString(tm_zone) : ''
       };
   
@@ -5762,7 +5844,7 @@ var ASM_CONSTS = {
   function _time(ptr) {
       var ret = (Date.now()/1000)|0;
       if (ptr) {
-        HEAP32[((ptr)>>2)]=ret;
+        SAFE_HEAP_STORE(((ptr)|0), ((ret)|0), 4);
       }
       return ret;
     }
@@ -5848,464 +5930,528 @@ function intArrayToString(array) {
 // ASM_LIBRARY EXTERN PRIMITIVES: Math_floor,Math_ceil
 
 var asmGlobalArg = {};
-var asmLibraryArg = { "__assert_fail": ___assert_fail, "__handle_stack_overflow": ___handle_stack_overflow, "__sys__newselect": ___sys__newselect, "__sys_fcntl64": ___sys_fcntl64, "__sys_fstat64": ___sys_fstat64, "__sys_getdents64": ___sys_getdents64, "__sys_ioctl": ___sys_ioctl, "__sys_lstat64": ___sys_lstat64, "__sys_madvise1": ___sys_madvise1, "__sys_open": ___sys_open, "__sys_read": ___sys_read, "__sys_rename": ___sys_rename, "__sys_rmdir": ___sys_rmdir, "__sys_stat64": ___sys_stat64, "__sys_unlink": ___sys_unlink, "abort": _abort, "abs": _abs, "clock": _clock, "clock_gettime": _clock_gettime, "emscripten_get_sbrk_ptr": _emscripten_get_sbrk_ptr, "emscripten_memcpy_big": _emscripten_memcpy_big, "emscripten_resize_heap": _emscripten_resize_heap, "environ_get": _environ_get, "environ_sizes_get": _environ_sizes_get, "exit": _exit, "fd_close": _fd_close, "fd_fdstat_get": _fd_fdstat_get, "fd_read": _fd_read, "fd_seek": _fd_seek, "fd_write": _fd_write, "gmtime": _gmtime, "gmtime_r": _gmtime_r, "localtime": _localtime, "localtime_r": _localtime_r, "memory": wasmMemory, "mktime": _mktime, "nanosleep": _nanosleep, "round": _round, "roundf": _roundf, "setTempRet0": _setTempRet0, "signal": _signal, "strftime": _strftime, "table": wasmTable, "time": _time };
+var asmLibraryArg = { "__assert_fail": ___assert_fail, "__handle_stack_overflow": ___handle_stack_overflow, "__sys__newselect": ___sys__newselect, "__sys_fcntl64": ___sys_fcntl64, "__sys_fstat64": ___sys_fstat64, "__sys_getdents64": ___sys_getdents64, "__sys_ioctl": ___sys_ioctl, "__sys_lstat64": ___sys_lstat64, "__sys_madvise1": ___sys_madvise1, "__sys_open": ___sys_open, "__sys_read": ___sys_read, "__sys_rename": ___sys_rename, "__sys_rmdir": ___sys_rmdir, "__sys_stat64": ___sys_stat64, "__sys_unlink": ___sys_unlink, "abort": _abort, "abs": _abs, "alignfault": alignfault, "clock": _clock, "clock_gettime": _clock_gettime, "emscripten_get_sbrk_ptr": _emscripten_get_sbrk_ptr, "emscripten_memcpy_big": _emscripten_memcpy_big, "emscripten_resize_heap": _emscripten_resize_heap, "environ_get": _environ_get, "environ_sizes_get": _environ_sizes_get, "exit": _exit, "fd_close": _fd_close, "fd_fdstat_get": _fd_fdstat_get, "fd_read": _fd_read, "fd_seek": _fd_seek, "fd_write": _fd_write, "gmtime": _gmtime, "gmtime_r": _gmtime_r, "localtime": _localtime, "localtime_r": _localtime_r, "memory": wasmMemory, "mktime": _mktime, "nanosleep": _nanosleep, "round": _round, "roundf": _roundf, "segfault": segfault, "setTempRet0": _setTempRet0, "signal": _signal, "strftime": _strftime, "table": wasmTable, "time": _time };
 var asm = createWasm();
-Module["asm"] = asm;
-/** @type {function(...*):?} */
-var ___wasm_call_ctors = Module["___wasm_call_ctors"] = function() {
+var real____wasm_call_ctors = asm["__wasm_call_ctors"];
+asm["__wasm_call_ctors"] = function() {
   assert(runtimeInitialized, 'you need to wait for the runtime to be ready (e.g. wait for main() to be called)');
   assert(!runtimeExited, 'the runtime was exited (use NO_EXIT_RUNTIME to keep it alive after main() exits)');
-  return Module["asm"]["__wasm_call_ctors"].apply(null, arguments)
+  return real____wasm_call_ctors.apply(null, arguments);
 };
 
-/** @type {function(...*):?} */
-var ___errno_location = Module["___errno_location"] = function() {
+var real____errno_location = asm["__errno_location"];
+asm["__errno_location"] = function() {
   assert(runtimeInitialized, 'you need to wait for the runtime to be ready (e.g. wait for main() to be called)');
   assert(!runtimeExited, 'the runtime was exited (use NO_EXIT_RUNTIME to keep it alive after main() exits)');
-  return Module["asm"]["__errno_location"].apply(null, arguments)
+  return real____errno_location.apply(null, arguments);
 };
 
-/** @type {function(...*):?} */
-var _fflush = Module["_fflush"] = function() {
+var real__fflush = asm["fflush"];
+asm["fflush"] = function() {
   assert(runtimeInitialized, 'you need to wait for the runtime to be ready (e.g. wait for main() to be called)');
   assert(!runtimeExited, 'the runtime was exited (use NO_EXIT_RUNTIME to keep it alive after main() exits)');
-  return Module["asm"]["fflush"].apply(null, arguments)
+  return real__fflush.apply(null, arguments);
 };
 
-/** @type {function(...*):?} */
-var _main = Module["_main"] = function() {
+var real__main = asm["main"];
+asm["main"] = function() {
   assert(runtimeInitialized, 'you need to wait for the runtime to be ready (e.g. wait for main() to be called)');
   assert(!runtimeExited, 'the runtime was exited (use NO_EXIT_RUNTIME to keep it alive after main() exits)');
-  return Module["asm"]["main"].apply(null, arguments)
+  return real__main.apply(null, arguments);
 };
 
-/** @type {function(...*):?} */
-var _free = Module["_free"] = function() {
+var real__free = asm["free"];
+asm["free"] = function() {
   assert(runtimeInitialized, 'you need to wait for the runtime to be ready (e.g. wait for main() to be called)');
   assert(!runtimeExited, 'the runtime was exited (use NO_EXIT_RUNTIME to keep it alive after main() exits)');
-  return Module["asm"]["free"].apply(null, arguments)
+  return real__free.apply(null, arguments);
 };
 
-/** @type {function(...*):?} */
-var _malloc = Module["_malloc"] = function() {
+var real__malloc = asm["malloc"];
+asm["malloc"] = function() {
   assert(runtimeInitialized, 'you need to wait for the runtime to be ready (e.g. wait for main() to be called)');
   assert(!runtimeExited, 'the runtime was exited (use NO_EXIT_RUNTIME to keep it alive after main() exits)');
-  return Module["asm"]["malloc"].apply(null, arguments)
+  return real__malloc.apply(null, arguments);
 };
 
-/** @type {function(...*):?} */
-var __get_tzname = Module["__get_tzname"] = function() {
+var real___get_tzname = asm["_get_tzname"];
+asm["_get_tzname"] = function() {
   assert(runtimeInitialized, 'you need to wait for the runtime to be ready (e.g. wait for main() to be called)');
   assert(!runtimeExited, 'the runtime was exited (use NO_EXIT_RUNTIME to keep it alive after main() exits)');
-  return Module["asm"]["_get_tzname"].apply(null, arguments)
+  return real___get_tzname.apply(null, arguments);
 };
 
-/** @type {function(...*):?} */
-var __get_daylight = Module["__get_daylight"] = function() {
+var real___get_daylight = asm["_get_daylight"];
+asm["_get_daylight"] = function() {
   assert(runtimeInitialized, 'you need to wait for the runtime to be ready (e.g. wait for main() to be called)');
   assert(!runtimeExited, 'the runtime was exited (use NO_EXIT_RUNTIME to keep it alive after main() exits)');
-  return Module["asm"]["_get_daylight"].apply(null, arguments)
+  return real___get_daylight.apply(null, arguments);
 };
 
-/** @type {function(...*):?} */
-var __get_timezone = Module["__get_timezone"] = function() {
+var real___get_timezone = asm["_get_timezone"];
+asm["_get_timezone"] = function() {
   assert(runtimeInitialized, 'you need to wait for the runtime to be ready (e.g. wait for main() to be called)');
   assert(!runtimeExited, 'the runtime was exited (use NO_EXIT_RUNTIME to keep it alive after main() exits)');
-  return Module["asm"]["_get_timezone"].apply(null, arguments)
+  return real___get_timezone.apply(null, arguments);
 };
 
-/** @type {function(...*):?} */
-var ___set_stack_limit = Module["___set_stack_limit"] = function() {
+var real____set_stack_limit = asm["__set_stack_limit"];
+asm["__set_stack_limit"] = function() {
   assert(runtimeInitialized, 'you need to wait for the runtime to be ready (e.g. wait for main() to be called)');
   assert(!runtimeExited, 'the runtime was exited (use NO_EXIT_RUNTIME to keep it alive after main() exits)');
-  return Module["asm"]["__set_stack_limit"].apply(null, arguments)
+  return real____set_stack_limit.apply(null, arguments);
 };
 
-/** @type {function(...*):?} */
-var stackSave = Module["stackSave"] = function() {
+var real_stackSave = asm["stackSave"];
+asm["stackSave"] = function() {
   assert(runtimeInitialized, 'you need to wait for the runtime to be ready (e.g. wait for main() to be called)');
   assert(!runtimeExited, 'the runtime was exited (use NO_EXIT_RUNTIME to keep it alive after main() exits)');
-  return Module["asm"]["stackSave"].apply(null, arguments)
+  return real_stackSave.apply(null, arguments);
 };
 
-/** @type {function(...*):?} */
-var stackAlloc = Module["stackAlloc"] = function() {
+var real_stackAlloc = asm["stackAlloc"];
+asm["stackAlloc"] = function() {
   assert(runtimeInitialized, 'you need to wait for the runtime to be ready (e.g. wait for main() to be called)');
   assert(!runtimeExited, 'the runtime was exited (use NO_EXIT_RUNTIME to keep it alive after main() exits)');
-  return Module["asm"]["stackAlloc"].apply(null, arguments)
+  return real_stackAlloc.apply(null, arguments);
 };
 
-/** @type {function(...*):?} */
-var stackRestore = Module["stackRestore"] = function() {
+var real_stackRestore = asm["stackRestore"];
+asm["stackRestore"] = function() {
   assert(runtimeInitialized, 'you need to wait for the runtime to be ready (e.g. wait for main() to be called)');
   assert(!runtimeExited, 'the runtime was exited (use NO_EXIT_RUNTIME to keep it alive after main() exits)');
-  return Module["asm"]["stackRestore"].apply(null, arguments)
+  return real_stackRestore.apply(null, arguments);
 };
 
-/** @type {function(...*):?} */
-var __growWasmMemory = Module["__growWasmMemory"] = function() {
+var real___growWasmMemory = asm["__growWasmMemory"];
+asm["__growWasmMemory"] = function() {
   assert(runtimeInitialized, 'you need to wait for the runtime to be ready (e.g. wait for main() to be called)');
   assert(!runtimeExited, 'the runtime was exited (use NO_EXIT_RUNTIME to keep it alive after main() exits)');
-  return Module["asm"]["__growWasmMemory"].apply(null, arguments)
+  return real___growWasmMemory.apply(null, arguments);
 };
 
-/** @type {function(...*):?} */
-var dynCall_iii = Module["dynCall_iii"] = function() {
+var real_dynCall_iii = asm["dynCall_iii"];
+asm["dynCall_iii"] = function() {
   assert(runtimeInitialized, 'you need to wait for the runtime to be ready (e.g. wait for main() to be called)');
   assert(!runtimeExited, 'the runtime was exited (use NO_EXIT_RUNTIME to keep it alive after main() exits)');
-  return Module["asm"]["dynCall_iii"].apply(null, arguments)
+  return real_dynCall_iii.apply(null, arguments);
 };
 
-/** @type {function(...*):?} */
-var dynCall_viiii = Module["dynCall_viiii"] = function() {
+var real_dynCall_viiii = asm["dynCall_viiii"];
+asm["dynCall_viiii"] = function() {
   assert(runtimeInitialized, 'you need to wait for the runtime to be ready (e.g. wait for main() to be called)');
   assert(!runtimeExited, 'the runtime was exited (use NO_EXIT_RUNTIME to keep it alive after main() exits)');
-  return Module["asm"]["dynCall_viiii"].apply(null, arguments)
+  return real_dynCall_viiii.apply(null, arguments);
 };
 
-/** @type {function(...*):?} */
-var dynCall_vi = Module["dynCall_vi"] = function() {
+var real_dynCall_vi = asm["dynCall_vi"];
+asm["dynCall_vi"] = function() {
   assert(runtimeInitialized, 'you need to wait for the runtime to be ready (e.g. wait for main() to be called)');
   assert(!runtimeExited, 'the runtime was exited (use NO_EXIT_RUNTIME to keep it alive after main() exits)');
-  return Module["asm"]["dynCall_vi"].apply(null, arguments)
+  return real_dynCall_vi.apply(null, arguments);
 };
 
-/** @type {function(...*):?} */
-var dynCall_iiii = Module["dynCall_iiii"] = function() {
+var real_dynCall_iiii = asm["dynCall_iiii"];
+asm["dynCall_iiii"] = function() {
   assert(runtimeInitialized, 'you need to wait for the runtime to be ready (e.g. wait for main() to be called)');
   assert(!runtimeExited, 'the runtime was exited (use NO_EXIT_RUNTIME to keep it alive after main() exits)');
-  return Module["asm"]["dynCall_iiii"].apply(null, arguments)
+  return real_dynCall_iiii.apply(null, arguments);
 };
 
-/** @type {function(...*):?} */
-var dynCall_ii = Module["dynCall_ii"] = function() {
+var real_dynCall_ii = asm["dynCall_ii"];
+asm["dynCall_ii"] = function() {
   assert(runtimeInitialized, 'you need to wait for the runtime to be ready (e.g. wait for main() to be called)');
   assert(!runtimeExited, 'the runtime was exited (use NO_EXIT_RUNTIME to keep it alive after main() exits)');
-  return Module["asm"]["dynCall_ii"].apply(null, arguments)
+  return real_dynCall_ii.apply(null, arguments);
 };
 
-/** @type {function(...*):?} */
-var dynCall_iiiiii = Module["dynCall_iiiiii"] = function() {
+var real_dynCall_iiiiii = asm["dynCall_iiiiii"];
+asm["dynCall_iiiiii"] = function() {
   assert(runtimeInitialized, 'you need to wait for the runtime to be ready (e.g. wait for main() to be called)');
   assert(!runtimeExited, 'the runtime was exited (use NO_EXIT_RUNTIME to keep it alive after main() exits)');
-  return Module["asm"]["dynCall_iiiiii"].apply(null, arguments)
+  return real_dynCall_iiiiii.apply(null, arguments);
 };
 
-/** @type {function(...*):?} */
-var dynCall_i = Module["dynCall_i"] = function() {
+var real_dynCall_i = asm["dynCall_i"];
+asm["dynCall_i"] = function() {
   assert(runtimeInitialized, 'you need to wait for the runtime to be ready (e.g. wait for main() to be called)');
   assert(!runtimeExited, 'the runtime was exited (use NO_EXIT_RUNTIME to keep it alive after main() exits)');
-  return Module["asm"]["dynCall_i"].apply(null, arguments)
+  return real_dynCall_i.apply(null, arguments);
 };
 
-/** @type {function(...*):?} */
-var dynCall_iiiii = Module["dynCall_iiiii"] = function() {
+var real_dynCall_iiiii = asm["dynCall_iiiii"];
+asm["dynCall_iiiii"] = function() {
   assert(runtimeInitialized, 'you need to wait for the runtime to be ready (e.g. wait for main() to be called)');
   assert(!runtimeExited, 'the runtime was exited (use NO_EXIT_RUNTIME to keep it alive after main() exits)');
-  return Module["asm"]["dynCall_iiiii"].apply(null, arguments)
+  return real_dynCall_iiiii.apply(null, arguments);
 };
 
-/** @type {function(...*):?} */
-var dynCall_viii = Module["dynCall_viii"] = function() {
+var real_dynCall_viii = asm["dynCall_viii"];
+asm["dynCall_viii"] = function() {
   assert(runtimeInitialized, 'you need to wait for the runtime to be ready (e.g. wait for main() to be called)');
   assert(!runtimeExited, 'the runtime was exited (use NO_EXIT_RUNTIME to keep it alive after main() exits)');
-  return Module["asm"]["dynCall_viii"].apply(null, arguments)
+  return real_dynCall_viii.apply(null, arguments);
 };
 
-/** @type {function(...*):?} */
-var dynCall_iiiiiiiii = Module["dynCall_iiiiiiiii"] = function() {
+var real_dynCall_iiiiiiiii = asm["dynCall_iiiiiiiii"];
+asm["dynCall_iiiiiiiii"] = function() {
   assert(runtimeInitialized, 'you need to wait for the runtime to be ready (e.g. wait for main() to be called)');
   assert(!runtimeExited, 'the runtime was exited (use NO_EXIT_RUNTIME to keep it alive after main() exits)');
-  return Module["asm"]["dynCall_iiiiiiiii"].apply(null, arguments)
+  return real_dynCall_iiiiiiiii.apply(null, arguments);
 };
 
-/** @type {function(...*):?} */
-var dynCall_viiiiii = Module["dynCall_viiiiii"] = function() {
+var real_dynCall_viiiiii = asm["dynCall_viiiiii"];
+asm["dynCall_viiiiii"] = function() {
   assert(runtimeInitialized, 'you need to wait for the runtime to be ready (e.g. wait for main() to be called)');
   assert(!runtimeExited, 'the runtime was exited (use NO_EXIT_RUNTIME to keep it alive after main() exits)');
-  return Module["asm"]["dynCall_viiiiii"].apply(null, arguments)
+  return real_dynCall_viiiiii.apply(null, arguments);
 };
 
-/** @type {function(...*):?} */
-var dynCall_vii = Module["dynCall_vii"] = function() {
+var real_dynCall_vii = asm["dynCall_vii"];
+asm["dynCall_vii"] = function() {
   assert(runtimeInitialized, 'you need to wait for the runtime to be ready (e.g. wait for main() to be called)');
   assert(!runtimeExited, 'the runtime was exited (use NO_EXIT_RUNTIME to keep it alive after main() exits)');
-  return Module["asm"]["dynCall_vii"].apply(null, arguments)
+  return real_dynCall_vii.apply(null, arguments);
 };
 
-/** @type {function(...*):?} */
-var dynCall_v = Module["dynCall_v"] = function() {
+var real_dynCall_v = asm["dynCall_v"];
+asm["dynCall_v"] = function() {
   assert(runtimeInitialized, 'you need to wait for the runtime to be ready (e.g. wait for main() to be called)');
   assert(!runtimeExited, 'the runtime was exited (use NO_EXIT_RUNTIME to keep it alive after main() exits)');
-  return Module["asm"]["dynCall_v"].apply(null, arguments)
+  return real_dynCall_v.apply(null, arguments);
 };
 
-/** @type {function(...*):?} */
-var dynCall_jiji = Module["dynCall_jiji"] = function() {
+var real_dynCall_jiji = asm["dynCall_jiji"];
+asm["dynCall_jiji"] = function() {
   assert(runtimeInitialized, 'you need to wait for the runtime to be ready (e.g. wait for main() to be called)');
   assert(!runtimeExited, 'the runtime was exited (use NO_EXIT_RUNTIME to keep it alive after main() exits)');
-  return Module["asm"]["dynCall_jiji"].apply(null, arguments)
+  return real_dynCall_jiji.apply(null, arguments);
 };
 
-/** @type {function(...*):?} */
-var dynCall_jiiji = Module["dynCall_jiiji"] = function() {
+var real_dynCall_jiiji = asm["dynCall_jiiji"];
+asm["dynCall_jiiji"] = function() {
   assert(runtimeInitialized, 'you need to wait for the runtime to be ready (e.g. wait for main() to be called)');
   assert(!runtimeExited, 'the runtime was exited (use NO_EXIT_RUNTIME to keep it alive after main() exits)');
-  return Module["asm"]["dynCall_jiiji"].apply(null, arguments)
+  return real_dynCall_jiiji.apply(null, arguments);
 };
 
-/** @type {function(...*):?} */
-var dynCall_viiiiiiff = Module["dynCall_viiiiiiff"] = function() {
+var real_dynCall_viiiiiiff = asm["dynCall_viiiiiiff"];
+asm["dynCall_viiiiiiff"] = function() {
   assert(runtimeInitialized, 'you need to wait for the runtime to be ready (e.g. wait for main() to be called)');
   assert(!runtimeExited, 'the runtime was exited (use NO_EXIT_RUNTIME to keep it alive after main() exits)');
-  return Module["asm"]["dynCall_viiiiiiff"].apply(null, arguments)
+  return real_dynCall_viiiiiiff.apply(null, arguments);
 };
 
-/** @type {function(...*):?} */
-var dynCall_viiiii = Module["dynCall_viiiii"] = function() {
+var real_dynCall_viiiii = asm["dynCall_viiiii"];
+asm["dynCall_viiiii"] = function() {
   assert(runtimeInitialized, 'you need to wait for the runtime to be ready (e.g. wait for main() to be called)');
   assert(!runtimeExited, 'the runtime was exited (use NO_EXIT_RUNTIME to keep it alive after main() exits)');
-  return Module["asm"]["dynCall_viiiii"].apply(null, arguments)
+  return real_dynCall_viiiii.apply(null, arguments);
 };
 
-/** @type {function(...*):?} */
-var dynCall_viiiiiifi = Module["dynCall_viiiiiifi"] = function() {
+var real_dynCall_viiiiiifi = asm["dynCall_viiiiiifi"];
+asm["dynCall_viiiiiifi"] = function() {
   assert(runtimeInitialized, 'you need to wait for the runtime to be ready (e.g. wait for main() to be called)');
   assert(!runtimeExited, 'the runtime was exited (use NO_EXIT_RUNTIME to keep it alive after main() exits)');
-  return Module["asm"]["dynCall_viiiiiifi"].apply(null, arguments)
+  return real_dynCall_viiiiiifi.apply(null, arguments);
 };
 
-/** @type {function(...*):?} */
-var dynCall_iiiiiii = Module["dynCall_iiiiiii"] = function() {
+var real_dynCall_iiiiiii = asm["dynCall_iiiiiii"];
+asm["dynCall_iiiiiii"] = function() {
   assert(runtimeInitialized, 'you need to wait for the runtime to be ready (e.g. wait for main() to be called)');
   assert(!runtimeExited, 'the runtime was exited (use NO_EXIT_RUNTIME to keep it alive after main() exits)');
-  return Module["asm"]["dynCall_iiiiiii"].apply(null, arguments)
+  return real_dynCall_iiiiiii.apply(null, arguments);
 };
 
-/** @type {function(...*):?} */
-var dynCall_viiiiiiiii = Module["dynCall_viiiiiiiii"] = function() {
+var real_dynCall_viiiiiiiii = asm["dynCall_viiiiiiiii"];
+asm["dynCall_viiiiiiiii"] = function() {
   assert(runtimeInitialized, 'you need to wait for the runtime to be ready (e.g. wait for main() to be called)');
   assert(!runtimeExited, 'the runtime was exited (use NO_EXIT_RUNTIME to keep it alive after main() exits)');
-  return Module["asm"]["dynCall_viiiiiiiii"].apply(null, arguments)
+  return real_dynCall_viiiiiiiii.apply(null, arguments);
 };
 
-/** @type {function(...*):?} */
-var dynCall_viiiiiiii = Module["dynCall_viiiiiiii"] = function() {
+var real_dynCall_viiiiiiii = asm["dynCall_viiiiiiii"];
+asm["dynCall_viiiiiiii"] = function() {
   assert(runtimeInitialized, 'you need to wait for the runtime to be ready (e.g. wait for main() to be called)');
   assert(!runtimeExited, 'the runtime was exited (use NO_EXIT_RUNTIME to keep it alive after main() exits)');
-  return Module["asm"]["dynCall_viiiiiiii"].apply(null, arguments)
+  return real_dynCall_viiiiiiii.apply(null, arguments);
 };
 
-/** @type {function(...*):?} */
-var dynCall_iiiiiiiiiiiiiifii = Module["dynCall_iiiiiiiiiiiiiifii"] = function() {
+var real_dynCall_iiiiiiiiiiiiiifii = asm["dynCall_iiiiiiiiiiiiiifii"];
+asm["dynCall_iiiiiiiiiiiiiifii"] = function() {
   assert(runtimeInitialized, 'you need to wait for the runtime to be ready (e.g. wait for main() to be called)');
   assert(!runtimeExited, 'the runtime was exited (use NO_EXIT_RUNTIME to keep it alive after main() exits)');
-  return Module["asm"]["dynCall_iiiiiiiiiiiiiifii"].apply(null, arguments)
+  return real_dynCall_iiiiiiiiiiiiiifii.apply(null, arguments);
 };
 
-/** @type {function(...*):?} */
-var dynCall_fiiii = Module["dynCall_fiiii"] = function() {
+var real_dynCall_fiiii = asm["dynCall_fiiii"];
+asm["dynCall_fiiii"] = function() {
   assert(runtimeInitialized, 'you need to wait for the runtime to be ready (e.g. wait for main() to be called)');
   assert(!runtimeExited, 'the runtime was exited (use NO_EXIT_RUNTIME to keep it alive after main() exits)');
-  return Module["asm"]["dynCall_fiiii"].apply(null, arguments)
+  return real_dynCall_fiiii.apply(null, arguments);
 };
 
-/** @type {function(...*):?} */
-var dynCall_fiifi = Module["dynCall_fiifi"] = function() {
+var real_dynCall_fiifi = asm["dynCall_fiifi"];
+asm["dynCall_fiifi"] = function() {
   assert(runtimeInitialized, 'you need to wait for the runtime to be ready (e.g. wait for main() to be called)');
   assert(!runtimeExited, 'the runtime was exited (use NO_EXIT_RUNTIME to keep it alive after main() exits)');
-  return Module["asm"]["dynCall_fiifi"].apply(null, arguments)
+  return real_dynCall_fiifi.apply(null, arguments);
 };
 
-/** @type {function(...*):?} */
-var dynCall_viiiiiii = Module["dynCall_viiiiiii"] = function() {
+var real_dynCall_viiiiiii = asm["dynCall_viiiiiii"];
+asm["dynCall_viiiiiii"] = function() {
   assert(runtimeInitialized, 'you need to wait for the runtime to be ready (e.g. wait for main() to be called)');
   assert(!runtimeExited, 'the runtime was exited (use NO_EXIT_RUNTIME to keep it alive after main() exits)');
-  return Module["asm"]["dynCall_viiiiiii"].apply(null, arguments)
+  return real_dynCall_viiiiiii.apply(null, arguments);
 };
 
-/** @type {function(...*):?} */
-var dynCall_viiiifii = Module["dynCall_viiiifii"] = function() {
+var real_dynCall_viiiifii = asm["dynCall_viiiifii"];
+asm["dynCall_viiiifii"] = function() {
   assert(runtimeInitialized, 'you need to wait for the runtime to be ready (e.g. wait for main() to be called)');
   assert(!runtimeExited, 'the runtime was exited (use NO_EXIT_RUNTIME to keep it alive after main() exits)');
-  return Module["asm"]["dynCall_viiiifii"].apply(null, arguments)
+  return real_dynCall_viiiifii.apply(null, arguments);
 };
 
-/** @type {function(...*):?} */
-var dynCall_fii = Module["dynCall_fii"] = function() {
+var real_dynCall_fii = asm["dynCall_fii"];
+asm["dynCall_fii"] = function() {
   assert(runtimeInitialized, 'you need to wait for the runtime to be ready (e.g. wait for main() to be called)');
   assert(!runtimeExited, 'the runtime was exited (use NO_EXIT_RUNTIME to keep it alive after main() exits)');
-  return Module["asm"]["dynCall_fii"].apply(null, arguments)
+  return real_dynCall_fii.apply(null, arguments);
 };
 
-/** @type {function(...*):?} */
-var dynCall_viiiiiiiiii = Module["dynCall_viiiiiiiiii"] = function() {
+var real_dynCall_viiiiiiiiii = asm["dynCall_viiiiiiiiii"];
+asm["dynCall_viiiiiiiiii"] = function() {
   assert(runtimeInitialized, 'you need to wait for the runtime to be ready (e.g. wait for main() to be called)');
   assert(!runtimeExited, 'the runtime was exited (use NO_EXIT_RUNTIME to keep it alive after main() exits)');
-  return Module["asm"]["dynCall_viiiiiiiiii"].apply(null, arguments)
+  return real_dynCall_viiiiiiiiii.apply(null, arguments);
 };
 
-/** @type {function(...*):?} */
-var dynCall_viiijj = Module["dynCall_viiijj"] = function() {
+var real_dynCall_viiijj = asm["dynCall_viiijj"];
+asm["dynCall_viiijj"] = function() {
   assert(runtimeInitialized, 'you need to wait for the runtime to be ready (e.g. wait for main() to be called)');
   assert(!runtimeExited, 'the runtime was exited (use NO_EXIT_RUNTIME to keep it alive after main() exits)');
-  return Module["asm"]["dynCall_viiijj"].apply(null, arguments)
+  return real_dynCall_viiijj.apply(null, arguments);
 };
 
-/** @type {function(...*):?} */
-var dynCall_viiiiiiiiiiii = Module["dynCall_viiiiiiiiiiii"] = function() {
+var real_dynCall_viiiiiiiiiiii = asm["dynCall_viiiiiiiiiiii"];
+asm["dynCall_viiiiiiiiiiii"] = function() {
   assert(runtimeInitialized, 'you need to wait for the runtime to be ready (e.g. wait for main() to be called)');
   assert(!runtimeExited, 'the runtime was exited (use NO_EXIT_RUNTIME to keep it alive after main() exits)');
-  return Module["asm"]["dynCall_viiiiiiiiiiii"].apply(null, arguments)
+  return real_dynCall_viiiiiiiiiiii.apply(null, arguments);
 };
 
-/** @type {function(...*):?} */
-var dynCall_iiiiiiii = Module["dynCall_iiiiiiii"] = function() {
+var real_dynCall_iiiiiiii = asm["dynCall_iiiiiiii"];
+asm["dynCall_iiiiiiii"] = function() {
   assert(runtimeInitialized, 'you need to wait for the runtime to be ready (e.g. wait for main() to be called)');
   assert(!runtimeExited, 'the runtime was exited (use NO_EXIT_RUNTIME to keep it alive after main() exits)');
-  return Module["asm"]["dynCall_iiiiiiii"].apply(null, arguments)
+  return real_dynCall_iiiiiiii.apply(null, arguments);
 };
 
-/** @type {function(...*):?} */
-var dynCall_dd = Module["dynCall_dd"] = function() {
+var real_dynCall_dd = asm["dynCall_dd"];
+asm["dynCall_dd"] = function() {
   assert(runtimeInitialized, 'you need to wait for the runtime to be ready (e.g. wait for main() to be called)');
   assert(!runtimeExited, 'the runtime was exited (use NO_EXIT_RUNTIME to keep it alive after main() exits)');
-  return Module["asm"]["dynCall_dd"].apply(null, arguments)
+  return real_dynCall_dd.apply(null, arguments);
 };
 
-/** @type {function(...*):?} */
-var dynCall_fiii = Module["dynCall_fiii"] = function() {
+var real_dynCall_fiii = asm["dynCall_fiii"];
+asm["dynCall_fiii"] = function() {
   assert(runtimeInitialized, 'you need to wait for the runtime to be ready (e.g. wait for main() to be called)');
   assert(!runtimeExited, 'the runtime was exited (use NO_EXIT_RUNTIME to keep it alive after main() exits)');
-  return Module["asm"]["dynCall_fiii"].apply(null, arguments)
+  return real_dynCall_fiii.apply(null, arguments);
 };
 
-/** @type {function(...*):?} */
-var dynCall_viidi = Module["dynCall_viidi"] = function() {
+var real_dynCall_viidi = asm["dynCall_viidi"];
+asm["dynCall_viidi"] = function() {
   assert(runtimeInitialized, 'you need to wait for the runtime to be ready (e.g. wait for main() to be called)');
   assert(!runtimeExited, 'the runtime was exited (use NO_EXIT_RUNTIME to keep it alive after main() exits)');
-  return Module["asm"]["dynCall_viidi"].apply(null, arguments)
+  return real_dynCall_viidi.apply(null, arguments);
 };
 
-/** @type {function(...*):?} */
-var dynCall_viifi = Module["dynCall_viifi"] = function() {
+var real_dynCall_viifi = asm["dynCall_viifi"];
+asm["dynCall_viifi"] = function() {
   assert(runtimeInitialized, 'you need to wait for the runtime to be ready (e.g. wait for main() to be called)');
   assert(!runtimeExited, 'the runtime was exited (use NO_EXIT_RUNTIME to keep it alive after main() exits)');
-  return Module["asm"]["dynCall_viifi"].apply(null, arguments)
+  return real_dynCall_viifi.apply(null, arguments);
 };
 
-/** @type {function(...*):?} */
-var dynCall_did = Module["dynCall_did"] = function() {
+var real_dynCall_did = asm["dynCall_did"];
+asm["dynCall_did"] = function() {
   assert(runtimeInitialized, 'you need to wait for the runtime to be ready (e.g. wait for main() to be called)');
   assert(!runtimeExited, 'the runtime was exited (use NO_EXIT_RUNTIME to keep it alive after main() exits)');
-  return Module["asm"]["dynCall_did"].apply(null, arguments)
+  return real_dynCall_did.apply(null, arguments);
 };
 
-/** @type {function(...*):?} */
-var dynCall_fiiiiiiiiffii = Module["dynCall_fiiiiiiiiffii"] = function() {
+var real_dynCall_fiiiiiiiiffii = asm["dynCall_fiiiiiiiiffii"];
+asm["dynCall_fiiiiiiiiffii"] = function() {
   assert(runtimeInitialized, 'you need to wait for the runtime to be ready (e.g. wait for main() to be called)');
   assert(!runtimeExited, 'the runtime was exited (use NO_EXIT_RUNTIME to keep it alive after main() exits)');
-  return Module["asm"]["dynCall_fiiiiiiiiffii"].apply(null, arguments)
+  return real_dynCall_fiiiiiiiiffii.apply(null, arguments);
 };
 
-/** @type {function(...*):?} */
-var dynCall_viiif = Module["dynCall_viiif"] = function() {
+var real_dynCall_viiif = asm["dynCall_viiif"];
+asm["dynCall_viiif"] = function() {
   assert(runtimeInitialized, 'you need to wait for the runtime to be ready (e.g. wait for main() to be called)');
   assert(!runtimeExited, 'the runtime was exited (use NO_EXIT_RUNTIME to keep it alive after main() exits)');
-  return Module["asm"]["dynCall_viiif"].apply(null, arguments)
+  return real_dynCall_viiif.apply(null, arguments);
 };
 
-/** @type {function(...*):?} */
-var dynCall_viiiif = Module["dynCall_viiiif"] = function() {
+var real_dynCall_viiiif = asm["dynCall_viiiif"];
+asm["dynCall_viiiif"] = function() {
   assert(runtimeInitialized, 'you need to wait for the runtime to be ready (e.g. wait for main() to be called)');
   assert(!runtimeExited, 'the runtime was exited (use NO_EXIT_RUNTIME to keep it alive after main() exits)');
-  return Module["asm"]["dynCall_viiiif"].apply(null, arguments)
+  return real_dynCall_viiiif.apply(null, arguments);
 };
 
-/** @type {function(...*):?} */
-var dynCall_viiiiiiifi = Module["dynCall_viiiiiiifi"] = function() {
+var real_dynCall_viiiiiiifi = asm["dynCall_viiiiiiifi"];
+asm["dynCall_viiiiiiifi"] = function() {
   assert(runtimeInitialized, 'you need to wait for the runtime to be ready (e.g. wait for main() to be called)');
   assert(!runtimeExited, 'the runtime was exited (use NO_EXIT_RUNTIME to keep it alive after main() exits)');
-  return Module["asm"]["dynCall_viiiiiiifi"].apply(null, arguments)
+  return real_dynCall_viiiiiiifi.apply(null, arguments);
 };
 
-/** @type {function(...*):?} */
-var dynCall_iiiiiiidiiddii = Module["dynCall_iiiiiiidiiddii"] = function() {
+var real_dynCall_iiiiiiidiiddii = asm["dynCall_iiiiiiidiiddii"];
+asm["dynCall_iiiiiiidiiddii"] = function() {
   assert(runtimeInitialized, 'you need to wait for the runtime to be ready (e.g. wait for main() to be called)');
   assert(!runtimeExited, 'the runtime was exited (use NO_EXIT_RUNTIME to keep it alive after main() exits)');
-  return Module["asm"]["dynCall_iiiiiiidiiddii"].apply(null, arguments)
+  return real_dynCall_iiiiiiidiiddii.apply(null, arguments);
 };
 
-/** @type {function(...*):?} */
-var dynCall_jij = Module["dynCall_jij"] = function() {
+var real_dynCall_jij = asm["dynCall_jij"];
+asm["dynCall_jij"] = function() {
   assert(runtimeInitialized, 'you need to wait for the runtime to be ready (e.g. wait for main() to be called)');
   assert(!runtimeExited, 'the runtime was exited (use NO_EXIT_RUNTIME to keep it alive after main() exits)');
-  return Module["asm"]["dynCall_jij"].apply(null, arguments)
+  return real_dynCall_jij.apply(null, arguments);
 };
 
-/** @type {function(...*):?} */
-var dynCall_jii = Module["dynCall_jii"] = function() {
+var real_dynCall_jii = asm["dynCall_jii"];
+asm["dynCall_jii"] = function() {
   assert(runtimeInitialized, 'you need to wait for the runtime to be ready (e.g. wait for main() to be called)');
   assert(!runtimeExited, 'the runtime was exited (use NO_EXIT_RUNTIME to keep it alive after main() exits)');
-  return Module["asm"]["dynCall_jii"].apply(null, arguments)
+  return real_dynCall_jii.apply(null, arguments);
 };
 
-/** @type {function(...*):?} */
-var dynCall_iiijjji = Module["dynCall_iiijjji"] = function() {
+var real_dynCall_iiijjji = asm["dynCall_iiijjji"];
+asm["dynCall_iiijjji"] = function() {
   assert(runtimeInitialized, 'you need to wait for the runtime to be ready (e.g. wait for main() to be called)');
   assert(!runtimeExited, 'the runtime was exited (use NO_EXIT_RUNTIME to keep it alive after main() exits)');
-  return Module["asm"]["dynCall_iiijjji"].apply(null, arguments)
+  return real_dynCall_iiijjji.apply(null, arguments);
 };
 
-/** @type {function(...*):?} */
-var dynCall_iiiji = Module["dynCall_iiiji"] = function() {
+var real_dynCall_iiiji = asm["dynCall_iiiji"];
+asm["dynCall_iiiji"] = function() {
   assert(runtimeInitialized, 'you need to wait for the runtime to be ready (e.g. wait for main() to be called)');
   assert(!runtimeExited, 'the runtime was exited (use NO_EXIT_RUNTIME to keep it alive after main() exits)');
-  return Module["asm"]["dynCall_iiiji"].apply(null, arguments)
+  return real_dynCall_iiiji.apply(null, arguments);
 };
 
-/** @type {function(...*):?} */
-var dynCall_jiiij = Module["dynCall_jiiij"] = function() {
+var real_dynCall_jiiij = asm["dynCall_jiiij"];
+asm["dynCall_jiiij"] = function() {
   assert(runtimeInitialized, 'you need to wait for the runtime to be ready (e.g. wait for main() to be called)');
   assert(!runtimeExited, 'the runtime was exited (use NO_EXIT_RUNTIME to keep it alive after main() exits)');
-  return Module["asm"]["dynCall_jiiij"].apply(null, arguments)
+  return real_dynCall_jiiij.apply(null, arguments);
 };
 
-/** @type {function(...*):?} */
-var dynCall_iiifii = Module["dynCall_iiifii"] = function() {
+var real_dynCall_iiifii = asm["dynCall_iiifii"];
+asm["dynCall_iiifii"] = function() {
   assert(runtimeInitialized, 'you need to wait for the runtime to be ready (e.g. wait for main() to be called)');
   assert(!runtimeExited, 'the runtime was exited (use NO_EXIT_RUNTIME to keep it alive after main() exits)');
-  return Module["asm"]["dynCall_iiifii"].apply(null, arguments)
+  return real_dynCall_iiifii.apply(null, arguments);
 };
 
-/** @type {function(...*):?} */
-var dynCall_iidiiii = Module["dynCall_iidiiii"] = function() {
+var real_dynCall_iidiiii = asm["dynCall_iidiiii"];
+asm["dynCall_iidiiii"] = function() {
   assert(runtimeInitialized, 'you need to wait for the runtime to be ready (e.g. wait for main() to be called)');
   assert(!runtimeExited, 'the runtime was exited (use NO_EXIT_RUNTIME to keep it alive after main() exits)');
-  return Module["asm"]["dynCall_iidiiii"].apply(null, arguments)
+  return real_dynCall_iidiiii.apply(null, arguments);
 };
 
-/** @type {function(...*):?} */
-var dynCall_iij = Module["dynCall_iij"] = function() {
+var real_dynCall_iij = asm["dynCall_iij"];
+asm["dynCall_iij"] = function() {
   assert(runtimeInitialized, 'you need to wait for the runtime to be ready (e.g. wait for main() to be called)');
   assert(!runtimeExited, 'the runtime was exited (use NO_EXIT_RUNTIME to keep it alive after main() exits)');
-  return Module["asm"]["dynCall_iij"].apply(null, arguments)
+  return real_dynCall_iij.apply(null, arguments);
 };
 
-/** @type {function(...*):?} */
-var dynCall_iiiiiiiiii = Module["dynCall_iiiiiiiiii"] = function() {
+var real_dynCall_iiiiiiiiii = asm["dynCall_iiiiiiiiii"];
+asm["dynCall_iiiiiiiiii"] = function() {
   assert(runtimeInitialized, 'you need to wait for the runtime to be ready (e.g. wait for main() to be called)');
   assert(!runtimeExited, 'the runtime was exited (use NO_EXIT_RUNTIME to keep it alive after main() exits)');
-  return Module["asm"]["dynCall_iiiiiiiiii"].apply(null, arguments)
+  return real_dynCall_iiiiiiiiii.apply(null, arguments);
 };
 
-/** @type {function(...*):?} */
-var dynCall_viiiiiiiiiii = Module["dynCall_viiiiiiiiiii"] = function() {
+var real_dynCall_viiiiiiiiiii = asm["dynCall_viiiiiiiiiii"];
+asm["dynCall_viiiiiiiiiii"] = function() {
   assert(runtimeInitialized, 'you need to wait for the runtime to be ready (e.g. wait for main() to be called)');
   assert(!runtimeExited, 'the runtime was exited (use NO_EXIT_RUNTIME to keep it alive after main() exits)');
-  return Module["asm"]["dynCall_viiiiiiiiiii"].apply(null, arguments)
+  return real_dynCall_viiiiiiiiiii.apply(null, arguments);
 };
 
+var ___wasm_call_ctors = Module["___wasm_call_ctors"] = asm["__wasm_call_ctors"];
+var ___errno_location = Module["___errno_location"] = asm["__errno_location"];
+var _fflush = Module["_fflush"] = asm["fflush"];
+var _main = Module["_main"] = asm["main"];
+var _free = Module["_free"] = asm["free"];
+var _malloc = Module["_malloc"] = asm["malloc"];
+var __get_tzname = Module["__get_tzname"] = asm["_get_tzname"];
+var __get_daylight = Module["__get_daylight"] = asm["_get_daylight"];
+var __get_timezone = Module["__get_timezone"] = asm["_get_timezone"];
+var ___set_stack_limit = Module["___set_stack_limit"] = asm["__set_stack_limit"];
+var stackSave = Module["stackSave"] = asm["stackSave"];
+var stackAlloc = Module["stackAlloc"] = asm["stackAlloc"];
+var stackRestore = Module["stackRestore"] = asm["stackRestore"];
+var __growWasmMemory = Module["__growWasmMemory"] = asm["__growWasmMemory"];
+var dynCall_iii = Module["dynCall_iii"] = asm["dynCall_iii"];
+var dynCall_viiii = Module["dynCall_viiii"] = asm["dynCall_viiii"];
+var dynCall_vi = Module["dynCall_vi"] = asm["dynCall_vi"];
+var dynCall_iiii = Module["dynCall_iiii"] = asm["dynCall_iiii"];
+var dynCall_ii = Module["dynCall_ii"] = asm["dynCall_ii"];
+var dynCall_iiiiii = Module["dynCall_iiiiii"] = asm["dynCall_iiiiii"];
+var dynCall_i = Module["dynCall_i"] = asm["dynCall_i"];
+var dynCall_iiiii = Module["dynCall_iiiii"] = asm["dynCall_iiiii"];
+var dynCall_viii = Module["dynCall_viii"] = asm["dynCall_viii"];
+var dynCall_iiiiiiiii = Module["dynCall_iiiiiiiii"] = asm["dynCall_iiiiiiiii"];
+var dynCall_viiiiii = Module["dynCall_viiiiii"] = asm["dynCall_viiiiii"];
+var dynCall_vii = Module["dynCall_vii"] = asm["dynCall_vii"];
+var dynCall_v = Module["dynCall_v"] = asm["dynCall_v"];
+var dynCall_jiji = Module["dynCall_jiji"] = asm["dynCall_jiji"];
+var dynCall_jiiji = Module["dynCall_jiiji"] = asm["dynCall_jiiji"];
+var dynCall_viiiiiiff = Module["dynCall_viiiiiiff"] = asm["dynCall_viiiiiiff"];
+var dynCall_viiiii = Module["dynCall_viiiii"] = asm["dynCall_viiiii"];
+var dynCall_viiiiiifi = Module["dynCall_viiiiiifi"] = asm["dynCall_viiiiiifi"];
+var dynCall_iiiiiii = Module["dynCall_iiiiiii"] = asm["dynCall_iiiiiii"];
+var dynCall_viiiiiiiii = Module["dynCall_viiiiiiiii"] = asm["dynCall_viiiiiiiii"];
+var dynCall_viiiiiiii = Module["dynCall_viiiiiiii"] = asm["dynCall_viiiiiiii"];
+var dynCall_iiiiiiiiiiiiiifii = Module["dynCall_iiiiiiiiiiiiiifii"] = asm["dynCall_iiiiiiiiiiiiiifii"];
+var dynCall_fiiii = Module["dynCall_fiiii"] = asm["dynCall_fiiii"];
+var dynCall_fiifi = Module["dynCall_fiifi"] = asm["dynCall_fiifi"];
+var dynCall_viiiiiii = Module["dynCall_viiiiiii"] = asm["dynCall_viiiiiii"];
+var dynCall_viiiifii = Module["dynCall_viiiifii"] = asm["dynCall_viiiifii"];
+var dynCall_fii = Module["dynCall_fii"] = asm["dynCall_fii"];
+var dynCall_viiiiiiiiii = Module["dynCall_viiiiiiiiii"] = asm["dynCall_viiiiiiiiii"];
+var dynCall_viiijj = Module["dynCall_viiijj"] = asm["dynCall_viiijj"];
+var dynCall_viiiiiiiiiiii = Module["dynCall_viiiiiiiiiiii"] = asm["dynCall_viiiiiiiiiiii"];
+var dynCall_iiiiiiii = Module["dynCall_iiiiiiii"] = asm["dynCall_iiiiiiii"];
+var dynCall_dd = Module["dynCall_dd"] = asm["dynCall_dd"];
+var dynCall_fiii = Module["dynCall_fiii"] = asm["dynCall_fiii"];
+var dynCall_viidi = Module["dynCall_viidi"] = asm["dynCall_viidi"];
+var dynCall_viifi = Module["dynCall_viifi"] = asm["dynCall_viifi"];
+var dynCall_did = Module["dynCall_did"] = asm["dynCall_did"];
+var dynCall_fiiiiiiiiffii = Module["dynCall_fiiiiiiiiffii"] = asm["dynCall_fiiiiiiiiffii"];
+var dynCall_viiif = Module["dynCall_viiif"] = asm["dynCall_viiif"];
+var dynCall_viiiif = Module["dynCall_viiiif"] = asm["dynCall_viiiif"];
+var dynCall_viiiiiiifi = Module["dynCall_viiiiiiifi"] = asm["dynCall_viiiiiiifi"];
+var dynCall_iiiiiiidiiddii = Module["dynCall_iiiiiiidiiddii"] = asm["dynCall_iiiiiiidiiddii"];
+var dynCall_jij = Module["dynCall_jij"] = asm["dynCall_jij"];
+var dynCall_jii = Module["dynCall_jii"] = asm["dynCall_jii"];
+var dynCall_iiijjji = Module["dynCall_iiijjji"] = asm["dynCall_iiijjji"];
+var dynCall_iiiji = Module["dynCall_iiiji"] = asm["dynCall_iiiji"];
+var dynCall_jiiij = Module["dynCall_jiiij"] = asm["dynCall_jiiij"];
+var dynCall_iiifii = Module["dynCall_iiifii"] = asm["dynCall_iiifii"];
+var dynCall_iidiiii = Module["dynCall_iidiiii"] = asm["dynCall_iidiiii"];
+var dynCall_iij = Module["dynCall_iij"] = asm["dynCall_iij"];
+var dynCall_iiiiiiiiii = Module["dynCall_iiiiiiiiii"] = asm["dynCall_iiiiiiiiii"];
+var dynCall_viiiiiiiiiii = Module["dynCall_viiiiiiiiiii"] = asm["dynCall_viiiiiiiiiii"];
 
 
 /**
