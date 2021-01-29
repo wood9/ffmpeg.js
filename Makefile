@@ -191,15 +191,12 @@ build/ffmpeg-mp4/ffmpeg.bc: $(MP4_SHARED_DEPS)
 	cp ffmpeg ffmpeg.bc
 
 EMCC_COMMON_ARGS = \
-	-O0 \
-	-g4 \
+	-O3 \
 	--memory-init-file 0 \
 	-s WASM=1 \
   	-s EXIT_RUNTIME=1 \
-	-s ASSERTIONS=1 \
 	-s BINARYEN_ASYNC_COMPILATION=0 \
-	-s SAFE_HEAP=1 \
-	-s INITIAL_MEMORY=1073741824 \
+	-s INITIAL_MEMORY=268435456 \
 	-s ALLOW_MEMORY_GROWTH=1 \
 	-s NODEJS_CATCH_EXIT=0 \
 	-s NODEJS_CATCH_REJECTION=0 \
@@ -215,4 +212,4 @@ ffmpeg-mp4.js: $(FFMPEG_MP4_BC) $(PRE_JS) $(POST_JS_SYNC)
 ffmpeg-worker-mp4.js: $(FFMPEG_MP4_BC) $(PRE_JS) $(POST_JS_WORKER)
 	emcc $(FFMPEG_MP4_BC) $(MP4_SHARED_DEPS) \
 		--post-js $(POST_JS_WORKER) \
-		$(EMCC_COMMON_ARGS) -O0
+		$(EMCC_COMMON_ARGS) -O3
