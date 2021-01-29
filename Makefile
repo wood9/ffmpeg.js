@@ -146,6 +146,7 @@ FFMPEG_COMMON_ARGS = \
 	--disable-w32threads \
 	--disable-os2threads \
 	--enable-debug \
+  --disable-optimizations \
 	--disable-stripping \
 	--disable-safe-bitstream-reader \
 	\
