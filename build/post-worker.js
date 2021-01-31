@@ -42,7 +42,7 @@ self.onmessage = function(e) {
       var transfer = memfs.map(function(file) {
         return file["data"] ? file["data"].buffer:null;
       });
-      self.postMessage({"type": "done", "data": result}, transfer);
+      //self.postMessage({"type": "done", "data": result}, transfer);
       __ffmpegjs_running = false;
     }
   } else {
